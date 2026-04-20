@@ -1,0 +1,1943 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, interactive-widget=resizes-content">
+<title>Yaşam.AI</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a0a0f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Yaşam.AI">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<!-- Google Identity Services: telefondaki gerçek Google hesabını seçici açar -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<!-- EmailJS: mail doğrulama kodu göndermek için -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;width:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0a0f;color:#fff;overflow:hidden;overscroll-behavior:none;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+  body{display:flex;justify-content:center;align-items:stretch}
+  body::before{content:'';position:fixed;inset:0;background:#0a0a0f;z-index:-1}
+  body.light{background:#f3f4f6;color:#1a1a22}
+  body.light::before{background:#d1d5db}
+  input,textarea{-webkit-user-select:text;user-select:text}
+  button{font:inherit;color:inherit;border:none;background:none;cursor:pointer}
+  svg{display:block}
+
+  #app{position:relative;width:100%;max-width:480px;height:100vh;height:100dvh;padding-top:env(safe-area-inset-top);display:flex;flex-direction:column;background:radial-gradient(ellipse at top,#2a1f4a 0%,#1a1f3a 40%,#0f1220 100%);transition:background .5s;overflow:hidden;box-shadow:0 0 60px rgba(0,0,0,0.4)}
+  body.light #app{background:radial-gradient(ellipse at top,#fce7f3 0%,#f3f4f6 40%,#fff 100%)}
+
+  .screen{position:absolute;inset:0;display:flex;flex-direction:column;transition:opacity .4s;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+  .screen.hidden{opacity:0;pointer-events:none;visibility:hidden}
+  #onboard.hidden .ob-btns{display:none}
+
+  /* ===== SPLASH ===== */
+  #splash{background:linear-gradient(135deg,#7c5cef,#4a6cf7);align-items:center;justify-content:center;gap:20px;z-index:100}
+  #splash .mark{width:120px;height:120px;border-radius:30px;background:rgba(255,255,255,0.14);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;box-shadow:0 20px 50px rgba(0,0,0,0.3);animation:pulseMark 1.6s ease-in-out infinite}
+  #splash .mark svg{width:78px;height:78px}
+  #splash .name{color:#fff;font-size:34px;font-weight:800;letter-spacing:-.8px}
+  #splash .name span{color:#fde68a}
+  #splash .tag{color:rgba(255,255,255,0.85);font-size:14px}
+  @keyframes pulseMark{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+
+  /* ===== ORTAK: EKRAN BAŞLIK + GERİ ===== */
+  .bar{display:flex;align-items:center;gap:12px;padding:14px 18px 8px;flex-shrink:0;min-height:54px}
+  .back-btn{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s}
+  .back-btn:active{transform:scale(0.92)}
+  body.light .back-btn{background:rgba(0,0,0,0.05)}
+  .back-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+  .bar-title{flex:1;font-size:17px;font-weight:800;letter-spacing:-.3px}
+  .bar-sub{font-size:11px;color:#a0a3b8;font-weight:500}
+
+  /* ===== ONBOARDING ===== */
+  #onboard{z-index:90;display:block !important;box-sizing:border-box;padding:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;height:100%;padding-bottom:180px}
+  .ob-head{padding:16px 22px 0;text-align:center}
+  .ob-scroll{padding:0 22px}
+  .ob-logo{width:68px;height:68px;border-radius:20px;margin:4px auto 12px;background:linear-gradient(135deg,#7c5cef,#4a6cf7);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 40px rgba(124,92,239,0.4);flex-shrink:0}
+  .ob-logo svg{width:50px;height:50px}
+  .ob-title{font-size:24px;font-weight:800;text-align:center;letter-spacing:-.5px;line-height:1.2;margin-bottom:6px}
+  .ob-title span{background:linear-gradient(135deg,#a78bfa,#7dd3fc);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .ob-sub{text-align:center;color:#a0a3b8;font-size:13px;line-height:1.5;padding:0 10px;margin-bottom:14px}
+  body.light .ob-sub{color:#6b7280}
+  .ob-features{display:flex;flex-direction:column;gap:10px;padding:6px 0 10px}
+  .ob-feat{display:flex;align-items:center;gap:12px}
+  .ob-feat .fi{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .ob-feat svg{width:19px;height:19px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .ob-feat .ft{font-size:13px;font-weight:700}
+  .ob-feat .fd{font-size:11px;color:#a0a3b8;margin-top:2px}
+  body.light .ob-feat .fd{color:#6b7280}
+  .ob-btns{position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:10px;padding:14px 22px calc(18px + env(safe-area-inset-bottom,0px));z-index:95;background:linear-gradient(to top,#0f1220 0%,#0f1220 70%,rgba(15,18,32,0) 100%);pointer-events:auto}
+  body.light .ob-btns{background:linear-gradient(to top,#fff 0%,#fff 70%,rgba(255,255,255,0) 100%)}
+  .ob-btn{width:100%;padding:15px;border-radius:15px;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .15s}
+  .ob-btn:active{transform:scale(0.98)}
+  .ob-btn.primary{background:linear-gradient(135deg,#8b5cf6,#6366f1);color:#fff;box-shadow:0 8px 24px rgba(139,92,246,0.4)}
+  .ob-btn.ghost{background:rgba(255,255,255,0.06);color:#fff;border:1px solid rgba(255,255,255,0.12)}
+  body.light .ob-btn.ghost{background:#fff;color:#1a1a22;border-color:rgba(0,0,0,0.1)}
+  .ob-btn.anon{background:rgba(255,255,255,0.03);color:#c0c3d8;border:1px dashed rgba(255,255,255,0.15)}
+  body.light .ob-btn.anon{background:rgba(0,0,0,0.02);color:#6b7280;border-color:rgba(0,0,0,0.15)}
+  .ob-btn svg{width:20px;height:20px}
+
+  /* ===== ANA UYGULAMA ===== */
+  #main{z-index:10}
+  #main.hidden{opacity:0;pointer-events:none}
+
+  .top-bar{padding:14px 18px 10px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+  .tb-logo{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#7c5cef,#4a6cf7);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .tb-logo svg{width:24px;height:24px}
+  .tb-text{flex:1;min-width:0}
+  .tb-brand{font-size:17px;font-weight:800;letter-spacing:-.3px}
+  .tb-brand span{color:#fde68a}
+  .tb-sub{font-size:11px;color:#a0a3b8}
+  body.light .tb-sub{color:#6b7280}
+  .tb-counter{font-size:10px;color:#a0a3b8;background:rgba(255,255,255,0.05);padding:5px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);white-space:nowrap}
+  body.light .tb-counter{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.08);color:#4b5563}
+
+  .tab-content{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;-webkit-overflow-scrolling:touch;padding-bottom:calc(68px + env(safe-area-inset-bottom))}
+  .tab{display:none;flex-direction:column;min-height:100%}
+  .tab.active{display:flex}
+  #tab-chat{min-height:calc(100vh - 70px - 64px)}
+
+  /* ===== SOHBET ===== */
+  .greeting{padding:4px 20px 12px}
+  .greeting h1{font-size:22px;font-weight:800;letter-spacing:-.5px;line-height:1.25}
+  .greeting h1 .hl{background:linear-gradient(135deg,#a78bfa,#7dd3fc);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .greeting p{color:#a0a3b8;font-size:13px;margin-top:6px}
+  body.light .greeting p{color:#6b7280}
+  .moods{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 20px 14px}
+  .mood{padding:13px;border-radius:16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);transition:all .2s;display:flex;flex-direction:column;gap:6px;text-align:left}
+  .mood:active{transform:scale(0.97)}
+  .mood .mico{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+  .mood .mico svg{width:17px;height:17px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .mood .ml{font-size:12px;font-weight:700}
+  .mood .ms{font-size:10px;color:#a0a3b8}
+  body.light .mood{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.08)}
+  body.light .mood .ms{color:#6b7280}
+  .chat-msgs{flex:1;padding:6px 18px 10px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;scroll-padding-bottom:80px}
+  .chat-back-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.06);flex-shrink:0}
+  body.light .chat-back-bar{border-color:rgba(0,0,0,0.06)}
+  .cl-item{display:flex;align-items:center;gap:12px;padding:12px;background:rgba(255,255,255,0.04);border-radius:14px;margin-bottom:8px;cursor:pointer;transition:background .15s}
+  .cl-item:active{background:rgba(255,255,255,0.08)}
+  body.light .cl-item{background:rgba(0,0,0,0.03)}
+  .cl-ico{width:12px;height:44px;border-radius:4px;flex-shrink:0}
+  .cl-info{flex:1;min-width:0}
+  .cl-name{font-size:14px;font-weight:700}
+  .cl-cnt{color:#a0a3b8;font-weight:500;font-size:11px}
+  .cl-prev{font-size:12px;color:#a0a3b8;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bubble{max-width:80%;padding:11px 14px;border-radius:18px;font-size:14px;line-height:1.45;animation:popIn .25s;word-wrap:break-word;white-space:pre-wrap}
+  .bubble.me{align-self:flex-end;background:linear-gradient(135deg,#8b5cf6,#6366f1);color:#fff;border-bottom-right-radius:6px}
+  .bubble.ai{align-self:flex-start;background:rgba(255,255,255,0.08);color:#e8eaf6;border:1px solid rgba(255,255,255,0.08);border-bottom-left-radius:6px}
+  .bubble.ai.typing{color:#a0a3b8;font-style:italic}
+  body.light .bubble.ai{background:#fff;color:#1a1a22;border-color:rgba(0,0,0,0.06);box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+  @keyframes popIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+  /* ===== INPUT ===== */
+  .input-area{margin:6px 14px 10px;background:rgba(255,255,255,0.08);border:1px solid rgba(139,92,246,0.3);border-radius:28px;padding:7px 7px 7px 5px;display:flex;align-items:center;gap:6px;flex-shrink:0;transition:border-color .3s}
+  body.light .input-area{background:#fff;border-color:rgba(139,92,246,0.35);box-shadow:0 4px 16px rgba(0,0,0,0.06)}
+  .input-area input{flex:1;background:none;border:none;outline:none;color:inherit;font-size:14px;padding:6px 4px;min-width:0}
+  .input-area input::placeholder{color:#7a7d92}
+  .send-btn{width:40px;height:40px;border-radius:20px;background:#8b5cf6;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .3s}
+  .send-btn svg{width:18px;height:18px;fill:#fff}
+  .send-btn:active{transform:scale(0.92)}
+  .attach-wrap{position:relative;flex-shrink:0}
+  .attach{width:36px;height:36px;border-radius:18px;background:rgba(255,255,255,0.08);color:#c0c3d8;font-size:22px;font-weight:300;display:flex;align-items:center;justify-content:center;transition:transform .25s}
+  body.light .attach{background:rgba(0,0,0,0.05);color:#4b5563}
+  .attach.open{transform:rotate(45deg);background:#8b5cf6;color:#fff}
+  .attach-menu{position:absolute;bottom:48px;left:0;background:rgba(26,26,34,0.98);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:6px;min-width:150px;opacity:0;transform:translateY(8px) scale(0.95);pointer-events:none;transition:all .2s;box-shadow:0 16px 40px rgba(0,0,0,0.5);z-index:5}
+  body.light .attach-menu{background:rgba(255,255,255,0.98);border-color:rgba(0,0,0,0.08)}
+  .attach-menu.open{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
+  .attach-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;font-size:13px;color:#e8eaf6;transition:background .15s}
+  body.light .attach-item{color:#1a1a22}
+  .attach-item:active{background:rgba(255,255,255,0.08)}
+  body.light .attach-item:active{background:rgba(0,0,0,0.05)}
+  .ai-ico{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .ai-ico svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .ico-img{background:linear-gradient(135deg,#f472b6,#ec4899)}
+  .ico-doc{background:linear-gradient(135deg,#60a5fa,#2563eb)}
+  .ico-mic{background:linear-gradient(135deg,#5eead4,#0d9488)}
+  .ico-cam{background:linear-gradient(135deg,#f97316,#ea580c)}
+
+  /* ===== GÜNLÜK ===== */
+  .week-strip{display:flex;gap:6px;padding:0 18px 14px;overflow-x:auto}
+  .day-pill{flex-shrink:0;width:44px;padding:10px 4px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;text-align:center}
+  .day-pill.today{background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(99,102,241,0.2));border-color:#8b5cf6}
+  body.light .day-pill{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.08)}
+  .day-pill .dn{font-size:9px;color:#a0a3b8;font-weight:600}
+  .day-pill .dnum{font-size:15px;font-weight:700;margin-top:2px}
+  .day-pill .mood-dot{width:7px;height:7px;border-radius:50%;margin:5px auto 0}
+  .card{margin:0 18px 14px;padding:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:18px}
+  body.light .card{background:#fff;border-color:rgba(0,0,0,0.06);box-shadow:0 2px 10px rgba(0,0,0,0.03)}
+  .ct{font-size:13px;font-weight:700;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+  .ct span{color:#a78bfa;font-size:11px}
+  .bars{display:flex;gap:6px;align-items:flex-end;height:90px}
+  .bar{flex:1;border-radius:4px 4px 0 0;min-height:4px}
+  .bar-labels{display:flex;gap:6px;margin-top:8px}
+  .bar-labels span{flex:1;text-align:center;font-size:9px;color:#a0a3b8}
+  .section-h{font-size:11px;font-weight:700;color:#a0a3b8;text-transform:uppercase;letter-spacing:0.6px;padding:14px 20px 6px;display:flex;justify-content:space-between;align-items:center}
+  .section-h .add{color:#a78bfa;font-size:11px;font-weight:700;text-transform:none;letter-spacing:0}
+  .entry{display:flex;gap:12px;padding:12px 20px;align-items:flex-start;transition:background .15s}
+  .entry:active{background:rgba(255,255,255,0.04)}
+  body.light .entry:active{background:rgba(0,0,0,0.03)}
+  .entry .dot{width:8px;height:8px;border-radius:50%;margin-top:6px;flex-shrink:0}
+  .entry .eb{flex:1;min-width:0}
+  .entry .et{display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:600}
+  .entry .et .tm{font-size:10px;color:#a0a3b8;font-weight:400;flex-shrink:0}
+  .entry .ep{font-size:11px;color:#a0a3b8;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .empty{text-align:center;padding:30px 20px;color:#7a7d92;font-size:13px}
+
+  /* ===== KEŞFET ===== */
+  .topics{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 18px 20px}
+  .topic{padding:14px;border-radius:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);text-align:left;transition:transform .15s}
+  body.light .topic{background:#fff;border-color:rgba(0,0,0,0.06)}
+  .topic:active{transform:scale(0.97)}
+  .topic .ti{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+  .topic .ti svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .topic .tl{font-size:13px;font-weight:700}
+  .topic .td{font-size:10px;color:#a0a3b8;margin-top:3px;line-height:1.35}
+  .topic .tcount{position:absolute;margin-top:-4px;font-size:9px;color:#a78bfa;margin-left:2px}
+
+  /* ===== KONU DETAY EKRANI ===== */
+  #tab-topic{padding:0}
+  .topic-hero{padding:18px 20px;border-radius:0 0 20px 20px;color:#fff;margin-bottom:10px}
+  .topic-hero .th-title{font-size:22px;font-weight:800;letter-spacing:-.5px}
+  .topic-hero .th-sub{font-size:12px;opacity:0.85;margin-top:4px;line-height:1.5}
+  .topic-prompt{margin:12px 18px;padding:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;font-size:13px;color:#c0c3d8;line-height:1.5}
+  body.light .topic-prompt{background:#fff;border-color:rgba(0,0,0,0.06);color:#4b5563}
+  .topic-entries-list{padding:0 0 20px}
+
+  /* ===== YENİ GÜNLÜK/KONU GİRDİ EKLEME ===== */
+  .composer{padding:14px 18px;display:flex;flex-direction:column;gap:10px}
+  .composer textarea{width:100%;min-height:140px;padding:14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;color:inherit;font-size:14px;font-family:inherit;resize:none;outline:none;line-height:1.5}
+  body.light .composer textarea{background:#fff;border-color:rgba(0,0,0,0.08)}
+  .composer textarea:focus{border-color:#8b5cf6}
+  .composer .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .mood-chip{padding:7px 12px;border-radius:14px;font-size:11px;font-weight:600;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#c0c3d8}
+  body.light .mood-chip{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.08);color:#4b5563}
+  .mood-chip.selected{color:#fff;border-color:transparent}
+
+  /* ===== PROFİL ===== */
+  .profile-head{padding:10px 20px 18px;text-align:center;position:relative}
+  .avatar-wrap{width:100px;height:100px;margin:0 auto 14px;position:relative;border-radius:50%;background:conic-gradient(from 0deg,#f472b6,#a78bfa,#60a5fa,#5eead4,#fde68a,#f472b6);padding:3px;animation:spinRing 8s linear infinite}
+  @keyframes spinRing{to{transform:rotate(360deg)}}
+  .avatar{width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:800;color:#fff;overflow:hidden;animation:spinRing 8s linear infinite reverse;cursor:pointer}
+  .avatar img{width:100%;height:100%;object-fit:cover}
+  .avatar-edit{position:absolute;bottom:-2px;right:-2px;width:32px;height:32px;border-radius:50%;background:#8b5cf6;border:3px solid #1a1f3a;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:3;box-shadow:0 4px 12px rgba(139,92,246,0.45)}
+  .rec-badge{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:90px;padding:10px 16px;background:#dc2626;color:#fff;border-radius:22px;font-size:12px;font-weight:600;z-index:50;cursor:pointer;box-shadow:0 8px 24px rgba(220,38,38,0.5)}
+  .rec-badge.show{display:flex;align-items:center;gap:8px}
+  .rec-dot{width:10px;height:10px;border-radius:50%;background:#fff;animation:pulse 1s infinite}
+  @keyframes pulse{50%{opacity:.3}}
+  body.light .avatar-edit{border-color:#fff}
+  .avatar-edit svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+  .pro-badge{position:absolute;top:8px;right:50%;margin-right:-60px;padding:4px 9px;background:linear-gradient(135deg,#fde68a,#f59e0b);color:#1a1a22;font-size:9px;font-weight:800;letter-spacing:0.5px;border-radius:8px;box-shadow:0 4px 12px rgba(245,158,11,0.4)}
+  .pname{font-size:22px;font-weight:800;letter-spacing:-.5px}
+  .pbio{font-size:12px;color:#a0a3b8;margin-top:4px}
+  body.light .pbio{color:#6b7280}
+  .pro-cta{margin:0 18px 16px;padding:16px;border-radius:18px;background:linear-gradient(135deg,#fde68a,#f59e0b);color:#1a1a22;display:flex;align-items:center;gap:12px;position:relative;overflow:hidden;width:calc(100% - 36px);text-align:left}
+  .pro-cta::before{content:'';position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,0.4) 50%,transparent 70%);animation:shimmer 2.5s infinite}
+  @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+  .pro-cta .pico{width:42px;height:42px;border-radius:12px;background:rgba(26,26,34,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1}
+  .pro-cta .pico svg{width:22px;height:22px;stroke:#1a1a22;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .pro-cta .pt{font-size:14px;font-weight:800;z-index:1}
+  .pro-cta .ps{font-size:11px;opacity:0.8;margin-top:2px;z-index:1}
+  .pro-cta .arr{margin-left:auto;z-index:1;font-weight:700}
+
+  .setting{display:flex;align-items:center;gap:14px;padding:13px 20px;transition:background .15s;width:100%;text-align:left}
+  .setting:active{background:rgba(255,255,255,0.04)}
+  body.light .setting:active{background:rgba(0,0,0,0.03)}
+  .setting .si{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .setting .si svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .setting .sl{flex:1;font-size:14px;font-weight:600}
+  .setting .sv{font-size:12px;color:#a0a3b8}
+  .setting .arr{color:#a0a3b8;font-size:18px}
+  .switch{width:44px;height:26px;border-radius:13px;background:rgba(255,255,255,0.12);position:relative;transition:background .2s;flex-shrink:0}
+  body.light .switch{background:rgba(0,0,0,0.12)}
+  .switch.on{background:#8b5cf6}
+  .switch::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s}
+  .switch.on::after{left:21px}
+
+  /* ===== ALT NAV ===== */
+  .bottom-nav{position:absolute;left:0;right:0;bottom:0;padding:8px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(15,18,32,0.92);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-around;z-index:20}
+  body.light .bottom-nav{background:rgba(255,255,255,0.92);border-top-color:rgba(0,0,0,0.08)}
+  .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px;color:#7a7d92;font-size:10px;font-weight:600}
+  .nav-item.active{color:#a78bfa}
+  body.light .nav-item.active{color:#8b5cf6}
+  .nav-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+  /* ===== OVERLAY / POPUP ===== */
+  .overlay{position:absolute;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:200}
+  .overlay.show{opacity:1;pointer-events:auto}
+  .popup{max-width:360px;width:100%;background:#1a1f3a;border:1px solid rgba(255,255,255,0.1);border-radius:22px;padding:24px;text-align:center;transform:scale(0.9);transition:transform .25s}
+  body.light .popup{background:#fff;border-color:rgba(0,0,0,0.08)}
+  .overlay.show .popup{transform:scale(1)}
+  .popup .icon-big{width:62px;height:62px;border-radius:16px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center}
+  .popup .icon-big svg{width:30px;height:30px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .popup h3{font-size:16px;font-weight:700;margin-bottom:8px}
+  .popup p{font-size:13px;line-height:1.5;color:#a0a3b8;margin-bottom:18px}
+  body.light .popup p{color:#6b7280}
+  .popup p b{color:#a78bfa}
+  .popup .btns{display:flex;flex-direction:column;gap:8px}
+  .pbtn{padding:12px;border-radius:12px;font-size:14px;font-weight:600;transition:transform .15s}
+  .pbtn:active{transform:scale(0.98)}
+  .pbtn.allow{background:#8b5cf6;color:#fff}
+  .pbtn.deny{background:rgba(255,255,255,0.06);color:#c0c3d8}
+  body.light .pbtn.deny{background:rgba(0,0,0,0.05);color:#4b5563}
+
+  /* ===== SHEET ===== */
+  .sheet-bg{position:absolute;inset:0;background:rgba(0,0,0,0.5);opacity:0;pointer-events:none;transition:opacity .3s;z-index:300}
+  .sheet-bg.show{opacity:1;pointer-events:auto}
+  .sheet{position:absolute;left:0;right:0;bottom:0;background:#1a1f3a;border-radius:24px 24px 0 0;padding:16px 20px calc(20px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .3s;z-index:301;max-height:88vh;overflow-y:auto}
+  body.light .sheet{background:#fff}
+  .sheet.show{transform:translateY(0)}
+  .sheet-handle{width:40px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin:0 auto 12px}
+  body.light .sheet-handle{background:rgba(0,0,0,0.15)}
+  .sheet h3{font-size:17px;font-weight:800;margin-bottom:12px}
+
+  .theme-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .theme-opt{padding:14px 10px;border-radius:14px;border:2px solid transparent;background:rgba(255,255,255,0.04);text-align:center}
+  body.light .theme-opt{background:rgba(0,0,0,0.03)}
+  .theme-opt.active{border-color:#8b5cf6}
+  .theme-swatch{width:40px;height:40px;border-radius:10px;margin:0 auto 8px}
+  .theme-opt .tn{font-size:11px;font-weight:600}
+
+  .time-pick{display:flex;justify-content:center;gap:16px;margin:16px 0}
+  .tp-col{text-align:center}
+  .tp-btn{width:36px;height:30px;background:rgba(255,255,255,0.06);border-radius:10px;color:#a78bfa;font-size:16px;display:flex;align-items:center;justify-content:center}
+  body.light .tp-btn{background:rgba(0,0,0,0.05)}
+  .tp-num{font-size:36px;font-weight:800;padding:8px 0;min-width:64px}
+  .tp-label{font-size:10px;color:#a0a3b8}
+  .day-toggles{display:flex;gap:6px;justify-content:center;margin:14px 0}
+  .day-tg{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#7a7d92}
+  body.light .day-tg{background:rgba(0,0,0,0.05)}
+  .day-tg.on{background:#8b5cf6;color:#fff}
+
+  .form-row{margin-bottom:12px}
+  .form-row label{display:block;font-size:11px;color:#a0a3b8;margin-bottom:6px;font-weight:600}
+  .form-row input{width:100%;padding:13px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:inherit;font-size:14px;outline:none;transition:border-color .2s}
+  body.light .form-row input{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.08)}
+  .form-row input:focus{border-color:#8b5cf6}
+  .sheet-btn{width:100%;padding:14px;border-radius:14px;background:linear-gradient(135deg,#8b5cf6,#6366f1);color:#fff;font-size:14px;font-weight:700;margin-top:6px}
+  .sheet-btn:active{transform:scale(0.98)}
+  .sheet-btn.danger{background:linear-gradient(135deg,#ef4444,#dc2626)}
+  .sheet-link{display:block;text-align:center;margin-top:12px;font-size:12px;color:#a78bfa;padding:6px}
+
+  /* Google hesap seçici modal */
+  .goog-card{background:#fff;border-radius:16px;padding:20px;color:#202124;max-height:80vh;overflow-y:auto}
+  .goog-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+  .goog-head .glogo{font-size:22px;font-weight:700;font-family:Arial}
+  .goog-head .glogo .b{color:#4285f4}.goog-head .glogo .r{color:#ea4335}.goog-head .glogo .y{color:#fbbc05}.goog-head .glogo .g{color:#34a853}
+  .goog-title{font-size:18px;font-weight:500;color:#202124;margin-bottom:6px}
+  .goog-sub{font-size:13px;color:#5f6368;margin-bottom:18px}
+  .goog-acc{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #dadce0;cursor:pointer}
+  .goog-acc:last-of-type{border:none}
+  .goog-ava{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:16px;flex-shrink:0}
+  .goog-info{flex:1}
+  .goog-info .gn{font-size:14px;color:#202124;font-weight:500}
+  .goog-info .ge{font-size:12px;color:#5f6368}
+  .goog-add{display:flex;align-items:center;gap:12px;padding:12px 0;color:#1a73e8;font-size:14px}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- SPLASH -->
+  <div class="screen" id="splash">
+    <div class="mark">
+      <svg viewBox="0 0 64 64" fill="none">
+        <circle cx="32" cy="20" r="7" fill="#bae6fd"/>
+        <path d="M 18 26 L 32 40 L 46 26" stroke="#fde68a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="name">Yaşam<span>.AI</span></div>
+    <div class="tag">Yaşamın akıllı hali</div>
+  </div>
+
+  <!-- ONBOARDING -->
+  <div class="screen hidden" id="onboard">
+    <div class="ob-head">
+      <div class="ob-logo">
+        <svg viewBox="0 0 64 64" fill="none">
+          <circle cx="32" cy="20" r="7" fill="#bae6fd"/>
+          <path d="M 18 26 L 32 40 L 46 26" stroke="#fde68a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="ob-title">Seni dinleyen<br><span>akıllı bir dost</span></div>
+      <div class="ob-sub">Ne hissettiğini anlayan, ruh haline göre konuşan AI arkadaşın.</div>
+    </div>
+    <div class="ob-scroll">
+      <div class="ob-features">
+        <div class="ob-feat"><div class="fi" style="background:linear-gradient(135deg,#f472b6,#ec4899)"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></svg></div><div><div class="ft">Yargısız sohbet</div><div class="fd">İçini dökebilirsin, kimse duymaz</div></div></div>
+        <div class="ob-feat"><div class="fi" style="background:linear-gradient(135deg,#60a5fa,#2563eb)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></div><div><div class="ft">Karar desteği</div><div class="fd">Kafan karıştığında seçenekleri aç</div></div></div>
+        <div class="ob-feat"><div class="fi" style="background:linear-gradient(135deg,#5eead4,#0d9488)"><svg viewBox="0 0 24 24"><path d="M2 12h3l2-6 4 12 3-9 2 3h6"/></svg></div><div><div class="ft">Sakinleşme anı</div><div class="fd">Nefes egzersizi ve yumuşak ses</div></div></div>
+      </div>
+    </div>
+    <div class="ob-btns">
+      <button class="ob-btn primary" onclick="authMode='signup';openSheet('signup')">Kayıt ol</button>
+      <button class="ob-btn ghost" onclick="authMode='login';openSheet('login')">Hesabım var · Giriş yap</button>
+    </div>
+  </div>
+
+  <!-- ANA UYGULAMA -->
+  <div class="screen hidden" id="main">
+    <div class="top-bar">
+      <button class="tb-logo" onclick="switchTab('chat')">
+        <svg viewBox="0 0 64 64" fill="none">
+          <circle cx="32" cy="20" r="7" fill="#bae6fd"/>
+          <path d="M 18 26 L 32 40 L 46 26" stroke="#fde68a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="tb-text">
+        <div class="tb-brand">Yaşam<span>.AI</span></div>
+        <div class="tb-sub" id="tbSub">Yaşamın akıllı hali</div>
+      </div>
+      <div class="tb-counter" id="msgCounter" style="display:none">10 mesaj hakkın var</div>
+    </div>
+
+    <div class="tab-content">
+
+      <!-- SOHBET -->
+      <div class="tab active" id="tab-chat">
+        <div class="chat-back-bar" id="chatBackBar" style="display:none">
+          <button class="back-btn" onclick="backToMoodSelect()"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <div class="bar-title" id="chatTopLabel">Sohbet</div>
+          <button class="back-btn" onclick="showChatList()" title="Geçmiş sohbetler"><svg viewBox="0 0 24 24"><path d="M12 8v5l3 2M12 2a10 10 0 1 1-10 10"/><path d="M2 12a10 10 0 0 1 3-7"/></svg></button>
+        </div>
+        <div class="greeting" id="greetBox">
+          <h1>Merhaba <span class="hl" id="userName">misafir</span>,<br>bugün nasıl hissediyorsun?</h1>
+          <p>Anlat, seni dinliyorum. Yargı yok, sadece çözüm.</p>
+        </div>
+        <div class="moods" id="moodsBox">
+          <button class="mood" data-mood="dokun" data-color="#f472b6" onclick="selectMood(this)">
+            <div class="mico" style="background:linear-gradient(135deg,#f472b6,#ec4899)"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></svg></div>
+            <div class="ml">İçimi dökmek istiyorum</div><div class="ms">Anonim, güvenli</div>
+          </button>
+          <button class="mood" data-mood="karar" data-color="#60a5fa" onclick="selectMood(this)">
+            <div class="mico" style="background:linear-gradient(135deg,#60a5fa,#2563eb)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3"/></svg></div>
+            <div class="ml">Karar veremiyorum</div><div class="ms">Beraber düşünelim</div>
+          </button>
+          <button class="mood" data-mood="sakin" data-color="#5eead4" onclick="selectMood(this)">
+            <div class="mico" style="background:linear-gradient(135deg,#5eead4,#0d9488)"><svg viewBox="0 0 24 24"><path d="M2 12h3l2-6 4 12 3-9 2 3h6"/></svg></div>
+            <div class="ml">Sakinleşmek</div><div class="ms">Yumuşak bir ses</div>
+          </button>
+          <button class="mood" data-mood="motive" data-color="#f97316" onclick="selectMood(this)">
+            <div class="mico" style="background:linear-gradient(135deg,#f97316,#ea580c)"><svg viewBox="0 0 24 24"><path d="M13 2L4.5 13h6L11 22l8.5-11h-6z"/></svg></div>
+            <div class="ml">Motive ol</div><div class="ms">Sert konuşmak lazım</div>
+          </button>
+        </div>
+        <div class="chat-msgs" id="chatMsgs"></div>
+        <div class="input-area" id="inputArea">
+          <div class="attach-wrap">
+            <button class="attach" id="attachBtn" onclick="toggleMenu()">+</button>
+            <div class="attach-menu" id="attachMenu">
+              <div class="attach-item" onclick="chatAttach('image')"><span class="ai-ico ico-img"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></span>Resim</div>
+              <div class="attach-item" onclick="chatAttach('file')"><span class="ai-ico ico-doc"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>Dosya</div>
+              <div class="attach-item" onclick="chatAttach('mic')"><span class="ai-ico ico-mic"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span>Sesli not</div>
+              <div class="attach-item" onclick="chatAttach('camera')"><span class="ai-ico ico-cam"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>Kamera</div>
+            </div>
+          </div>
+          <input type="text" id="chatInput" placeholder="Ne yapacağımı bilmiyorum..." onkeypress="if(event.key==='Enter')sendMsg()">
+          <button class="send-btn" id="sendBtn" onclick="sendMsg()"><svg viewBox="0 0 24 24"><path d="M3 20l18-8L3 4v6l12 2-12 2z"/></svg></button>
+        </div>
+        <!-- Gizli input'lar: sohbet eklentileri -->
+        <input type="file" id="chatImgInput" accept="image/*" style="display:none" onchange="onChatFilePicked(event,'image')">
+        <input type="file" id="chatCamInput" accept="image/*" capture="environment" style="display:none" onchange="onChatFilePicked(event,'camera')">
+        <input type="file" id="chatFileInput" style="display:none" onchange="onChatFilePicked(event,'file')">
+        <div id="recBadge" class="rec-badge" onclick="stopVoiceRecord()"><span class="rec-dot"></span>Kayıt ediliyor · Durdur</div>
+      </div>
+
+      <!-- GÜNLÜK -->
+      <div class="tab" id="tab-diary">
+        <div class="bar"><div class="bar-title">Günlüğüm</div></div>
+        <div style="padding:0 20px 12px;color:#a0a3b8;font-size:12px;" id="diaryWeekLabel">Bu haftaki ruh halin</div>
+        <div class="week-strip" id="weekStrip"></div>
+        <div class="card">
+          <div class="ct">Haftalık ruh hali <span id="diaryCountTxt">0 girdi</span></div>
+          <div class="bars" id="weekBars"></div>
+          <div class="bar-labels"><span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span><span>Cmt</span><span>Paz</span></div>
+        </div>
+        <div class="section-h"><span>Son girdiler</span><button class="add" onclick="openSheet('newDiary')">+ Yeni girdi</button></div>
+        <div id="diaryList"></div>
+        <div style="height:60px"></div>
+      </div>
+
+      <!-- KEŞFET -->
+      <div class="tab" id="tab-explore">
+        <div class="bar"><div class="bar-title">Keşfet</div></div>
+        <div style="padding:0 20px 14px;color:#a0a3b8;font-size:12px">Üzerinde konuşmak istediğin bir konu seç</div>
+        <div class="topics" id="topicsGrid"></div>
+        <div style="height:40px"></div>
+      </div>
+
+      <!-- KONU DETAY -->
+      <div class="tab" id="tab-topic">
+        <div class="bar"><button class="back-btn" onclick="switchTab('explore')"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button><div class="bar-title" id="topicTitle">Konu</div></div>
+        <div class="topic-hero" id="topicHero">
+          <div class="th-title" id="topicHeroTitle">Konu</div>
+          <div class="th-sub" id="topicHeroSub">Bu konuda neler yaşadığını yaz</div>
+        </div>
+        <div class="topic-prompt" id="topicPrompt"></div>
+        <div class="section-h"><span>Yazdıkların</span><button class="add" onclick="openTopicComposer()">+ Yeni not</button></div>
+        <div class="topic-entries-list" id="topicEntries"></div>
+        <div style="height:60px"></div>
+      </div>
+
+      <!-- PROFİL -->
+      <div class="tab" id="tab-profile">
+        <div class="profile-head">
+          <div class="avatar-wrap">
+            <div class="avatar" id="avatarBox" onclick="askAvatarPermission()">F</div>
+            <div class="avatar-edit" onclick="askAvatarPermission()" title="Fotoğraf değiştir"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>
+          </div>
+          <div class="pro-badge" id="proBadge" style="display:none">PRO</div>
+          <div class="pname" id="profileName">Furkan</div>
+          <div class="pbio" id="profileBio">Yaşam.AI üyesi</div>
+        </div>
+        <button class="pro-cta" onclick="openSheet('premium')">
+          <div class="pico"><svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg></div>
+          <div><div class="pt">Yaşam.AI Premium</div><div class="ps">Sınırsız mesaj · Tüm mood'lar</div></div>
+          <div class="arr">→</div>
+        </button>
+        <div class="section-h"><span>Görünüm</span></div>
+        <button class="setting" onclick="openSheet('theme')">
+          <div class="si" style="background:linear-gradient(135deg,#f472b6,#a78bfa)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg></div>
+          <div class="sl">Renk teması</div><div class="sv" id="themeVal">Mor</div><div class="arr">›</div>
+        </button>
+        <button class="setting" onclick="toggleDark()">
+          <div class="si" style="background:linear-gradient(135deg,#6366f1,#4338ca)"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></div>
+          <div class="sl">Karanlık mod</div><div class="switch on" id="darkSwitch"></div>
+        </button>
+        <div class="section-h"><span>Bildirimler</span></div>
+        <button class="setting" onclick="openSheet('reminder')">
+          <div class="si" style="background:linear-gradient(135deg,#f59e0b,#f97316)"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+          <div class="sl">Günlük hatırlatma</div><div class="sv" id="reminderVal">21:00</div><div class="arr">›</div>
+        </button>
+        <div class="section-h"><span>Gizlilik</span></div>
+        <button class="setting" onclick="openSheet('privacy')">
+          <div class="si" style="background:linear-gradient(135deg,#10b981,#059669)"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <div class="sl">Gizlilik ayarları</div><div class="arr">›</div>
+        </button>
+        <div class="section-h"><span>Hesap</span></div>
+        <button class="setting" onclick="logout()">
+          <div class="si" style="background:linear-gradient(135deg,#64748b,#475569)"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></div>
+          <div class="sl">Çıkış yap</div><div class="arr">›</div>
+        </button>
+        <button class="setting" onclick="deleteAccount()">
+          <div class="si" style="background:linear-gradient(135deg,#ef4444,#b91c1c)"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6"/></svg></div>
+          <div style="flex:1"><div class="sl" style="color:#ef4444">Hesabı sil</div><div class="sv">Tüm verilerin kalıcı silinir</div></div><div class="arr">›</div>
+        </button>
+        <div style="height:100px"></div>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <button class="nav-item active" data-tab="chat" onclick="switchTab('chat')"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Sohbet</button>
+      <button class="nav-item" data-tab="diary" onclick="switchTab('diary')"><svg viewBox="0 0 24 24"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/></svg>Günlük</button>
+      <button class="nav-item" data-tab="explore" onclick="switchTab('explore')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M16 8l-2 6-6 2 2-6z"/></svg>Keşfet</button>
+      <button class="nav-item" data-tab="profile" onclick="switchTab('profile')"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>Profil</button>
+    </div>
+  </div>
+
+  <!-- İzin popup -->
+  <div class="overlay" id="permOverlay" onclick="if(event.target===this)closePerm()">
+    <div class="popup">
+      <div class="icon-big" id="permIcon"></div>
+      <h3 id="permTitle"></h3>
+      <p id="permDesc"></p>
+      <div class="btns" id="permBtns"></div>
+    </div>
+  </div>
+
+  <!-- Sheet -->
+  <div class="sheet-bg" id="sheetBg" onclick="closeSheet()"></div>
+  <div class="sheet" id="sheet">
+    <div class="sheet-handle"></div>
+    <div id="sheetContent"></div>
+  </div>
+
+  <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="onAvatarPicked(event)">
+</div>
+
+<script>
+/* ============ DURUM ============ */
+const LS = {
+  get: (k, d) => { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch(e){ return d; } },
+  set: (k, v) => localStorage.setItem(k, JSON.stringify(v)),
+  remove: (k) => localStorage.removeItem(k)
+};
+
+const state = {
+  user: LS.get('yasamai_user', null),
+  theme: LS.get('yasamai_theme', 'mor'),
+  dark: LS.get('yasamai_dark', true),
+  reminder: LS.get('yasamai_reminder', '21:00'),
+  reminderDays: LS.get('yasamai_rdays', ['Pzt','Sal','Çar','Per','Cum']),
+  reminderOn: LS.get('yasamai_ron', true),
+  privacy: LS.get('yasamai_priv', {analytics:true,personalize:true}),
+  avatar: LS.get('yasamai_avatar', null),
+  photoPermission: LS.get('yasamai_photo_perm', false),
+  diary: LS.get('yasamai_diary', []),
+  topicEntries: LS.get('yasamai_topics', {}),
+  isPro: false, // Deneme versiyonu: Pro devre dışı. Eski kaydı temizle.
+  msgCount: LS.get('yasamai_msgCount', 0),
+  msgCountDay: LS.get('yasamai_msgCountDay', ''),
+  maxFree: 10,
+  currentMood: null,
+  currentTopic: null
+};
+
+const themes = {
+  mor:    { main:'#8b5cf6', accent:'#a78bfa', swatch:'linear-gradient(135deg,#8b5cf6,#6366f1)' },
+  pembe:  { main:'#ec4899', accent:'#f472b6', swatch:'linear-gradient(135deg,#ec4899,#be185d)' },
+  mavi:   { main:'#3b82f6', accent:'#60a5fa', swatch:'linear-gradient(135deg,#3b82f6,#1e40af)' },
+  turkuaz:{ main:'#14b8a6', accent:'#5eead4', swatch:'linear-gradient(135deg,#14b8a6,#0d9488)' },
+  turuncu:{ main:'#f97316', accent:'#fb923c', swatch:'linear-gradient(135deg,#f97316,#ea580c)' },
+  yesil:  { main:'#10b981', accent:'#34d399', swatch:'linear-gradient(135deg,#10b981,#059669)' }
+};
+
+const topics = [
+  { id:'is', name:'İş stresi', icon:'<rect x="3" y="6" width="18" height="15" rx="2"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>', grad:'linear-gradient(135deg,#f472b6,#ec4899)', sub:'Tükenmişlik, kariyer', prompt:'İşte neler seni yıpratıyor? Patronun, iş yükü, kolegalar, iş-yaşam dengesi — yaz buraya.' },
+  { id:'iliski', name:'İlişkiler', icon:'<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.7 1-1a5.5 5.5 0 0 0 0-7.7z"/>', grad:'linear-gradient(135deg,#ef4444,#dc2626)', sub:'Aşk, ayrılık, flört', prompt:'İlişkinde ne var? Partnerin, duygularin, beklentilerin — dök buraya.' },
+  { id:'kaygi', name:'Kaygı & Stres', icon:'<path d="M12 2a7 7 0 0 0-7 7c0 3 2 5 2 8v3h10v-3c0-3 2-5 2-8a7 7 0 0 0-7-7z"/>', grad:'linear-gradient(135deg,#60a5fa,#2563eb)', sub:'Panik, nefes', prompt:'Kaygının sebebi ne? Şu an neden stres yapıyorsun? Yaz, rahatla.' },
+  { id:'ozguven', name:'Özgüven', icon:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/>', grad:'linear-gradient(135deg,#5eead4,#0d9488)', sub:'Değer, kendini sevme', prompt:'Kendinle ilgili ne hissediyorsun? Neleri beğenmiyorsun, neleri seviyorsun?' },
+  { id:'uyku', name:'Uyku', icon:'<path d="M21 13a9 9 0 1 1-10-10 7 7 0 0 0 10 10z"/>', grad:'linear-gradient(135deg,#a78bfa,#7c3aed)', sub:'Uyuyamıyorum', prompt:'Uyku düzenin nasıl? Uyuyamıyor musun, çok mu uyuyorsun, kabus mu görüyorsun?' },
+  { id:'motive', name:'Motivasyon', icon:'<path d="M13 2L4.5 13h6L11 22l8.5-11h-6z"/>', grad:'linear-gradient(135deg,#f97316,#ea580c)', sub:'Erteleme, başlama', prompt:'Neyi erteliyorsun? Hangi hedefin var ama başlayamıyorsun?' },
+  { id:'aile', name:'Aile', icon:'<path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M17 11a4 4 0 0 0 0-8M23 21v-2a4 4 0 0 0-3-3.87"/>', grad:'linear-gradient(135deg,#fde68a,#f59e0b)', sub:'Anne-baba, kardeş', prompt:'Ailende ne oluyor? Kiminle sorun yaşıyorsun, seni ne üzüyor?' },
+  { id:'yalnizlik', name:'Yalnızlık', icon:'<circle cx="12" cy="8" r="4"/><path d="M6 21v-1a6 6 0 0 1 12 0v1"/>', grad:'linear-gradient(135deg,#818cf8,#4f46e5)', sub:'Anlaşılmamak', prompt:'Neden yalnız hissediyorsun? Seni kimse anlıyor mu?' }
+];
+
+/* ============ AKIŞ ============ */
+function resetDailyIfNeeded() {
+  // Günlük mesaj hakkı reset (her gün 10 mesaj, YYYY-MM-DD değişince sıfırla)
+  const today = new Date().toISOString().slice(0,10);
+  if (state.msgCountDay !== today) {
+    state.msgCount = 0;
+    state.msgCountDay = today;
+    LS.set('yasamai_msgCount', 0);
+    LS.set('yasamai_msgCountDay', today);
+  }
+}
+
+window.addEventListener('load', () => {
+  // Deneme sürümü: eski Pro kaydını temizle
+  LS.set('yasamai_pro', false);
+  resetDailyIfNeeded();
+  applyTheme();
+  applyDark();
+  setTimeout(() => {
+    document.getElementById('splash').classList.add('hidden');
+    if (state.user) enterApp();
+    else document.getElementById('onboard').classList.remove('hidden');
+  }, 1500);
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+});
+
+function enterApp() {
+  document.getElementById('main').classList.remove('hidden');
+  document.getElementById('onboard').classList.add('hidden');
+  refreshUser();
+  renderDiary();
+  renderTopics();
+  switchTab('chat');
+  // Geri tuşu yönetimi için başlangıç state'i
+  try { history.replaceState({ app: true }, ''); } catch(e){}
+  // Mobil klavye açılınca input görünür kalsın
+  const ci = document.getElementById('chatInput');
+  if (ci) {
+    ci.addEventListener('focus', () => {
+      setTimeout(() => {
+        ci.scrollIntoView({ block:'center', behavior:'smooth' });
+        document.getElementById('chatMsgs').scrollTop = 99999;
+      }, 300);
+    });
+  }
+  if (window.visualViewport) {
+    const adjust = () => {
+      const main = document.getElementById('main');
+      if (!main) return;
+      const h = window.visualViewport.height;
+      // Ekran yüksekliğini klavye açıldığında viewport'a eşitle
+      main.style.height = h + 'px';
+      document.getElementById('chatMsgs').scrollTop = 99999;
+    };
+    window.visualViewport.addEventListener('resize', adjust);
+    window.visualViewport.addEventListener('scroll', adjust);
+    adjust();
+  }
+}
+
+function refreshUser() {
+  const name = state.user?.name || 'misafir';
+  document.getElementById('userName').textContent = name;
+  document.getElementById('profileName').textContent = name;
+  const ava = document.getElementById('avatarBox');
+  if (state.avatar) {
+    ava.innerHTML = '<img src="'+state.avatar+'" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
+  } else {
+    ava.innerHTML = '';
+    ava.textContent = (name[0] || 'Y').toUpperCase();
+  }
+  const bio = state.user?.mode === 'anon' ? 'Anonim kullanıcı' : (state.user?.email || 'Yaşam.AI üyesi');
+  document.getElementById('profileBio').textContent = bio;
+  document.getElementById('proBadge').style.display = state.isPro ? 'block' : 'none';
+  updateCounter();
+}
+
+function updateCounter() {
+  const c = document.getElementById('msgCounter');
+  if (state.isPro) { c.textContent = 'PRO'; return; }
+  c.textContent = (state.maxFree - state.msgCount) + ' mesaj hakkın';
+}
+
+/* ============ SEKME ============ */
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.tab === name));
+  document.querySelector('.tab-content').scrollTop = 0;
+  // Sayaç sadece sohbette
+  document.getElementById('msgCounter').style.display = (name === 'chat') ? 'block' : 'none';
+  if (name === 'diary') renderDiary();
+}
+
+/* ============ MOOD ============ */
+function selectMood(btn) {
+  const color = btn.dataset.color;
+  const mood = btn.dataset.mood;
+  state.currentMood = mood;
+  document.querySelectorAll('.mood').forEach(m => { m.style.background = 'rgba(255,255,255,0.05)'; m.style.borderColor = 'rgba(255,255,255,0.08)'; });
+  btn.style.background = color + '25';
+  btn.style.borderColor = color;
+  document.getElementById('inputArea').style.borderColor = color;
+  document.getElementById('sendBtn').style.background = color;
+  const label = btn.querySelector('.ml').textContent;
+  document.getElementById('tbSub').textContent = label;
+  const ph = { dokun:'İçini dök, dinliyorum...', karar:'Seçeneklerini anlat...', sakin:'Sakince anlat...', motive:'Derdini söyle, bahane yok...' };
+  document.getElementById('chatInput').placeholder = ph[mood] || 'Yaz, dinliyorum...';
+  // Mood seçildi → giriş ekranını gizle, sohbet başlığı göster, geçmişi yükle
+  document.getElementById('greetBox').style.display = 'none';
+  document.getElementById('moodsBox').style.display = 'none';
+  document.getElementById('chatBackBar').style.display = 'flex';
+  document.getElementById('chatTopLabel').textContent = label;
+  loadChatHistory(mood);
+  // Geri tuşuyla mood ekranına dönebilmek için state push
+  try { history.pushState({ chat: mood }, ''); } catch(e){}
+}
+
+// Geçmiş sohbetler listesi — bottom sheet olarak aç
+function showChatList() {
+  const moods = [
+    { id:'dokun', name:'İçimi dökmek', c:'#f472b6' },
+    { id:'karar', name:'Karar veremiyorum', c:'#60a5fa' },
+    { id:'sakin', name:'Sakinleşmek', c:'#5eead4' },
+    { id:'motive', name:'Motive ol', c:'#f97316' }
+  ];
+  const items = moods.map(m => {
+    const hist = LS.get('yasamai_chat_' + m.id, []);
+    const last = hist.filter(x => x.role === 'user').slice(-1)[0];
+    const preview = last ? esc(last.content).slice(0,80) : 'Henüz konuşma yok';
+    const cnt = hist.filter(x => x.role === 'user').length;
+    return `<div class="cl-item" onclick="openPastChat('${m.id}')">
+      <div class="cl-ico" style="background:${m.c}"></div>
+      <div class="cl-info">
+        <div class="cl-name">${m.name} <span class="cl-cnt">· ${cnt} mesaj</span></div>
+        <div class="cl-prev">${preview}</div>
+      </div>
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#7a7d92;fill:none;stroke-width:2"><path d="M9 18l6-6-6-6"/></svg>
+    </div>`;
+  }).join('');
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>Geçmiş sohbetlerim</h3>
+    <p style="font-size:12px;color:#a0a3b8;margin-bottom:14px">Hangi konuşmaya dönmek istersin?</p>
+    ${items}
+    <button class="sheet-btn" onclick="clearAllChats()" style="background:linear-gradient(135deg,#ef4444,#b91c1c);margin-top:14px">Tüm sohbetleri sil</button>
+    <a class="sheet-link" onclick="closeSheet()">Kapat</a>
+  `;
+  openSheetRaw();
+}
+
+function openPastChat(mood) {
+  closeSheet();
+  // Mood butonuna tıklanmış gibi davran
+  const btn = document.querySelector('.mood[data-mood="'+mood+'"]');
+  if (btn) selectMood(btn);
+}
+
+function clearAllChats() {
+  if (!confirm('Tüm sohbet geçmişin silinecek. Emin misin?')) return;
+  ['dokun','karar','sakin','motive','default'].forEach(m => localStorage.removeItem('yasamai_chat_' + m));
+  alert('Tüm sohbetler silindi.');
+  closeSheet();
+  if (state.currentMood) backToMoodSelect();
+}
+
+// Sohbetten mood seçim ekranına dön
+function backToMoodSelect() {
+  state.currentMood = null;
+  chatHistory.length = 0;
+  document.getElementById('chatMsgs').innerHTML = '';
+  document.getElementById('greetBox').style.display = '';
+  document.getElementById('moodsBox').style.display = '';
+  document.getElementById('chatBackBar').style.display = 'none';
+  document.getElementById('tbSub').textContent = 'Yaşamın akıllı hali';
+  document.querySelectorAll('.mood').forEach(m => { m.style.background = ''; m.style.borderColor = ''; });
+  document.getElementById('inputArea').style.borderColor = '';
+  document.getElementById('sendBtn').style.background = '';
+  document.getElementById('chatInput').placeholder = 'Ne yapacağımı bilmiyorum...';
+}
+
+/* ============ AI SOHBET ============ */
+let chatHistory = [];
+const moodPrompts = {
+  dokun: 'Kullanıcı içini dökmek istiyor. Tonun YUMUŞAK, anlayışlı, yargısız olsun. Hislerini kabul et, açık uçlu sorularla derinleştir. ASLA nasihat etme, önce dinle.',
+  karar: 'Kullanıcı karar veremiyor. Tonun NET ve düzenli. Seçenekleri yapılandır: her seçeneğin artı-eksisini sor, duygularını da kat, sonunda kullanıcıyı bir adıma yönlendir.',
+  sakin: 'Kullanıcı sakinleşmek istiyor. SAKİN, yavaş, huzur verici ol. Nefes egzersizi (4-7-8 veya kutu nefesi), topraklama (5-4-3-2-1) gibi somut teknikler öner. Kısa, nazik cümleler kur.',
+  motive: 'Kullanıcıyı motive et. SERT ama saygılı, doğrudan ol. Bahane kabul etme. Somut, bugün yapılabilecek küçük aksiyon iste. Klişe ("başarabilirsin" gibi) YASAK.',
+  null:   'Sıcak ama dürüst ol.'
+};
+
+function chatKey(mood) { return 'yasamai_chat_' + (mood || 'default'); }
+
+function loadChatHistory(mood) {
+  chatHistory = LS.get(chatKey(mood), []);
+  const box = document.getElementById('chatMsgs');
+  box.innerHTML = '';
+  chatHistory.forEach(m => {
+    if (m.role === 'user') addBubble(m.content, 'me', true);
+    else if (m.role === 'assistant') addBubble(m.content, 'ai', true);
+  });
+  setTimeout(()=>{ box.scrollTop = 99999; }, 50);
+}
+
+function saveChatHistory(mood) { LS.set(chatKey(mood), chatHistory.slice(-50)); }
+
+async function getAiReply(userMsg, mood) {
+  const priv = state.privacy || {};
+  const personalize = priv.personalize !== false;
+  const keepContext = priv.analytics !== false;
+  const userName = state.user?.name || 'dostum';
+
+  const baseRules = `Sen Yaşam.AI'sın — Türkiye'deki 18-35 yaş arası insanlara ruh halleriyle ilgili yardım eden bir AI arkadaşsın.
+KURALLAR:
+1) Her zaman TÜRKÇE ve DOĞAL konuş. Çeviri kokusu YASAK.
+2) Arkadaş gibi konuş, terapist dili kullanma. "Seni anlıyorum, dinliyorum" gibi klişe cümleler YASAK.
+3) Kullanıcının yazdığı SOMUT konuya SOMUT cevap ver. Genel geçer laf etme.
+4) Kısa ol: 2-4 cümle, gerekirse tek satır.
+5) Kendinden "yapay zekayım" diye bahsetme — bir arkadaş gibi davran.`;
+
+  const personalRule = personalize
+    ? `6) Kullanıcının adı: ${userName}. İsmi ara sıra (her mesajda değil) kullanabilirsin.
+7) ${moodPrompts[mood] || moodPrompts.null}`
+    : `6) Kullanıcı ismini veya kişisel detaylarını kullanma — anonim, genel bir ton kullan.
+7) Mood'a özel ton yapma, nötr ama içten ol.`;
+
+  const contextRule = keepContext
+    ? `8) Konuşma geçmişini hatırla, önceki söylediklerine geri dön, ilerlet.`
+    : `8) Sadece şu anki mesaja cevap ver — geçmişi yok say.`;
+
+  const system = `${baseRules}\n${personalRule}\n${contextRule}`;
+
+  chatHistory.push({ role: 'user', content: userMsg });
+  // Context toggle'ı kapalıysa sadece son mesaj; açıksa son 12 mesaj
+  const contextSlice = keepContext ? chatHistory.slice(-12) : chatHistory.slice(-1);
+  const messages = [{ role: 'system', content: system }, ...contextSlice];
+  try {
+    const res = await fetch('https://text.pollinations.ai/openai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'openai-fast', messages, temperature: 0.8, max_tokens: 220 })
+    });
+    const data = await res.json();
+    let reply = data?.choices?.[0]?.message?.content?.trim() || '';
+    if (!reply || /IMPORTANT NOTICE|deprecat|pollinations\.ai/i.test(reply)) {
+      reply = 'Şu an cevap veremiyorum, tekrar dener misin?';
+    }
+    chatHistory.push({ role: 'assistant', content: reply });
+    saveChatHistory(mood);
+    return reply;
+  } catch (e) {
+    // User mesajı eklendi ama cevap gelmedi; yine de kaydet
+    saveChatHistory(mood);
+    return 'İnternet bağlantısı sıkıntılı galiba. Bir saniye sonra tekrar yaz.';
+  }
+}
+
+function addBubble(text, who) {
+  const box = document.getElementById('chatMsgs');
+  const b = document.createElement('div');
+  b.className = 'bubble ' + who;
+  b.textContent = text;
+  box.appendChild(b);
+  box.scrollTop = 99999;
+  return b;
+}
+
+async function sendMsg() {
+  const input = document.getElementById('chatInput');
+  const txt = input.value.trim();
+  if (!txt) { input.focus(); return; }
+  if (!state.currentMood) { alert('Önce yukarıdan bir ruh hali seç.'); return; }
+  if (!state.isPro && state.msgCount >= state.maxFree) { openSheet('premium'); return; }
+  addBubble(txt, 'me');
+  input.value = '';
+  state.msgCount++;
+  LS.set('yasamai_msgCount', state.msgCount);
+  updateCounter();
+  const typing = addBubble('yazıyor…', 'ai');
+  typing.classList.add('typing');
+  try {
+    const reply = await getAiReply(txt, state.currentMood);
+    typing.remove();
+    addBubble(reply, 'ai');
+  } catch(e) { typing.remove(); addBubble('Bir sorun oldu, tekrar dener misin?', 'ai'); }
+  // Gönderimden sonra input görünür kalsın
+  setTimeout(()=>{ document.getElementById('chatMsgs').scrollTop = 99999; }, 100);
+}
+
+/* ============ + MENÜ / İZİN ============ */
+function toggleMenu() {
+  document.getElementById('attachMenu').classList.toggle('open');
+  document.getElementById('attachBtn').classList.toggle('open');
+}
+
+const permissions = {
+  image: { title:'Fotoğraflara erişim', desc:'<b>Yaşam.AI</b>, galerinden fotoğraf paylaşabilmen için izin istiyor.', gradient:'linear-gradient(135deg,#f472b6,#ec4899)', svg:'<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>', options:['İzin ver','Sadece seçilenler','İzin verme'] },
+  file:  { title:'Dosyalara erişim', desc:'<b>Yaşam.AI</b>, cihazındaki dosyalara erişmek için izin istiyor.', gradient:'linear-gradient(135deg,#60a5fa,#2563eb)', svg:'<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>', options:['İzin ver','İzin verme'] },
+  mic:   { title:'Mikrofona erişim', desc:'<b>Yaşam.AI</b>, sesli not gönderebilmen için mikrofon izni istiyor.', gradient:'linear-gradient(135deg,#5eead4,#0d9488)', svg:'<svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>', options:['Uygulamayı kullanırken','Sadece bu sefer','İzin verme'] },
+  camera:{ title:'Kameraya erişim', desc:'<b>Yaşam.AI</b>, fotoğraf çekip paylaşabilmen için kamera izni istiyor.', gradient:'linear-gradient(135deg,#f97316,#ea580c)', svg:'<svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>', options:['Uygulamayı kullanırken','Sadece bu sefer','İzin verme'] },
+  photo: { title:'Profil fotoğrafı', desc:'<b>Yaşam.AI</b>, profil fotoğrafın için galeriye erişim istiyor.', gradient:'linear-gradient(135deg,#a78bfa,#8b5cf6)', svg:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/></svg>', options:['İzin ver','İzin verme'] }
+};
+
+let permCallback = null;
+function askPermission(type, cb) {
+  if (type !== 'photo') toggleMenu();
+  const c = permissions[type];
+  const icon = document.getElementById('permIcon');
+  icon.style.background = c.gradient;
+  icon.innerHTML = c.svg;
+  document.getElementById('permTitle').textContent = c.title;
+  document.getElementById('permDesc').innerHTML = c.desc;
+  document.getElementById('permBtns').innerHTML = c.options.map((o,i) => {
+    const cls = (i === c.options.length-1) ? 'pbtn deny' : 'pbtn allow';
+    const granted = i < c.options.length-1;
+    return `<button class="${cls}" onclick="closePerm(${granted})">${o}</button>`;
+  }).join('');
+  permCallback = cb || null;
+  document.getElementById('permOverlay').classList.add('show');
+}
+
+function closePerm(granted) {
+  document.getElementById('permOverlay').classList.remove('show');
+  if (permCallback) permCallback(granted === true);
+  permCallback = null;
+}
+
+/* ============ SOHBETTE DOSYA / KAMERA / SES EKLERİ ============ */
+function chatAttach(type) {
+  toggleMenu();
+  const keyMap = { image:'yasamai_perm_image', file:'yasamai_perm_file', mic:'yasamai_perm_mic', camera:'yasamai_perm_camera' };
+  const granted = LS.get(keyMap[type], false);
+  const run = () => {
+    if (type === 'image')  document.getElementById('chatImgInput').click();
+    if (type === 'file')   document.getElementById('chatFileInput').click();
+    if (type === 'camera') document.getElementById('chatCamInput').click();
+    if (type === 'mic')    startVoiceRecord();
+  };
+  if (granted) { run(); return; }
+  askPermission(type, (ok) => {
+    if (!ok) return;
+    LS.set(keyMap[type], true);
+    run();
+  });
+}
+
+function onChatFilePicked(e, kind) {
+  const f = e.target.files && e.target.files[0];
+  if (!f) return;
+  e.target.value = ''; // tekrar aynı dosya seçilebilsin
+  if (f.type.startsWith('image/')) {
+    const r = new FileReader();
+    r.onload = ev => addAttachBubble({ kind:'image', src:ev.target.result, name:f.name });
+    r.readAsDataURL(f);
+  } else {
+    addAttachBubble({ kind:'file', name:f.name, size:(f.size/1024).toFixed(1)+' KB' });
+  }
+}
+
+function addAttachBubble(att) {
+  const box = document.getElementById('chatMsgs');
+  const b = document.createElement('div');
+  b.className = 'bubble me';
+  if (att.kind === 'image') {
+    b.innerHTML = `<img src="${att.src}" style="max-width:220px;max-height:260px;border-radius:12px;display:block">`;
+  } else if (att.kind === 'file') {
+    b.innerHTML = `📎 <b>${esc(att.name)}</b><br><span style="font-size:11px;opacity:.8">${esc(att.size||'')}</span>`;
+  } else if (att.kind === 'audio') {
+    const tr = att.transcript ? `<div style="font-size:12px;opacity:.85;margin-top:6px;font-style:italic">"${esc(att.transcript)}"</div>` : '';
+    b.innerHTML = `<audio controls src="${att.src}" style="max-width:240px"></audio>${tr}`;
+  }
+  box.appendChild(b);
+  document.querySelector('.tab-content').scrollTop = 99999;
+
+  // Ses için: transkript varsa AI'ya gerçek mesaj gibi gönder
+  if (att.kind === 'audio' && att.transcript && att.transcript.trim()) {
+    // chat history'ye kullanıcı mesajı olarak ekle + AI cevabı al
+    sendTranscribedVoice(att.transcript.trim());
+    return;
+  }
+
+  // Diğerleri için kısa AI yanıtı
+  const typing = addBubble('yazıyor…', 'ai');
+  typing.classList.add('typing');
+  setTimeout(() => {
+    typing.remove();
+    const msg = att.kind === 'image' ? 'Resmi aldım. Neyi anlatmak istedin anlatır mısın?' :
+                att.kind === 'audio' ? 'Sesli notunu aldım ama içinde konuşma yakalayamadım. Yazıyla yazar mısın?' :
+                'Dosyanı aldım. Bu dosyayla ilgili ne paylaşmak istiyorsun?';
+    addBubble(msg, 'ai');
+  }, 600);
+}
+
+async function sendTranscribedVoice(text) {
+  // Input'a koymadan direkt gönder — sendMsg mantığını birebir tekrarla
+  const input = document.getElementById('chatInput');
+  const old = input.value;
+  input.value = text;
+  await sendMsg();
+  if (old) input.value = old;
+}
+
+/* Ses kaydı — MediaRecorder + Web Speech API transkripti */
+let mediaRec = null, audioChunks = [];
+let speechRec = null, speechTranscript = '';
+async function startVoiceRecord() {
+  if (mediaRec && mediaRec.state === 'recording') { stopVoiceRecord(); return; }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRec = new MediaRecorder(stream);
+    audioChunks = [];
+    speechTranscript = '';
+    mediaRec.ondataavailable = e => audioChunks.push(e.data);
+    mediaRec.onstop = () => {
+      stream.getTracks().forEach(t => t.stop());
+      const blob = new Blob(audioChunks, { type:'audio/webm' });
+      const url = URL.createObjectURL(blob);
+      // Speech recognition'ı da durdur
+      try { if (speechRec) speechRec.stop(); } catch(_) {}
+      // Transkript için kısa bekle (onresult son parçayı yakalasın)
+      setTimeout(() => {
+        addAttachBubble({ kind:'audio', src:url, transcript: speechTranscript });
+      }, 300);
+      document.getElementById('recBadge').classList.remove('show');
+    };
+    mediaRec.start();
+    document.getElementById('recBadge').classList.add('show');
+
+    // Web Speech API ile canlı transkript (Türkçe)
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SR) {
+      speechRec = new SR();
+      speechRec.lang = 'tr-TR';
+      speechRec.continuous = true;
+      speechRec.interimResults = false;
+      speechRec.onresult = (ev) => {
+        for (let i = ev.resultIndex; i < ev.results.length; i++) {
+          if (ev.results[i].isFinal) {
+            speechTranscript += (speechTranscript ? ' ' : '') + ev.results[i][0].transcript;
+          }
+        }
+      };
+      speechRec.onerror = () => {};
+      try { speechRec.start(); } catch(_) {}
+    }
+  } catch(err) {
+    alert('Mikrofon açılamadı: ' + err.message);
+  }
+}
+function stopVoiceRecord() { if (mediaRec && mediaRec.state === 'recording') mediaRec.stop(); }
+
+/* ============ AVATAR (izin sistemi ile) ============ */
+function askAvatarPermission() {
+  if (state.photoPermission) {
+    document.getElementById('avatarInput').click();
+  } else {
+    askPermission('photo', (granted) => {
+      if (granted) {
+        state.photoPermission = true;
+        LS.set('yasamai_photo_perm', true);
+        document.getElementById('avatarInput').click();
+      }
+    });
+  }
+}
+
+function onAvatarPicked(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    state.avatar = ev.target.result;
+    LS.set('yasamai_avatar', state.avatar);
+    refreshUser();
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+}
+
+/* ============ GÜNLÜK ============ */
+function renderDiary() {
+  // Haftanın dotları
+  const today = new Date();
+  const wk = document.getElementById('weekStrip');
+  const bars = document.getElementById('weekBars');
+  wk.innerHTML = '';
+  bars.innerHTML = '';
+  const dayNames = ['PAZ','PZT','SAL','ÇAR','PER','CUM','CMT'];
+  const diaryByDate = {};
+  state.diary.forEach(d => { (diaryByDate[d.date] ||= []).push(d); });
+
+  // Bu haftanın pazartesisinden başla
+  const monday = new Date(today);
+  const dow = (today.getDay() + 6) % 7; // pzt=0
+  monday.setDate(today.getDate() - dow);
+
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    const key = d.toISOString().slice(0,10);
+    const entries = diaryByDate[key] || [];
+    const isToday = key === today.toISOString().slice(0,10);
+    const moodCol = entries[0]?.moodColor || (isToday ? '#fff' : 'rgba(255,255,255,0.15)');
+    const pill = document.createElement('div');
+    pill.className = 'day-pill' + (isToday ? ' today' : '');
+    pill.innerHTML = `<div class="dn">${isToday?'BUGÜN':dayNames[(i+1)%7]}</div><div class="dnum">${d.getDate()}</div><div class="mood-dot" style="background:${moodCol}"></div>`;
+    wk.appendChild(pill);
+
+    const h = entries.length ? Math.min(100, 30 + entries.length * 25) : 15;
+    const bc = entries[0]?.moodColor || '#7a7d92';
+    const bar = document.createElement('div');
+    bar.className = 'bar';
+    bar.style.height = h + '%';
+    bar.style.background = entries.length ? `linear-gradient(to top,${bc},${bc}aa)` : '#7a7d92';
+    bar.style.opacity = entries.length ? 1 : 0.3;
+    bars.appendChild(bar);
+  }
+
+  document.getElementById('diaryCountTxt').textContent = state.diary.length + ' girdi';
+  const list = document.getElementById('diaryList');
+  if (state.diary.length === 0) {
+    list.innerHTML = '<div class="empty">Henüz bir girdi yok.<br>Yukarıdan "+" ile ilk notunu ekleyebilirsin.</div>';
+    return;
+  }
+  list.innerHTML = state.diary.slice().reverse().map((d,i) => {
+    const idx = state.diary.length - 1 - i;
+    const rel = relTime(d.ts);
+    return `<button class="entry" onclick="viewDiary(${idx})"><div class="dot" style="background:${d.moodColor||'#8b5cf6'}"></div><div class="eb"><div class="et"><span>${esc(d.title)}</span><span class="tm">${rel}</span></div><div class="ep">${esc(d.text.slice(0,80))}${d.text.length>80?'…':''}</div></div></button>`;
+  }).join('');
+}
+
+function viewDiary(idx) {
+  const d = state.diary[idx];
+  if (!d) return;
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>${esc(d.title)}</h3>
+    <div style="color:#a0a3b8;font-size:11px;margin-bottom:12px">${new Date(d.ts).toLocaleString('tr-TR')}</div>
+    <div style="background:rgba(255,255,255,0.04);padding:14px;border-radius:12px;font-size:14px;line-height:1.6;white-space:pre-wrap">${esc(d.text)}</div>
+    <button class="sheet-btn danger" onclick="deleteDiary(${idx})">Sil</button>
+    <a class="sheet-link" onclick="closeSheet()">Kapat</a>
+  `;
+  openSheetRaw();
+}
+function deleteDiary(idx) {
+  if (!confirm('Bu girdi silinsin mi?')) return;
+  state.diary.splice(idx,1);
+  LS.set('yasamai_diary', state.diary);
+  closeSheet(); renderDiary();
+}
+
+function relTime(ts) {
+  const s = (Date.now()-ts)/1000;
+  if (s<60) return 'az önce';
+  if (s<3600) return Math.floor(s/60)+' dk önce';
+  if (s<86400) return Math.floor(s/3600)+' sa önce';
+  if (s<172800) return 'Dün';
+  return Math.floor(s/86400)+' gün önce';
+}
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+/* ============ KEŞFET / KONU ============ */
+function renderTopics() {
+  document.getElementById('topicsGrid').innerHTML = topics.map(t => {
+    const count = (state.topicEntries[t.id] || []).length;
+    return `<button class="topic" onclick="openTopic('${t.id}')">
+      <div class="ti" style="background:${t.grad}"><svg viewBox="0 0 24 24">${t.icon}</svg></div>
+      <div class="tl">${t.name}</div>
+      <div class="td">${t.sub}</div>
+      ${count ? `<div style="font-size:10px;color:#a78bfa;margin-top:6px;font-weight:700">${count} notun var →</div>` : ''}
+    </button>`;
+  }).join('');
+}
+
+function openTopic(id) {
+  const t = topics.find(x => x.id === id);
+  if (!t) return;
+  state.currentTopic = id;
+  document.getElementById('topicTitle').textContent = t.name;
+  document.getElementById('topicHero').style.background = t.grad;
+  document.getElementById('topicHeroTitle').textContent = t.name;
+  document.getElementById('topicHeroSub').textContent = t.sub;
+  document.getElementById('topicPrompt').textContent = t.prompt;
+  renderTopicEntries();
+  switchTab('topic');
+  document.getElementById('msgCounter').style.display = 'none';
+}
+
+function renderTopicEntries() {
+  const entries = state.topicEntries[state.currentTopic] || [];
+  const list = document.getElementById('topicEntries');
+  if (entries.length === 0) {
+    list.innerHTML = '<div class="empty">Henüz bu konuda bir not yok.<br>"+ Yeni not" ile yazabilirsin.</div>';
+    return;
+  }
+  list.innerHTML = entries.slice().reverse().map((e,i) => {
+    const idx = entries.length-1-i;
+    return `<button class="entry" onclick="viewTopicEntry(${idx})"><div class="dot" style="background:#a78bfa"></div><div class="eb"><div class="et"><span>${esc(e.title||'Not')}</span><span class="tm">${relTime(e.ts)}</span></div><div class="ep">${esc(e.text.slice(0,80))}${e.text.length>80?'…':''}</div></div></button>`;
+  }).join('');
+}
+
+function viewTopicEntry(idx) {
+  const entries = state.topicEntries[state.currentTopic] || [];
+  const e = entries[idx]; if (!e) return;
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>${esc(e.title||'Not')}</h3>
+    <div style="color:#a0a3b8;font-size:11px;margin-bottom:12px">${new Date(e.ts).toLocaleString('tr-TR')}</div>
+    <div style="background:rgba(255,255,255,0.04);padding:14px;border-radius:12px;font-size:14px;line-height:1.6;white-space:pre-wrap">${esc(e.text)}</div>
+    <button class="sheet-btn" onclick="talkAboutEntry(${idx})">Bu konuda AI ile konuş</button>
+    <button class="sheet-btn danger" onclick="deleteTopicEntry(${idx})">Sil</button>
+    <a class="sheet-link" onclick="closeSheet()">Kapat</a>
+  `;
+  openSheetRaw();
+}
+function talkAboutEntry(idx) {
+  const entries = state.topicEntries[state.currentTopic] || [];
+  const e = entries[idx]; if (!e) return;
+  closeSheet();
+  switchTab('chat');
+  document.getElementById('chatInput').value = e.text;
+  setTimeout(sendMsg, 200);
+}
+function deleteTopicEntry(idx) {
+  if (!confirm('Bu not silinsin mi?')) return;
+  const entries = state.topicEntries[state.currentTopic] || [];
+  entries.splice(idx,1);
+  state.topicEntries[state.currentTopic] = entries;
+  LS.set('yasamai_topics', state.topicEntries);
+  closeSheet(); renderTopicEntries(); renderTopics();
+}
+
+function openTopicComposer() {
+  const t = topics.find(x => x.id === state.currentTopic);
+  if (!t) return;
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>${t.name} — Yeni not</h3>
+    <div class="form-row"><label>Başlık (opsiyonel)</label><input type="text" id="ntTitle" placeholder="Kısa bir başlık..."></div>
+    <div class="composer" style="padding:0">
+      <textarea id="ntText" placeholder="${esc(t.prompt)}"></textarea>
+    </div>
+    <button class="sheet-btn" onclick="saveTopicEntry()">Kaydet</button>
+    <a class="sheet-link" onclick="closeSheet()">İptal</a>
+  `;
+  openSheetRaw();
+  setTimeout(()=>document.getElementById('ntText').focus(), 300);
+}
+function saveTopicEntry() {
+  const title = document.getElementById('ntTitle').value.trim();
+  const text = document.getElementById('ntText').value.trim();
+  if (!text) { alert('Bir şeyler yaz.'); return; }
+  (state.topicEntries[state.currentTopic] ||= []).push({ title: title || 'Not', text, ts: Date.now() });
+  LS.set('yasamai_topics', state.topicEntries);
+  closeSheet(); renderTopicEntries(); renderTopics();
+}
+
+/* ============ TEMA / KARANLIK ============ */
+function applyTheme() {
+  const t = themes[state.theme] || themes.mor;
+  let s = document.getElementById('dynTheme');
+  if (!s) { s = document.createElement('style'); s.id = 'dynTheme'; document.head.appendChild(s); }
+  s.textContent = `
+    .send-btn{background:${t.main}!important}
+    .attach.open{background:${t.main}}
+    .nav-item.active{color:${t.accent}!important}
+    .input-area{border-color:${t.main}66}
+    .ob-btn.primary,.bubble.me,.sheet-btn:not(.danger){background:linear-gradient(135deg,${t.main},${t.accent})!important}
+    .pbtn.allow,.switch.on{background:${t.main}}
+    .theme-opt.active{border-color:${t.main}}
+  `;
+  const vEl = document.getElementById('themeVal');
+  if (vEl) vEl.textContent = state.theme[0].toUpperCase()+state.theme.slice(1);
+}
+
+function applyDark() {
+  document.body.classList.toggle('light', !state.dark);
+  const sw = document.getElementById('darkSwitch');
+  if (sw) sw.classList.toggle('on', state.dark);
+}
+
+function toggleDark() {
+  state.dark = !state.dark;
+  LS.set('yasamai_dark', state.dark);
+  applyDark();
+}
+
+function setTheme(n) {
+  state.theme = n;
+  LS.set('yasamai_theme', n);
+  applyTheme();
+  renderSheetTheme();
+}
+
+/* ============ SHEET ============ */
+function openSheet(type) {
+  const r = { theme:renderSheetTheme, reminder:renderSheetReminder, privacy:renderSheetPrivacy, premium:renderSheetPremium, signup:renderSheetSignup, login:renderSheetLogin, anon:renderSheetAnon, newDiary:renderSheetNewDiary, google:renderSheetGoogle, apple:renderSheetApple, verify:renderSheetVerify, payment:renderSheetPayment, gAge:renderSheetGAge };
+  if (r[type]) r[type]();
+  openSheetRaw();
+}
+function openSheetRaw(){
+  document.getElementById('sheetBg').classList.add('show');
+  document.getElementById('sheet').classList.add('show');
+  // Geri tuşunda sheet kapansın, uygulamadan çıkmasın
+  try { history.pushState({ sheet: true }, ''); } catch(e){}
+}
+function closeSheet(){
+  document.getElementById('sheetBg').classList.remove('show');
+  document.getElementById('sheet').classList.remove('show');
+  if (history.state && history.state.sheet) { try { history.back(); } catch(e){} }
+}
+// Android/telefon geri tuşu: sheet açıksa kapat, tab chat değilse chat'e dön,
+// chat'teyken de çıkmasın — her popstate'te yeni state push ederek uygulamada tut
+window.addEventListener('popstate', (ev) => {
+  // Permission overlay açıksa önce onu kapat
+  const permOpen = document.getElementById('permOverlay')?.classList.contains('show');
+  if (permOpen) {
+    document.getElementById('permOverlay').classList.remove('show');
+    try { history.pushState({ app:true }, ''); } catch(e){}
+    return;
+  }
+  const sheetOpen = document.getElementById('sheet').classList.contains('show');
+  if (sheetOpen) {
+    document.getElementById('sheetBg').classList.remove('show');
+    document.getElementById('sheet').classList.remove('show');
+    try { history.pushState({ app:true }, ''); } catch(e){}
+    return;
+  }
+  const activeTab = document.querySelector('.tab.active');
+  if (activeTab && activeTab.id !== 'tab-chat') {
+    switchTab('chat');
+    try { history.pushState({ app:true }, ''); } catch(e){}
+    return;
+  }
+  // Chat sekmesindeyiz. Mood seçiliyse → mood seçimine dön
+  if (state.currentMood) {
+    backToMoodSelect();
+    try { history.pushState({ app:true }, ''); } catch(e){}
+    return;
+  }
+  // Chat'te mood seçilmemiş, geri basıldı → çıkmasın
+  try { history.pushState({ app:true }, ''); } catch(e){}
+});
+
+function renderSheetTheme() {
+  document.getElementById('sheetContent').innerHTML = `<h3>Renk teması</h3><div class="theme-grid">` +
+    Object.keys(themes).map(k => `<button class="theme-opt ${state.theme===k?'active':''}" onclick="setTheme('${k}')"><div class="theme-swatch" style="background:${themes[k].swatch}"></div><div class="tn">${k[0].toUpperCase()+k.slice(1)}</div></button>`).join('') + `</div>`;
+}
+
+function renderSheetReminder() {
+  const [h,m] = state.reminder.split(':').map(Number);
+  const days = ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>Günlük hatırlatma</h3>
+    <div class="time-pick">
+      <div class="tp-col"><div class="tp-btn" onclick="adjTime('h',1)">▲</div><div class="tp-num" id="rH">${String(h).padStart(2,'0')}</div><div class="tp-btn" onclick="adjTime('h',-1)">▼</div><div class="tp-label">Saat</div></div>
+      <div style="font-size:36px;font-weight:800;padding:8px 0;align-self:center">:</div>
+      <div class="tp-col"><div class="tp-btn" onclick="adjTime('m',1)">▲</div><div class="tp-num" id="rM">${String(m).padStart(2,'0')}</div><div class="tp-btn" onclick="adjTime('m',-1)">▼</div><div class="tp-label">Dakika</div></div>
+    </div>
+    <div class="day-toggles">${days.map(d=>`<div class="day-tg ${state.reminderDays.includes(d)?'on':''}" onclick="toggleDay('${d}')">${d[0]}</div>`).join('')}</div>
+    <div class="setting" style="padding:12px 0"><div class="sl">Hatırlatıcı açık</div><div class="switch ${state.reminderOn?'on':''}" onclick="toggleRem()"></div></div>
+    <button class="sheet-btn" onclick="saveReminder()">Kaydet</button>
+  `;
+}
+function adjTime(w, d) {
+  let [h,m] = state.reminder.split(':').map(Number);
+  if (w==='h') h=(h+d+24)%24; else m=(m+d*5+60)%60;
+  state.reminder = String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+  document.getElementById('rH').textContent = String(h).padStart(2,'0');
+  document.getElementById('rM').textContent = String(m).padStart(2,'0');
+}
+function toggleDay(d) {
+  const i = state.reminderDays.indexOf(d);
+  if (i>=0) state.reminderDays.splice(i,1); else state.reminderDays.push(d);
+  renderSheetReminder();
+}
+function toggleRem() { state.reminderOn = !state.reminderOn; renderSheetReminder(); }
+async function saveReminder() {
+  LS.set('yasamai_reminder', state.reminder);
+  LS.set('yasamai_rdays', state.reminderDays);
+  LS.set('yasamai_ron', state.reminderOn);
+  document.getElementById('reminderVal').textContent = state.reminderOn ? state.reminder : 'Kapalı';
+  // Bildirim izni iste + zamanlamayı kur
+  if (state.reminderOn) {
+    const granted = await ensureNotifyPermission();
+    if (!granted) {
+      alert('Bildirim izni verilmedi. Hatırlatma çalışmaz; tarayıcı ayarlarından izin verebilirsin.');
+    } else {
+      scheduleReminder();
+      alert('Hatırlatma kuruldu: Her ' + state.reminderDays.join(', ') + ' günü ' + state.reminder + '. İlk bildirim gelince dokunarak kontrol et.');
+    }
+  }
+  closeSheet();
+}
+
+function renderSheetPrivacy() {
+  const p = state.privacy;
+  const chatCount = ['dokun','karar','sakin','motive'].reduce((n,m)=>n+(LS.get('yasamai_chat_'+m,[]).length),0);
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>Gizlilik ayarları</h3>
+    <p style="font-size:12px;color:#a0a3b8;margin-bottom:14px">Tüm verilerin <b>sadece bu telefonda</b> saklanır, sunucuya gönderilmez. Aşağıdaki ayarlar AI'nın sana nasıl cevap vereceğini etkiler.</p>
+
+    <div class="setting" style="padding:12px 0;align-items:flex-start">
+      <div style="flex:1">
+        <div class="sl">Konuşma bağlamı</div>
+        <div class="sv" style="margin-top:4px">Açıksa: AI son 12 mesajını hatırlar, söylediklerini takip eder.<br>Kapalıysa: AI her mesajı sıfırdan okur, geçmişi unutur.</div>
+      </div>
+      <div class="switch ${p.analytics?'on':''}" onclick="togglePriv('analytics')"></div>
+    </div>
+
+    <div class="setting" style="padding:12px 0;align-items:flex-start">
+      <div style="flex:1">
+        <div class="sl">Kişiselleştirme</div>
+        <div class="sv" style="margin-top:4px">Açıksa: AI ismini kullanır, seçtiğin mood'a göre ton ayarlar.<br>Kapalıysa: Genel, anonim cevaplar verir.</div>
+      </div>
+      <div class="switch ${p.personalize?'on':''}" onclick="togglePriv('personalize')"></div>
+    </div>
+
+    <div style="background:rgba(255,255,255,0.04);padding:12px;border-radius:12px;margin:14px 0;font-size:12px">
+      <div style="font-weight:700;margin-bottom:6px">📦 Cihazındaki veriler</div>
+      <div style="color:#a0a3b8;line-height:1.6">
+        · ${chatCount} sohbet mesajı<br>
+        · Profil bilgilerin (isim, e-posta, doğum tarihi)<br>
+        · Günlük girdilerin ve tema tercihin
+      </div>
+    </div>
+    <button class="sheet-btn danger" onclick="wipeLocalData()" style="background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.3)">Tüm sohbet geçmişini sil</button>
+    <button class="sheet-btn" onclick="closeSheet()" style="margin-top:8px">Tamam</button>
+  `;
+}
+function wipeLocalData() {
+  if (!confirm('Tüm sohbet geçmişin silinecek. Devam?')) return;
+  ['dokun','karar','sakin','motive'].forEach(m => LS.remove('yasamai_chat_'+m));
+  alert('Sohbet geçmişi silindi.');
+  renderSheetPrivacy();
+}
+function togglePriv(k) { state.privacy[k] = !state.privacy[k]; LS.set('yasamai_priv', state.privacy); renderSheetPrivacy(); }
+
+function renderSheetPremium() {
+  document.getElementById('sheetContent').innerHTML = `
+    <h3 style="text-align:center">Yaşam.AI Premium</h3>
+    <div style="text-align:center;padding:16px 0">
+      <div style="width:80px;height:80px;margin:0 auto 12px;border-radius:22px;background:linear-gradient(135deg,#fde68a,#f59e0b);display:flex;align-items:center;justify-content:center">
+        <svg viewBox="0 0 24 24" style="width:40px;height:40px;fill:#1a1a22"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+      </div>
+      <div style="font-size:22px;font-weight:800">Sınırsız sohbet</div>
+      <div style="color:#a0a3b8;font-size:13px;margin-top:4px">Mesaj limiti yok · Tüm mood'lar</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin:12px 0">
+      <button style="padding:14px;border:2px solid #8b5cf6;border-radius:14px;background:rgba(139,92,246,0.1);display:flex;align-items:center;justify-content:space-between;width:100%;cursor:pointer" onclick="activatePro('monthly')">
+        <div style="text-align:left"><div style="font-size:14px;font-weight:700">Aylık</div><div style="font-size:11px;color:#a0a3b8">Her ay yenilenir</div></div>
+        <div style="font-size:18px;font-weight:800">₺49<span style="font-size:11px;color:#a0a3b8">/ay</span></div>
+      </button>
+      <button style="padding:14px;border:1px solid rgba(255,255,255,0.1);border-radius:14px;display:flex;align-items:center;justify-content:space-between;width:100%;background:none;color:inherit;cursor:pointer" onclick="activatePro('yearly')">
+        <div style="text-align:left"><div style="font-size:14px;font-weight:700">Yıllık <span style="color:#fde68a">%40 indirim</span></div><div style="font-size:11px;color:#a0a3b8">₺29/ay</div></div>
+        <div style="font-size:18px;font-weight:800">₺349<span style="font-size:11px;color:#a0a3b8">/yıl</span></div>
+      </button>
+    </div>
+    <a class="sheet-link" onclick="closeSheet()">Belki sonra</a>
+  `;
+}
+let selectedPlan = null;
+function activatePro(plan) {
+  selectedPlan = plan;
+  openSheet('payment');
+}
+
+function renderSheetPayment() {
+  const plans = { monthly: { label:'Aylık', price:'₺49', sub:'Her ay yenilenir' }, yearly:  { label:'Yıllık', price:'₺349', sub:'12 ay, %40 indirimli' } };
+  const p = plans[selectedPlan] || plans.monthly;
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>Ödeme</h3>
+    <div style="background:linear-gradient(135deg,#fde68a,#f59e0b);padding:14px 16px;border-radius:14px;display:flex;justify-content:space-between;align-items:center;color:#1a1a22;margin-bottom:16px">
+      <div><div style="font-size:13px;font-weight:700">Yaşam.AI Premium · ${p.label}</div><div style="font-size:11px;opacity:.75">${p.sub}</div></div>
+      <div style="font-size:22px;font-weight:800">${p.price}</div>
+    </div>
+
+    <div class="form-row"><label>Kart üzerindeki isim</label><input type="text" id="payName" placeholder="AD SOYAD" autocomplete="cc-name"></div>
+    <div class="form-row"><label>Kart numarası</label><input type="text" id="payNum" placeholder="•••• •••• •••• ••••" maxlength="19" inputmode="numeric" autocomplete="cc-number" oninput="fmtCard(this)"></div>
+    <div style="display:flex;gap:10px">
+      <div class="form-row" style="flex:1"><label>Son kullanma</label><input type="text" id="payExp" placeholder="AA/YY" maxlength="5" inputmode="numeric" autocomplete="cc-exp" oninput="fmtExp(this)"></div>
+      <div class="form-row" style="flex:1"><label>CVV</label><input type="text" id="payCvv" placeholder="•••" maxlength="4" inputmode="numeric" autocomplete="cc-csc"></div>
+    </div>
+
+    <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:#a0a3b8;margin:6px 0 14px">
+      <input type="checkbox" id="payTerms" style="width:auto"> Hizmet şartlarını ve aboneliğin otomatik yenileneceğini kabul ediyorum.
+    </label>
+
+    <button class="sheet-btn" onclick="doPay()">Ödemeyi onayla · ${p.price}</button>
+    <div style="text-align:center;font-size:11px;color:#a0a3b8;margin-top:10px">🔒 SSL ile şifreli · iyzico/Stripe entegrasyonu eklenecek</div>
+    <a class="sheet-link" onclick="closeSheet()">İptal</a>
+  `;
+}
+
+function fmtCard(el) {
+  let v = el.value.replace(/\D/g,'').slice(0,16);
+  el.value = v.replace(/(.{4})/g,'$1 ').trim();
+}
+function fmtExp(el) {
+  let v = el.value.replace(/\D/g,'').slice(0,4);
+  if (v.length >= 3) v = v.slice(0,2)+'/'+v.slice(2);
+  el.value = v;
+}
+
+function doPay() {
+  const name = document.getElementById('payName').value.trim();
+  const num = document.getElementById('payNum').value.replace(/\s/g,'');
+  const exp = document.getElementById('payExp').value;
+  const cvv = document.getElementById('payCvv').value;
+  const terms = document.getElementById('payTerms').checked;
+  if (!name || num.length < 13 || exp.length < 5 || cvv.length < 3) { alert('Kart bilgilerini eksiksiz doldur.'); return; }
+  if (!terms) { alert('Hizmet şartlarını onaylaman gerekiyor.'); return; }
+  // GERÇEK ÖDEME: iyzico / Stripe / Shopier backend entegrasyonu buraya gelecek.
+  // Şu an demo: kullanıcıya bilgi ver, Pro'yu açmıyoruz çünkü gerçek tahsilat yok.
+  closeSheet();
+  alert('Demo ödeme ekranı. Gerçek tahsilat için iyzico/Shopier/Stripe backend\'i entegre edilmeli.\n\nBu turda para ÇEKİLMEDİ, Pro AÇILMADI.');
+}
+
+/* ============ KAYIT / GİRİŞ / ANON ============ */
+function renderSheetAnon() {
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>Anonim başla</h3>
+    <p style="font-size:13px;color:#a0a3b8;margin-bottom:14px">Sana nasıl hitap edelim? Hesap oluşturmana gerek yok, sadece bir isim (takma isim de olur).</p>
+    <div class="form-row"><label>İsmin</label><input type="text" id="anonName" placeholder="Örn: Furkan, Yolcu, X..." maxlength="20"></div>
+    <button class="sheet-btn" onclick="doAnon()">Başla</button>
+    <a class="sheet-link" onclick="closeSheet()">İptal</a>
+  `;
+  setTimeout(()=>document.getElementById('anonName').focus(), 300);
+}
+function doAnon() {
+  const n = document.getElementById('anonName').value.trim();
+  if (!n) { alert('Bir isim yaz.'); return; }
+  state.user = { name: n, mode: 'anon' };
+  LS.set('yasamai_user', state.user);
+  closeSheet(); enterApp();
+}
+
+function renderSheetSignup() {
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>Kayıt ol</h3>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px">
+      <button class="ob-btn ghost" onclick="authMode='signup';openSheet('google')" style="background:#fff;color:#1f1f1f;border:1px solid #dadce0">
+        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#4285f4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/><path fill="#34a853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/><path fill="#fbbc05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z"/><path fill="#ea4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7C13.42 14.62 18.27 10.75 24 10.75z"/></svg>
+        Google ile devam et
+      </button>
+      <button class="ob-btn ghost" onclick="authMode='signup';openSheet('apple')" style="background:#000;color:#fff;border:none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M17.05 20.28c-.98.95-2.05.88-3.08.41-1.09-.47-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.41C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+        Apple ile devam et
+      </button>
+    </div>
+    <div style="text-align:center;color:#a0a3b8;font-size:11px;margin:12px 0">veya e-posta ile</div>
+    <div class="form-row"><label>İsim</label><input type="text" id="suName" placeholder="Adın"></div>
+    <div class="form-row"><label>E-posta</label><input type="email" id="suMail" placeholder="sen@ornek.com" autocomplete="email"></div>
+    <div class="form-row"><label>Doğum tarihin</label><input type="date" id="suBirth"></div>
+    <div class="form-row"><label>Şifre</label><input type="password" id="suPass" placeholder="En az 6 karakter" autocomplete="new-password"></div>
+    <div style="font-size:11px;color:#a0a3b8;margin:-6px 0 10px">⚠️ Yaşam.AI 18 yaş altı için uygun değildir.</div>
+    <button class="sheet-btn" onclick="doSignup()">Hesap oluştur</button>
+    <a class="sheet-link" onclick="openSheet('login')">Zaten hesabım var → Giriş yap</a>
+  `;
+}
+function ageFromBirth(iso) {
+  if (!iso) return 0;
+  const b = new Date(iso), n = new Date();
+  let a = n.getFullYear() - b.getFullYear();
+  const m = n.getMonth() - b.getMonth();
+  if (m < 0 || (m === 0 && n.getDate() < b.getDate())) a--;
+  return a;
+}
+
+async function doSignup() {
+  const n = document.getElementById('suName').value.trim();
+  const m = document.getElementById('suMail').value.trim();
+  const birth = document.getElementById('suBirth').value;
+  const p = document.getElementById('suPass').value;
+  if (!n || !m || !p || !birth) { alert('Tüm alanları doldur (doğum tarihi dahil).'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m)) { alert('Geçerli bir e-posta gir.'); return; }
+  if (p.length < 6) { alert('Şifren en az 6 karakter olmalı.'); return; }
+  const age = ageFromBirth(birth);
+  if (age < 18) { alert('Yaşam.AI 18 yaş altı için uygun değildir. Kayıt reddedildi.'); return; }
+  const accounts = LS.get('yasamai_accounts', []);
+  if (accounts.find(a => a.email === m)) { alert('Bu e-posta zaten kayıtlı.'); return; }
+  await sendVerifyCodeAndShow({ name:n, email:m, pass:p, birth, mode:'email' });
+}
+
+/* ============ MAIL DOĞRULAMA (EmailJS) ============ */
+// EmailJS — Service ID, Template ID, Public Key
+// https://dashboard.emailjs.com/admin
+const EMAILJS_SERVICE_ID  = 'service_7i9zcf4';
+const EMAILJS_TEMPLATE_ID = 'template_pxhmwmg';
+const EMAILJS_PUBLIC_KEY  = 'zfs1IYU-M6IyLL6uP';
+
+function genCode() { return (''+Math.floor(100000 + Math.random()*900000)); }
+let pendingSignup = null;
+
+async function sendVerifyCodeAndShow(data) {
+  const code = genCode();
+  pendingSignup = { ...data, code, expires: Date.now() + 10*60*1000 };
+  const configured = EMAILJS_PUBLIC_KEY && EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID && window.emailjs;
+  if (configured) {
+    try {
+      emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email: data.email, to_name: data.name, code: code
+      });
+    } catch(err) {
+      alert('Mail gönderilemedi: ' + (err.text || err.message || 'hata') + '\nDemo modda devam — kod: ' + code);
+    }
+  } else {
+    console.log('[DEMO] Doğrulama kodu:', code);
+  }
+  openSheet('verify');
+}
+
+function renderSheetVerify() {
+  const notConfigured = (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY);
+  const demoHint = notConfigured
+    ? `<div style="background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);padding:10px;border-radius:10px;font-size:12px;color:#fbbf24;margin-bottom:12px">⚠️ DEMO: Mail servisi yapılandırılmadı. Kod: <b>${pendingSignup?.code||''}</b></div>`
+    : '';
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>E-postanı doğrula</h3>
+    <p style="font-size:13px;color:#a0a3b8;margin-bottom:14px"><b>${esc(pendingSignup?.email||'')}</b> adresine 6 haneli kod gönderdik. Gelmezse spam'i kontrol et.</p>
+    ${demoHint}
+    <div class="form-row"><label>Doğrulama kodu</label><input type="text" id="vCode" inputmode="numeric" maxlength="6" placeholder="6 haneli" style="letter-spacing:6px;text-align:center;font-size:22px;font-weight:700"></div>
+    <button class="sheet-btn" onclick="doVerify()">Doğrula ve devam et</button>
+    <a class="sheet-link" onclick="resendCode()">Kod gelmedi, tekrar gönder</a>
+  `;
+  setTimeout(()=>document.getElementById('vCode')?.focus(), 300);
+}
+
+async function resendCode() {
+  if (!pendingSignup) { alert('Bekleyen kayıt yok.'); return; }
+  await sendVerifyCodeAndShow(pendingSignup);
+}
+
+function doVerify() {
+  const entered = document.getElementById('vCode').value.trim();
+  if (!pendingSignup) { alert('Bekleyen kayıt yok.'); return; }
+  if (Date.now() > pendingSignup.expires) { alert('Kod süresi doldu. Yenisi gönderiliyor.'); resendCode(); return; }
+  if (entered !== pendingSignup.code) { alert('Kod yanlış.'); return; }
+  const accounts = LS.get('yasamai_accounts', []);
+  // Aynı mailde kayıt varsa üzerine yazma, güncelle
+  const idx = accounts.findIndex(a => (a.email||'').toLowerCase() === (pendingSignup.email||'').toLowerCase());
+  const rec = { name: pendingSignup.name, email: pendingSignup.email, pass: pendingSignup.pass, birth: pendingSignup.birth, mode: pendingSignup.mode, verified: true };
+  if (idx >= 0) accounts[idx] = rec; else accounts.push(rec);
+  LS.set('yasamai_accounts', accounts);
+  state.user = { name: pendingSignup.name, email: pendingSignup.email, mode: pendingSignup.mode, verified: true };
+  LS.set('yasamai_user', state.user);
+  if (pendingSignup.mode === 'google' || pendingSignup.mode === 'apple') {
+    state.avatar = null; LS.set('yasamai_avatar', null);
+  }
+  pendingSignup = null;
+  closeSheet();
+  enterApp();
+}
+
+function renderSheetLogin() {
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>Giriş yap</h3>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px">
+      <button class="ob-btn ghost" onclick="authMode='login';openSheet('google')" style="background:#fff;color:#1f1f1f;border:1px solid #dadce0">
+        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#4285f4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/><path fill="#34a853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/><path fill="#fbbc05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z"/><path fill="#ea4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7C13.42 14.62 18.27 10.75 24 10.75z"/></svg>
+        Google ile giriş
+      </button>
+      <button class="ob-btn ghost" onclick="authMode='login';openSheet('apple')" style="background:#000;color:#fff;border:none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M17.05 20.28c-.98.95-2.05.88-3.08.41-1.09-.47-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.41C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+        Apple ile giriş
+      </button>
+    </div>
+    <div style="text-align:center;color:#a0a3b8;font-size:11px;margin:12px 0">veya</div>
+    <div class="form-row"><label>E-posta</label><input type="email" id="liMail" placeholder="sen@ornek.com"></div>
+    <div class="form-row"><label>Şifre</label><input type="password" id="liPass" placeholder="••••••••"></div>
+    <button class="sheet-btn" onclick="doLogin()">Giriş yap</button>
+    <a class="sheet-link" onclick="openSheet('signup')">Hesabım yok → Kayıt ol</a>
+  `;
+}
+function doLogin() {
+  const m = document.getElementById('liMail').value.trim().toLowerCase();
+  const p = document.getElementById('liPass').value;
+  if (!m || !p) { alert('E-posta ve şifreyi doldur.'); return; }
+  const accounts = LS.get('yasamai_accounts', []);
+  const acc = accounts.find(a => (a.email||'').toLowerCase() === m);
+  if (!acc) { alert('Bu e-posta ile kayıtlı hesap yok. Önce "Kayıt ol" demelisin.'); return; }
+  if (acc.mode === 'google') { alert('Bu hesap Google ile açılmış. "Google ile giriş"i kullan.'); return; }
+  if (acc.mode === 'apple')  { alert('Bu hesap Apple ile açılmış. "Apple ile giriş"i kullan.'); return; }
+  if (!acc.pass || acc.pass !== p) { alert('Şifre yanlış.'); return; }
+  if (acc.verified === false) { alert('E-postan henüz doğrulanmamış. Kayıt sırasında gelen kodu gir.'); return; }
+  state.user = { name: acc.name, email: acc.email, mode: acc.mode, verified: true };
+  LS.set('yasamai_user', state.user);
+  closeSheet(); enterApp();
+}
+
+// Google OAuth Client ID — Google Cloud Console'dan alıp buraya yapıştır:
+// https://console.cloud.google.com/apis/credentials → OAuth 2.0 Client IDs → Web application
+// Authorized JavaScript origins: https://<tünel-adresiniz>.trycloudflare.com  (ve canlıda kendi domainin)
+const GOOGLE_CLIENT_ID = '537403541112-ipg185o088854gikfs4p5re1c9vamn9c.apps.googleusercontent.com';
+
+function decodeJwt(token) {
+  try {
+    const p = token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
+    return JSON.parse(decodeURIComponent(atob(p).split('').map(c => '%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join('')));
+  } catch(e) { return null; }
+}
+
+let pendingGoogle = null;
+let authMode = 'signup'; // 'signup' | 'login' — hangi sheet'ten açıldığını bilelim
+function handleGoogleCredential(resp) {
+  const payload = decodeJwt(resp.credential);
+  if (!payload) { alert('Google girişi çözülemedi.'); return; }
+  const accounts = LS.get('yasamai_accounts', []);
+  const existing = accounts.find(a => a.email === payload.email);
+  if (authMode === 'login') {
+    // Giriş modu — hesap yoksa reddet
+    if (!existing) {
+      alert('Bu Google hesabı ('+payload.email+') kayıtlı değil. Önce "Kayıt ol" adımından kaydolmalısın.');
+      closeSheet();
+      return;
+    }
+    // Kayıtlı → direkt içeri al
+    state.user = { name: existing.name, email: existing.email, mode:'google', verified:true };
+    LS.set('yasamai_user', state.user);
+    closeSheet(); enterApp();
+    return;
+  }
+  // Kayıt modu
+  if (existing && existing.birth) {
+    // Zaten kayıtlı; kullanıcı "kayıt ol" demiş ama hesap var → yine içeri alalım
+    state.user = { name: existing.name, email: existing.email, mode:'google', verified:true };
+    LS.set('yasamai_user', state.user);
+    closeSheet(); enterApp();
+    return;
+  }
+  pendingGoogle = {
+    name: payload.name || payload.given_name || 'Google Kullanıcı',
+    email: payload.email,
+    avatar: payload.picture || null
+  };
+  openSheet('gAge');
+}
+
+function renderSheetGAge() {
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>Son bir adım</h3>
+    <p style="font-size:13px;color:#a0a3b8;margin-bottom:14px"><b>${esc(pendingGoogle?.email||'')}</b> hesabıyla devam ediyorsun. Yaşam.AI 18+ bir uygulama — doğum tarihini onayla:</p>
+    <div class="form-row"><label>Doğum tarihin</label><input type="date" id="gBirth"></div>
+    <div style="font-size:11px;color:#a0a3b8;margin:-6px 0 14px">⚠️ 18 yaş altı kullanıcıların kaydı reddedilir.</div>
+    <button class="sheet-btn" onclick="doGoogleAge()">Devam et</button>
+    <a class="sheet-link" onclick="closeSheet()">İptal</a>
+  `;
+}
+
+async function doGoogleAge() {
+  const birth = document.getElementById('gBirth').value;
+  if (!birth) { alert('Doğum tarihini gir.'); return; }
+  const age = ageFromBirth(birth);
+  if (age < 18) { alert('Yaşam.AI 18 yaş altı için uygun değildir. Kayıt reddedildi.'); pendingGoogle = null; closeSheet(); return; }
+  if (!pendingGoogle) return;
+  // Google hesabı olsa da mail doğrulaması al — kod Google mailine gidecek
+  await sendVerifyCodeAndShow({
+    name: pendingGoogle.name,
+    email: pendingGoogle.email,
+    pass: null,
+    birth,
+    mode: 'google'
+  });
+  pendingGoogle = null;
+}
+
+function renderSheetGoogle() {
+  const title = authMode === 'login' ? 'Google ile giriş' : 'Google ile kayıt ol';
+  const sub   = authMode === 'login'
+    ? 'Daha önce bu Google hesabıyla kaydolmuş olman gerekiyor.'
+    : 'Telefonundaki Google hesabını seç — mail adresin otomatik gelecek.';
+  document.getElementById('sheetContent').innerHTML = `
+    <h3 style="text-align:center">${title}</h3>
+    <p style="font-size:13px;color:#a0a3b8;text-align:center;margin:8px 0 18px">${sub}</p>
+    <div id="gBtn" style="display:flex;justify-content:center;min-height:44px"></div>
+    <div id="gFallback" style="display:none;text-align:center;color:#a0a3b8;font-size:12px;margin-top:12px"></div>
+    <a class="sheet-link" onclick="closeSheet()" style="margin-top:14px">İptal</a>
+  `;
+  // GIS hazırsa gerçek butonu bas, yoksa uyar
+  setTimeout(() => {
+    if (!GOOGLE_CLIENT_ID) {
+      document.getElementById('gFallback').style.display = 'block';
+      document.getElementById('gFallback').innerHTML = '⚠️ Google Client ID tanımlı değil.<br>Geliştiriciye: index.html içinde <code>GOOGLE_CLIENT_ID</code> doldurulmalı.';
+      return;
+    }
+    if (!window.google || !google.accounts || !google.accounts.id) {
+      document.getElementById('gFallback').style.display = 'block';
+      document.getElementById('gFallback').textContent = 'Google servisleri yüklenemedi. İnternet bağlantını kontrol et.';
+      return;
+    }
+    try {
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleCredential,
+        auto_select: false,
+        ux_mode: 'popup'
+      });
+      google.accounts.id.renderButton(document.getElementById('gBtn'), {
+        theme: 'filled_blue', size: 'large', shape: 'pill', text: 'continue_with', locale: 'tr'
+      });
+      // One Tap'i de tetikle (telefonda hesap seçici açar)
+      google.accounts.id.prompt();
+    } catch(e) {
+      document.getElementById('gFallback').style.display = 'block';
+      document.getElementById('gFallback').textContent = 'Google girişi başlatılamadı: ' + e.message;
+    }
+  }, 100);
+}
+function pickGoogle(i) {
+  const accs = LS.get('yasamai_google_accs', []);
+  const a = accs[i]; if (!a) return;
+  state.user = { name: a.name, email: a.email, mode: 'google' };
+  LS.set('yasamai_user', state.user);
+  // accounts listesine de ekle
+  const all = LS.get('yasamai_accounts', []);
+  if (!all.find(x => x.email === a.email)) { all.push({ name:a.name, email:a.email, pass:null, mode:'google' }); LS.set('yasamai_accounts', all); }
+  closeSheet(); enterApp();
+}
+function addGoogle() {
+  const name = prompt('Google isim:');
+  if (!name) return;
+  const email = prompt('Google e-posta:');
+  if (!email || !email.includes('@')) return;
+  const accs = LS.get('yasamai_google_accs', []);
+  accs.push({ name, email, color:'#34a853', ini:name[0].toUpperCase() });
+  LS.set('yasamai_google_accs', accs);
+  renderSheetGoogle();
+}
+
+function renderSheetApple() {
+  const title = authMode === 'login' ? 'Apple ile giriş' : 'Apple ile kayıt ol';
+  const sub   = authMode === 'login'
+    ? 'Apple ID e-posta adresini gir; yalnızca daha önce kayıt olduysan girebilirsin.'
+    : 'Apple ID e-posta adresini gir. Yaşam.AI 18+ olduğu için doğum tarihi de istenecek.';
+  const birthRow = authMode === 'login' ? '' : `
+      <div class="form-row"><label>Doğum tarihin</label><input type="date" id="appBirth"></div>
+      <div style="font-size:11px;color:#a0a3b8;margin:-6px 0 10px">⚠️ 18 yaş altı kayıt reddedilir.</div>`;
+  document.getElementById('sheetContent').innerHTML = `
+    <div style="background:#000;margin:-16px -20px 0;padding:22px 20px;border-radius:24px 24px 0 0;color:#fff;text-align:center">
+      <svg viewBox="0 0 24 24" style="width:36px;height:36px;margin:0 auto 8px" fill="#fff"><path d="M17.05 20.28c-.98.95-2.05.88-3.08.41-1.09-.47-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.41C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+      <div style="font-size:17px;font-weight:600">${title}</div>
+      <div style="font-size:11px;opacity:.75;margin-top:4px;padding:0 8px">${sub}</div>
+    </div>
+    <div style="padding:18px 0 10px">
+      <div class="form-row"><label>İsim</label><input type="text" id="appName" placeholder="Adın"></div>
+      <div class="form-row"><label>Apple ID e-posta</label><input type="email" id="appMail" placeholder="adın@icloud.com" autocomplete="email"></div>
+      ${birthRow}
+      <button class="sheet-btn" onclick="doApple()">${authMode==='login'?'Giriş yap':'Devam et ve mail doğrula'}</button>
+      <a class="sheet-link" onclick="closeSheet()">İptal</a>
+    </div>
+  `;
+}
+async function doApple() {
+  const name = document.getElementById('appName').value.trim();
+  const email = document.getElementById('appMail').value.trim().toLowerCase();
+  if (!name) { alert('İsmini gir.'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert('Geçerli bir Apple ID e-postası gir.'); return; }
+  const accounts = LS.get('yasamai_accounts', []);
+  const existing = accounts.find(a => a.email === email);
+  if (authMode === 'login') {
+    if (!existing) { alert('Bu Apple ID ('+email+') kayıtlı değil. Önce kayıt olmalısın.'); return; }
+    state.user = { name: existing.name, email: existing.email, mode:'apple', verified:true };
+    LS.set('yasamai_user', state.user);
+    closeSheet(); enterApp();
+    return;
+  }
+  // Signup
+  if (existing) { alert('Bu Apple ID ile zaten kayıt olunmuş. "Giriş yap"ı kullan.'); return; }
+  const birth = document.getElementById('appBirth').value;
+  if (!birth) { alert('Doğum tarihini gir.'); return; }
+  const age = ageFromBirth(birth);
+  if (age < 18) { alert('Yaşam.AI 18 yaş altı için uygun değildir. Kayıt reddedildi.'); return; }
+  await sendVerifyCodeAndShow({ name, email, pass:null, birth, mode:'apple' });
+}
+
+/* ============ GÜNLÜK YENİ GİRDİ ============ */
+function renderSheetNewDiary() {
+  const moods = [{id:'dokun',n:'İçimi dök',c:'#f472b6'},{id:'karar',n:'Kararsız',c:'#60a5fa'},{id:'sakin',n:'Sakin',c:'#5eead4'},{id:'motive',n:'Motive',c:'#f97316'}];
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>Yeni günlük girdisi</h3>
+    <div class="form-row"><label>Başlık</label><input type="text" id="dTitle" placeholder="Bugün ne yaşadın?" maxlength="60"></div>
+    <label style="display:block;font-size:11px;color:#a0a3b8;margin-bottom:6px;font-weight:600">Ruh halin</label>
+    <div class="row" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+      ${moods.map(m => `<button class="mood-chip" data-mid="${m.id}" data-mc="${m.c}" onclick="pickMoodChip(this)" style="--c:${m.c}">${m.n}</button>`).join('')}
+    </div>
+    <div class="composer" style="padding:0"><textarea id="dText" placeholder="Bugün neler yaşadın, nasıl hissettin? Yaz, sonra geri dönüp okuyabilirsin..."></textarea></div>
+    <button class="sheet-btn" onclick="saveDiary()">Kaydet</button>
+    <a class="sheet-link" onclick="closeSheet()">İptal</a>
+  `;
+  setTimeout(()=>document.getElementById('dTitle').focus(), 300);
+}
+function pickMoodChip(el) {
+  document.querySelectorAll('.mood-chip').forEach(c => { c.classList.remove('selected'); c.style.background=''; });
+  el.classList.add('selected');
+  el.style.background = el.dataset.mc;
+  el.style.borderColor = el.dataset.mc;
+  el.dataset.picked = '1';
+}
+function saveDiary() {
+  const title = document.getElementById('dTitle').value.trim();
+  const text = document.getElementById('dText').value.trim();
+  if (!title || !text) { alert('Başlık ve içerik dolu olmalı.'); return; }
+  const picked = document.querySelector('.mood-chip.selected');
+  const moodColor = picked ? picked.dataset.mc : '#8b5cf6';
+  const moodId = picked ? picked.dataset.mid : null;
+  const today = new Date();
+  state.diary.push({ title, text, moodColor, mood: moodId, ts: Date.now(), date: today.toISOString().slice(0,10) });
+  LS.set('yasamai_diary', state.diary);
+  closeSheet(); renderDiary();
+}
+
+/* ============ ÇIKIŞ ============ */
+function logout() {
+  if (!confirm('Çıkış yapılsın mı? Verilerin (günlük, ayarlar) cihazda kalır.')) return;
+  localStorage.removeItem('yasamai_user');
+  location.reload();
+}
+
+function deleteAccount() {
+  const email = state.user?.email || '';
+  const msg = `⚠️ HESABI KALICI SİL\n\nTüm verilerin silinecek:\n• Hesap bilgilerin\n• Günlük girdilerin\n• Sohbet geçmişin\n• Ayarların ve avatarın\n\nBu işlem GERİ ALINAMAZ.\n\nDevam etmek için "SİL" yaz ve onayla:`;
+  const confirm1 = prompt(msg);
+  if (confirm1 !== 'SİL') { if (confirm1 !== null) alert('İptal edildi. "SİL" yazman gerekiyordu.'); return; }
+  if (!confirm('Son onay: ' + email + ' hesabını ve tüm verilerini silmek istediğinden emin misin?')) return;
+  // accounts listesinden kaldır
+  if (email) {
+    const accounts = LS.get('yasamai_accounts', []).filter(a => a.email !== email);
+    LS.set('yasamai_accounts', accounts);
+  }
+  // Tüm yasamai_ prefix'li anahtarları sil
+  Object.keys(localStorage).filter(k => k.startsWith('yasamai_')).forEach(k => localStorage.removeItem(k));
+  alert('Hesabın silindi. Görüşürüz.');
+  location.reload();
+}
+</script>
+</body>
+</html>
