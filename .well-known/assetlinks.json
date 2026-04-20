@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.yasamai.app",
+    "sha256_cert_fingerprints": ["67:C3:D1:B9:12:FC:99:97:D3:17:3A:4F:2F:89:51:DB:6E:FF:AE:8D:15:AA:84:E7:D7:CD:C4:B9:B1:7E:EB:6D"]
+  }
+}]

@@ -391,7 +391,7 @@
         <div class="tb-brand">Yaşam<span>.AI</span></div>
         <div class="tb-sub" id="tbSub">Yaşamın akıllı hali</div>
       </div>
-      <div class="tb-counter" id="msgCounter" style="display:none">10 mesaj hakkın var</div>
+      <div class="tb-counter" id="msgCounter" style="display:none">20 mesaj hakkın var</div>
     </div>
 
     <div class="tab-content">
@@ -581,7 +581,7 @@ const state = {
   isPro: false, // Deneme versiyonu: Pro devre dışı. Eski kaydı temizle.
   msgCount: LS.get('yasamai_msgCount', 0),
   msgCountDay: LS.get('yasamai_msgCountDay', ''),
-  maxFree: 10,
+  maxFree: 20,
   currentMood: null,
   currentTopic: null
 };
@@ -1442,27 +1442,54 @@ function wipeLocalData() {
 function togglePriv(k) { state.privacy[k] = !state.privacy[k]; LS.set('yasamai_priv', state.privacy); renderSheetPrivacy(); }
 
 function renderSheetPremium() {
+  const alreadyJoined = LS.get('yasamai_waitlist', false);
   document.getElementById('sheetContent').innerHTML = `
-    <h3 style="text-align:center">Yaşam.AI Premium</h3>
-    <div style="text-align:center;padding:16px 0">
-      <div style="width:80px;height:80px;margin:0 auto 12px;border-radius:22px;background:linear-gradient(135deg,#fde68a,#f59e0b);display:flex;align-items:center;justify-content:center">
+    <div style="text-align:center;padding:10px 0 6px">
+      <div style="width:80px;height:80px;margin:0 auto 12px;border-radius:22px;background:linear-gradient(135deg,#fde68a,#f59e0b);display:flex;align-items:center;justify-content:center;position:relative">
         <svg viewBox="0 0 24 24" style="width:40px;height:40px;fill:#1a1a22"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+        <div style="position:absolute;top:-6px;right:-10px;background:#ef4444;color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:10px;letter-spacing:.5px">YAKINDA</div>
       </div>
-      <div style="font-size:22px;font-weight:800">Sınırsız sohbet</div>
-      <div style="color:#a0a3b8;font-size:13px;margin-top:4px">Mesaj limiti yok · Tüm mood'lar</div>
+      <div style="font-size:22px;font-weight:800">Yaşam.AI Premium</div>
+      <div style="color:#a0a3b8;font-size:13px;margin-top:6px;line-height:1.5">Sınırsız sohbet · Özel mood'lar<br>Reklamsız · Öncelikli AI</div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:10px;margin:12px 0">
-      <button style="padding:14px;border:2px solid #8b5cf6;border-radius:14px;background:rgba(139,92,246,0.1);display:flex;align-items:center;justify-content:space-between;width:100%;cursor:pointer" onclick="activatePro('monthly')">
-        <div style="text-align:left"><div style="font-size:14px;font-weight:700">Aylık</div><div style="font-size:11px;color:#a0a3b8">Her ay yenilenir</div></div>
-        <div style="font-size:18px;font-weight:800">₺49<span style="font-size:11px;color:#a0a3b8">/ay</span></div>
-      </button>
-      <button style="padding:14px;border:1px solid rgba(255,255,255,0.1);border-radius:14px;display:flex;align-items:center;justify-content:space-between;width:100%;background:none;color:inherit;cursor:pointer" onclick="activatePro('yearly')">
-        <div style="text-align:left"><div style="font-size:14px;font-weight:700">Yıllık <span style="color:#fde68a">%40 indirim</span></div><div style="font-size:11px;color:#a0a3b8">₺29/ay</div></div>
-        <div style="font-size:18px;font-weight:800">₺349<span style="font-size:11px;color:#a0a3b8">/yıl</span></div>
-      </button>
+
+    <div style="background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.25);padding:14px;border-radius:14px;margin:14px 0;text-align:center">
+      <div style="font-size:14px;font-weight:700;margin-bottom:4px">🚀 Çok yakında!</div>
+      <div style="font-size:12px;color:#a0a3b8;line-height:1.5">Premium abonelik sistemini geliştiriyoruz. Şu an <b style="color:#fff">günlük 20 mesaj</b> ücretsiz. Erken erişim için mail listesine katıl, lansman günü <b style="color:#fde68a">%50 indirim</b> kazan.</div>
     </div>
-    <a class="sheet-link" onclick="closeSheet()">Belki sonra</a>
+
+    ${alreadyJoined ? `
+      <div style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);padding:14px;border-radius:12px;text-align:center;color:#22c55e;font-size:13px;font-weight:600;margin:10px 0">
+        ✓ Listede kayıtlısın. Lansman günü mail atacağız.
+      </div>
+    ` : `
+      <div class="form-row"><label>E-posta</label><input type="email" id="wlMail" value="${esc(state.user?.email || '')}" placeholder="sen@ornek.com"></div>
+      <button class="sheet-btn" onclick="joinWaitlist()">Erken erişim için kaydol</button>
+    `}
+    <a class="sheet-link" onclick="closeSheet()">Kapat</a>
   `;
+}
+
+async function joinWaitlist() {
+  const m = document.getElementById('wlMail').value.trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m)) { alert('Geçerli bir e-posta gir.'); return; }
+  // Mail listesi localStorage + EmailJS ile sana bildirim
+  const list = LS.get('yasamai_waitlist_all', []);
+  if (!list.includes(m)) list.push(m);
+  LS.set('yasamai_waitlist_all', list);
+  LS.set('yasamai_waitlist', true);
+  // EmailJS ile gerçek mail bildirimi (template'i varsayarak)
+  if (window.emailjs && EMAILJS_SERVICE_ID && EMAILJS_PUBLIC_KEY) {
+    try {
+      emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email: m, to_name: state.user?.name || 'Arkadaş',
+        code: 'Yaşam.AI Premium erken erişim listesine kaydoldun. Lansman günü %50 indirim kuponu mail olarak gelecek!'
+      });
+    } catch(e) { /* sessiz */ }
+  }
+  alert('🎉 Listeye eklendin! Lansman günü %50 indirim kuponu mail olarak gelecek.');
+  renderSheetPremium();
 }
 let selectedPlan = null;
 function activatePro(plan) {
