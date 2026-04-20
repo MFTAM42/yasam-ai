@@ -1521,21 +1521,61 @@ function cancelReminder() {
   if (reminderCheckInterval) { clearInterval(reminderCheckInterval); reminderCheckInterval = null; }
 }
 
+/* Kısa alarm sesi — Web Audio API (dosyaya gerek yok, üretilir) */
+function playAlarmSound() {
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return;
+    const ctx = new Ctx();
+    const now = ctx.currentTime;
+    // 3 kısa bip — alarm saati gibi (880Hz, 0.15s aralıklı)
+    const beeps = [0, 0.22, 0.44, 0.80, 1.02];
+    beeps.forEach(offset => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = 880;
+      gain.gain.setValueAtTime(0, now + offset);
+      gain.gain.linearRampToValueAtTime(0.35, now + offset + 0.01);
+      gain.gain.linearRampToValueAtTime(0, now + offset + 0.18);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(now + offset);
+      osc.stop(now + offset + 0.2);
+    });
+    // 1.5 saniye sonra kapat
+    setTimeout(() => { try { ctx.close(); } catch(e){} }, 1600);
+  } catch(e) {}
+}
+
+/* Güçlü alarm vibrasyonu */
+function playAlarmVibration() {
+  if (navigator.vibrate) {
+    // 3 kısa-kısa-uzun vuruş — alarm hissi
+    navigator.vibrate([180, 90, 180, 90, 180, 90, 400]);
+  }
+}
+
 function fireReminder() {
+  // Uygulama açıksa sesli + titreşimli alarm
+  playAlarmSound();
+  playAlarmVibration();
   if (!('Notification' in window) || Notification.permission !== 'granted') return;
   try {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.ready.then(reg => {
-        reg.showNotification('Yaşam.AI 🌙', {
+        reg.showNotification('⏰ Yaşam.AI', {
           body: 'Günlük kontrol zamanı — bugün nasılsın?',
           icon: './icon-192.png',
           badge: './icon-192.png',
           tag: 'yasamai-reminder',
-          vibrate: [200, 100, 200]
+          // Uzun, alarm-tarzı vibrasyon deseni
+          vibrate: [200, 100, 200, 100, 200, 100, 500, 100, 200],
+          requireInteraction: false,
+          silent: false
         });
       });
     } else {
-      new Notification('Yaşam.AI 🌙', { body: 'Günlük kontrol zamanı — bugün nasılsın?', icon: './icon-192.png' });
+      new Notification('⏰ Yaşam.AI', { body: 'Günlük kontrol zamanı — bugün nasılsın?', icon: './icon-192.png' });
     }
   } catch(e) { console.warn('Reminder notification failed', e); }
 }
