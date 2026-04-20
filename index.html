@@ -811,10 +811,21 @@ function loadChatHistory(mood) {
   chatHistory = LS.get(chatKey(mood), []);
   const box = document.getElementById('chatMsgs');
   box.innerHTML = '';
-  chatHistory.forEach(m => {
-    if (m.role === 'user') addBubble(m.content, 'me', true);
-    else if (m.role === 'assistant') addBubble(m.content, 'ai', true);
-  });
+  if (chatHistory.length === 0) {
+    // İlk açılışta mood'a özel sıcak bir karşılama
+    const welcome = {
+      dokun: 'Burdayım, içini dökebilirsin. Yargı yok, sadece dinliyorum. Ne oldu?',
+      karar: 'Kafanı karıştıran ne? Seçenekleri birlikte açalım, sonunda bir adıma varırız.',
+      sakin: 'Derin bir nefes al. Anlat bakalım — burada aceleye gerek yok.',
+      motive: 'Evet, söyle bakalım. Hangi konuda takıldın? Bahane istemiyorum, gerçeği.'
+    }[mood] || 'Seni dinliyorum.';
+    addBubble(welcome, 'ai');
+  } else {
+    chatHistory.forEach(m => {
+      if (m.role === 'user') addBubble(m.content, 'me', true);
+      else if (m.role === 'assistant') addBubble(m.content, 'ai', true);
+    });
+  }
   setTimeout(()=>{ box.scrollTop = 99999; }, 50);
 }
 
@@ -968,6 +979,23 @@ function onChatFilePicked(e, kind) {
   document.getElementById('attachMenu')?.classList.remove('open');
   document.getElementById('attachBtn')?.classList.remove('open');
 
+  if (!state.currentMood) {
+    addBubble('Önce yukarıdan bir ruh hali seç, sonra dosyanı paylaşalım.', 'ai');
+    return;
+  }
+  if (!state.isPro && state.msgCount >= state.maxFree) { openSheet('premium'); return; }
+  // Dosya analizi de 1 mesaj hakkı tüketir
+  state.msgCount++;
+  LS.set('yasamai_msgCount', state.msgCount);
+  updateCounter();
+
+  // Çok büyük dosya koruması (10 MB)
+  if (f.size > 10 * 1024 * 1024) {
+    addAttachBubble({ kind:'file', name:f.name, size:formatSize(f.size) });
+    addBubble('Bu dosya çok büyük (10 MB üstü). Daha küçük bir sürümünü yollar mısın?', 'ai');
+    return;
+  }
+
   if (f.type.startsWith('image/')) {
     // Resim — vision modeline gönderilecek, data URL üretiyoruz
     const r = new FileReader();
@@ -1012,27 +1040,9 @@ function addAttachBubble(att) {
     b.innerHTML = `<img src="${att.src}" style="max-width:220px;max-height:260px;border-radius:12px;display:block">`;
   } else if (att.kind === 'file') {
     b.innerHTML = `📎 <b>${esc(att.name)}</b><br><span style="font-size:11px;opacity:.8">${esc(att.size||'')}</span>`;
-  } else if (att.kind === 'audio') {
-    const tr = att.transcript ? `<div style="font-size:12px;opacity:.85;margin-top:6px;font-style:italic">"${esc(att.transcript)}"</div>` : '';
-    b.innerHTML = `<audio controls src="${att.src}" style="max-width:240px"></audio>${tr}`;
   }
   box.appendChild(b);
   document.querySelector('.tab-content').scrollTop = 99999;
-
-  // Ses için: transkript varsa AI'ya gerçek mesaj gibi gönder
-  if (att.kind === 'audio') {
-    if (att.transcript && att.transcript.trim()) {
-      sendTranscribedVoice(att.transcript.trim());
-    } else {
-      // Transkript yok — kullanıcıya ne yapacağını söyle
-      const typing = addBubble('yazıyor…', 'ai');
-      typing.classList.add('typing');
-      setTimeout(() => {
-        typing.remove();
-        addBubble('Ses kaydını aldım ama ne dediğini anlayamadım (sessizlik, gürültü veya cihazın ses-yazı desteklemiyor olabilir). Birkaç kelimeyle ne anlatmak istediğini yazar mısın?', 'ai');
-      }, 600);
-    }
-  }
 }
 
 /* === Resmi AI'nın gerçekten analiz etmesi === */
@@ -1041,11 +1051,13 @@ async function analyzeImageWithAI(dataUrl) {
   typing.classList.add('typing');
   try {
     const mood = state.currentMood;
-    const userName = personalizeActive() ? (state.user?.name || 'dostum') : 'arkadaşım';
+    const pers = personalizeActive();
+    const userName = pers ? (state.user?.name || 'dostum') : 'arkadaşım';
     const system = `Sen Yaşam.AI'sın, Türkçe konuşan sıcak bir arkadaşsın. Kullanıcı sana bir resim gönderdi.
 Resme gerçekten bak ve içinde ne olduğunu somut olarak söyle — sonra kullanıcının duygusal durumuyla bağla.
 Kurallar: Türkçe, samimi, 3-5 cümle. Klişe YASAK. "Resim çok güzel" deme. Neyi gördüğünü net söyle ve dokunaklı/anlamlı bir yorum kat.
-${mood ? 'Kullanıcının ruh hali: ' + (moodPrompts[mood] || '') : ''}`;
+${pers && mood ? 'Kullanıcının ruh hali: ' + (moodPrompts[mood] || '') : 'Genel, nötr ama içten bir ton kullan.'}
+${pers ? 'Kullanıcının adı: ' + userName + ' (ara sıra kullanabilirsin).' : 'İsim veya kişisel bilgi kullanma.'}`;
     const res = await fetch('https://text.pollinations.ai/openai', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
@@ -1125,10 +1137,13 @@ async function analyzeTextWithAI(fileName, text, isPdf=false) {
   typing.classList.add('typing');
   try {
     const mood = state.currentMood;
+    const pers = personalizeActive();
+    const userName = pers ? (state.user?.name || 'dostum') : '';
     const system = `Sen Yaşam.AI'sın — sıcak, Türkçe konuşan bir arkadaşsın. Kullanıcı sana ${isPdf?'bir PDF':'bir dosya'} gönderdi: "${fileName}".
 İçeriğini okudun. Kısaca ne olduğunu özetle (1-2 cümle), sonra kullanıcıya duygusal olarak destekleyici bir geri dönüş yap. Dosya kişisel bir yazıysa yorum yap, teknik bir şeyse yardım öner.
 Kurallar: Türkçe, samimi, 3-5 cümle. Klişe yok.
-${mood ? 'Kullanıcının ruh hali: ' + (moodPrompts[mood] || '') : ''}`;
+${pers && mood ? 'Kullanıcının ruh hali: ' + (moodPrompts[mood] || '') : 'Nötr ama içten bir ton.'}
+${pers ? 'Kullanıcının adı: ' + userName + '.' : 'İsim kullanma.'}`;
     const res = await fetch('https://text.pollinations.ai/openai', {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
@@ -1156,61 +1171,110 @@ ${mood ? 'Kullanıcının ruh hali: ' + (moodPrompts[mood] || '') : ''}`;
 }
 
 async function sendTranscribedVoice(text) {
-  const input = document.getElementById('chatInput');
-  const old = input.value;
-  input.value = text;
-  await sendMsg();
-  if (old) input.value = old;
+  // Bubble zaten eklendi (ses kaydı akışında) — biz sadece AI'ya yollayıp cevabı yazacağız.
+  if (!state.currentMood) {
+    addBubble('Önce yukarıdan bir ruh hali seç, sonra sesle konuşalım.', 'ai');
+    return;
+  }
+  if (!state.isPro && state.msgCount >= state.maxFree) { openSheet('premium'); return; }
+  state.msgCount++;
+  LS.set('yasamai_msgCount', state.msgCount);
+  updateCounter();
+  const typing = addBubble('yazıyor…', 'ai');
+  typing.classList.add('typing');
+  try {
+    const reply = await getAiReply(text, state.currentMood);
+    typing.remove();
+    addBubble(reply, 'ai');
+  } catch(e) { typing.remove(); addBubble('Bir sorun oldu, tekrar dener misin?', 'ai'); }
 }
 
-/* Ses kaydı — MediaRecorder + Web Speech API transkripti */
-let mediaRec = null, audioChunks = [];
-let speechRec = null, speechTranscript = '';
-async function startVoiceRecord() {
-  if (mediaRec && mediaRec.state === 'recording') { stopVoiceRecord(); return; }
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    mediaRec = new MediaRecorder(stream);
-    audioChunks = [];
-    speechTranscript = '';
-    mediaRec.ondataavailable = e => audioChunks.push(e.data);
-    mediaRec.onstop = () => {
-      stream.getTracks().forEach(t => t.stop());
-      const blob = new Blob(audioChunks, { type:'audio/webm' });
-      const url = URL.createObjectURL(blob);
-      // Speech recognition'ı da durdur
-      try { if (speechRec) speechRec.stop(); } catch(_) {}
-      // Transkript için kısa bekle (onresult son parçayı yakalasın)
-      setTimeout(() => {
-        addAttachBubble({ kind:'audio', src:url, transcript: speechTranscript });
-      }, 300);
-      document.getElementById('recBadge').classList.remove('show');
-    };
-    mediaRec.start();
-    document.getElementById('recBadge').classList.add('show');
+/* Ses kaydı — SADECE Web Speech API (Android TWA'da MediaRecorder ile çakışmasın diye)
+   Akış: SpeechRecognition mikrofonu tek başına tutar, canlı + final transkripti biriktirir.
+         Kullanıcı "Durdur" dediğinde onend ile transkript döner, AI'ya yollanır. */
+let speechRec = null;
+let speechTranscript = '';
+let speechInterim = '';
+let speechStopRequested = false;
+let speechStream = null; // izin için açılan mic stream (SR bittikten sonra kapatılır)
 
-    // Web Speech API ile canlı transkript (Türkçe)
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SR) {
-      speechRec = new SR();
-      speechRec.lang = 'tr-TR';
-      speechRec.continuous = true;
-      speechRec.interimResults = false;
-      speechRec.onresult = (ev) => {
-        for (let i = ev.resultIndex; i < ev.results.length; i++) {
-          if (ev.results[i].isFinal) {
-            speechTranscript += (speechTranscript ? ' ' : '') + ev.results[i][0].transcript;
-          }
-        }
-      };
-      speechRec.onerror = () => {};
-      try { speechRec.start(); } catch(_) {}
-    }
+async function startVoiceRecord() {
+  if (speechRec) { stopVoiceRecord(); return; }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    addBubble('Bu cihaz sesli not (konuşmayı yazıya çevirme) desteklemiyor. Bunun yerine kısaca yazar mısın?', 'ai');
+    return;
+  }
+  // Önce mikrofon iznini getUserMedia ile net al, sonra stream'i hemen kapat — izin kalır.
+  try {
+    speechStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    speechStream.getTracks().forEach(t => t.stop());
+    speechStream = null;
   } catch(err) {
-    alert('Mikrofon açılamadı: ' + err.message);
+    addBubble('Mikrofon izni alınamadı. Ayarlar → Yaşam.AI → Mikrofon → İzin ver.', 'ai');
+    return;
+  }
+  speechTranscript = '';
+  speechInterim = '';
+  speechStopRequested = false;
+  try {
+    speechRec = new SR();
+    speechRec.lang = 'tr-TR';
+    speechRec.continuous = true;
+    speechRec.interimResults = true;
+    speechRec.onresult = (ev) => {
+      let interim = '';
+      for (let i = ev.resultIndex; i < ev.results.length; i++) {
+        const t = ev.results[i][0].transcript;
+        if (ev.results[i].isFinal) {
+          speechTranscript += (speechTranscript ? ' ' : '') + t.trim();
+        } else {
+          interim += t;
+        }
+      }
+      speechInterim = interim.trim();
+      // Canlı görünüm — rec badge'te göster
+      const badge = document.getElementById('recBadge');
+      if (badge && badge.classList.contains('show')) {
+        const live = (speechTranscript + ' ' + speechInterim).trim();
+        badge.innerHTML = '<span class="rec-dot"></span>' + (live ? esc(live.slice(-60)) : 'Dinliyorum…') + ' · Durdur';
+      }
+    };
+    speechRec.onerror = (e) => {
+      // no-speech / audio-capture / not-allowed / aborted — sessizce kapat, mesaj kullanıcıya
+      if (e && e.error === 'not-allowed') {
+        addBubble('Mikrofon izni reddedildi. Ayarlar → Yaşam.AI → Mikrofon.', 'ai');
+      }
+    };
+    speechRec.onend = () => {
+      const badge = document.getElementById('recBadge');
+      if (badge) badge.classList.remove('show');
+      const final = (speechTranscript + (speechInterim ? ' ' + speechInterim : '')).trim();
+      speechRec = null;
+      speechInterim = '';
+      if (!final) {
+        addBubble('Sesli notu aldım ama içinde anlaşılır bir konuşma yakalayamadım (çok kısa, sessiz veya gürültülü olabilir). Birkaç kelimeyle yazar mısın?', 'ai');
+        return;
+      }
+      // Transkripti kullanıcının mesajı gibi gönder
+      addBubble('🎙️ ' + final, 'me');
+      sendTranscribedVoice(final);
+    };
+    speechRec.start();
+    document.getElementById('recBadge').classList.add('show');
+    document.getElementById('recBadge').innerHTML = '<span class="rec-dot"></span>Dinliyorum… · Durdur';
+  } catch(err) {
+    speechRec = null;
+    addBubble('Ses kaydı başlatılamadı: ' + (err.message || 'bilinmeyen hata'), 'ai');
   }
 }
-function stopVoiceRecord() { if (mediaRec && mediaRec.state === 'recording') mediaRec.stop(); }
+function stopVoiceRecord() {
+  if (!speechRec) return;
+  speechStopRequested = true;
+  try { speechRec.stop(); } catch(_) {
+    try { speechRec.abort(); } catch(_){}
+  }
+}
 
 /* ============ AVATAR (izin sistemi ile) ============ */
 function askAvatarPermission() {
@@ -1518,7 +1582,7 @@ function renderSheetReminder() {
       <div style="font-size:36px;font-weight:800;padding:8px 0;align-self:center">:</div>
       <div class="tp-col"><div class="tp-btn" onclick="adjTime('m',1)">▲</div><div class="tp-num" id="rM">${String(m).padStart(2,'0')}</div><div class="tp-btn" onclick="adjTime('m',-1)">▼</div><div class="tp-label">Dakika</div></div>
     </div>
-    <div class="day-toggles">${days.map(d=>`<div class="day-tg ${state.reminderDays.includes(d)?'on':''}" onclick="toggleDay('${d}')">${d[0]}</div>`).join('')}</div>
+    <div class="day-toggles">${days.map(d=>`<div class="day-tg ${state.reminderDays.includes(d)?'on':''}" onclick="toggleDay('${d}')" style="width:44px;font-size:10px">${d}</div>`).join('')}</div>
     <div class="setting" style="padding:12px 0"><div class="sl">Hatırlatıcı açık</div><div class="switch ${state.reminderOn?'on':''}" onclick="toggleRem()"></div></div>
     <button class="sheet-btn" onclick="saveReminder()">Kaydet</button>
     <button class="sheet-btn" onclick="testReminder()" style="background:rgba(255,255,255,0.08);color:#fff;margin-top:8px">🔔 Test bildirimi gönder</button>
@@ -1726,13 +1790,6 @@ function fireReminder() {
     }
   } catch(e) { console.warn('Reminder notification failed', e); }
 }
-
-// Uygulama açılışında hatırlatmayı planla (daha önce kurulmuşsa)
-window.addEventListener('load', () => {
-  if (state.reminderOn && 'Notification' in window && Notification.permission === 'granted') {
-    setTimeout(scheduleReminder, 1000);
-  }
-});
 
 function renderSheetPrivacy() {
   const p = state.privacy;
@@ -1953,7 +2010,8 @@ async function doSignup() {
   const age = ageFromBirth(birth);
   if (age < 18) { alert('Yaşam.AI 18 yaş altı için uygun değildir. Kayıt reddedildi.'); return; }
   const accounts = LS.get('yasamai_accounts', []);
-  if (accounts.find(a => a.email === m)) { alert('Bu e-posta zaten kayıtlı.'); return; }
+  const mLow = m.toLowerCase();
+  if (accounts.find(a => (a.email||'').toLowerCase() === mLow)) { alert('Bu e-posta zaten kayıtlı. "Giriş yap"ı kullan.'); return; }
   await sendVerifyCodeAndShow({ name:n, email:m, pass:p, birth, mode:'email' });
 }
 
@@ -2082,7 +2140,8 @@ function handleGoogleCredential(resp) {
   const payload = decodeJwt(resp.credential);
   if (!payload) { alert('Google girişi çözülemedi.'); return; }
   const accounts = LS.get('yasamai_accounts', []);
-  const existing = accounts.find(a => a.email === payload.email);
+  const mail = (payload.email || '').toLowerCase();
+  const existing = accounts.find(a => (a.email||'').toLowerCase() === mail);
   if (authMode === 'login') {
     // Giriş modu — hesap yoksa reddet
     if (!existing) {
@@ -2232,7 +2291,7 @@ async function doApple() {
   if (!name) { alert('İsmini gir.'); return; }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert('Geçerli bir Apple ID e-postası gir.'); return; }
   const accounts = LS.get('yasamai_accounts', []);
-  const existing = accounts.find(a => a.email === email);
+  const existing = accounts.find(a => (a.email||'').toLowerCase() === email);
   if (authMode === 'login') {
     if (!existing) { alert('Bu Apple ID ('+email+') kayıtlı değil. Önce kayıt olmalısın.'); return; }
     state.user = { name: existing.name, email: existing.email, mode:'apple', verified:true };
