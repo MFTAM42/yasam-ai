@@ -1223,17 +1223,20 @@ async function startVoiceRecord() {
     speechRec.continuous = true;
     speechRec.interimResults = true;
     speechRec.onresult = (ev) => {
+      // ev.results'un TAMAMINI baştan tara: finaller tam metin, interimler geçici.
+      // Bu sayede aynı segment tekrar final olsa bile tekrar eklenmiyor.
+      const finals = [];
       let interim = '';
-      for (let i = ev.resultIndex; i < ev.results.length; i++) {
-        const t = ev.results[i][0].transcript;
-        if (ev.results[i].isFinal) {
-          speechTranscript += (speechTranscript ? ' ' : '') + t.trim();
-        } else {
-          interim += t;
-        }
+      for (let i = 0; i < ev.results.length; i++) {
+        const t = (ev.results[i][0].transcript || '').trim();
+        if (!t) continue;
+        if (ev.results[i].isFinal) finals.push(t);
+        else interim += (interim ? ' ' : '') + t;
       }
-      speechInterim = interim.trim();
-      // Canlı görünüm — rec badge'te göster
+      // Ardışık aynı kelimeleri temizle ("çok çok çok teşekkür" → "çok teşekkür")
+      const joined = finals.join(' ');
+      speechTranscript = dedupWords(joined);
+      speechInterim = dedupWords(interim.trim());
       const badge = document.getElementById('recBadge');
       if (badge && badge.classList.contains('show')) {
         const live = (speechTranscript + ' ' + speechInterim).trim();
@@ -1249,7 +1252,8 @@ async function startVoiceRecord() {
     speechRec.onend = () => {
       const badge = document.getElementById('recBadge');
       if (badge) badge.classList.remove('show');
-      const final = (speechTranscript + (speechInterim ? ' ' + speechInterim : '')).trim();
+      const raw = (speechTranscript + (speechInterim ? ' ' + speechInterim : '')).trim();
+      const final = dedupWords(raw);
       speechRec = null;
       speechInterim = '';
       if (!final) {
@@ -1274,6 +1278,36 @@ function stopVoiceRecord() {
   try { speechRec.stop(); } catch(_) {
     try { speechRec.abort(); } catch(_){}
   }
+}
+
+// SpeechRecognition Türkçe'de aynı kelimeyi arka arkaya birkaç kez basabiliyor.
+// "çok çok çok teşekkür ederim" → "çok teşekkür ederim"
+// Ayrıca 2-3-4'lü ardışık öbekleri de temizler: "teşekkür ederim teşekkür ederim" → "teşekkür ederim"
+function dedupWords(s) {
+  if (!s) return '';
+  // Noktalama normalleştirme — kelimeleri tek boşlukla ayır
+  const words = s.replace(/\s+/g,' ').trim().split(' ');
+  if (words.length < 2) return words.join(' ');
+  // 1) Tekli ardışık kelime dedup (case-insensitive)
+  const step1 = [];
+  for (let i = 0; i < words.length; i++) {
+    const cur = words[i].toLowerCase();
+    const prev = step1.length ? step1[step1.length-1].toLowerCase() : '';
+    if (cur !== prev) step1.push(words[i]);
+  }
+  // 2) 2'li, 3'lü, 4'lü ardışık öbek dedup ("ama y ama y" → "ama y")
+  for (let n = 4; n >= 2; n--) {
+    for (let i = 0; i + 2*n <= step1.length; ) {
+      const a = step1.slice(i, i+n).map(x=>x.toLowerCase()).join(' ');
+      const b = step1.slice(i+n, i+2*n).map(x=>x.toLowerCase()).join(' ');
+      if (a === b) {
+        step1.splice(i+n, n); // ikinci öbeği sil
+      } else {
+        i++;
+      }
+    }
+  }
+  return step1.join(' ');
 }
 
 /* ============ AVATAR (izin sistemi ile) ============ */
@@ -1529,14 +1563,24 @@ function openSheetRaw(){
   // Geri tuşunda sheet kapansın, uygulamadan çıkmasın
   try { history.pushState({ sheet: true }, ''); } catch(e){}
 }
+let _closingSheet = false;
 function closeSheet(){
   document.getElementById('sheetBg').classList.remove('show');
   document.getElementById('sheet').classList.remove('show');
-  if (history.state && history.state.sheet) { try { history.back(); } catch(e){} }
+  if (history.state && history.state.sheet) {
+    _closingSheet = true; // popstate handler bunu görüp tab değiştirmeyecek
+    try { history.back(); } catch(e){ _closingSheet = false; }
+  }
 }
 // Android/telefon geri tuşu: sheet açıksa kapat, tab chat değilse chat'e dön,
 // chat'teyken de çıkmasın — her popstate'te yeni state push ederek uygulamada tut
 window.addEventListener('popstate', (ev) => {
+  // Programatik closeSheet() zaten sheet'i kapattı ve history.back dedi — tab'e dokunma
+  if (_closingSheet) {
+    _closingSheet = false;
+    try { history.pushState({ app:true }, ''); } catch(e){}
+    return;
+  }
   // Permission overlay açıksa önce onu kapat
   const permOpen = document.getElementById('permOverlay')?.classList.contains('show');
   if (permOpen) {
