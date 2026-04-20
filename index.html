@@ -694,7 +694,29 @@ window.addEventListener('load', () => {
     if (state.user) enterApp();
     else document.getElementById('onboard').classList.remove('hidden');
   }, 1500);
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').then((reg) => {
+      // Yeni SW bulundu mu? Hazır olunca devreye al ve sayfayı bir kerelik yenile.
+      if (reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
+      reg.addEventListener('updatefound', () => {
+        const nw = reg.installing;
+        if (!nw) return;
+        nw.addEventListener('statechange', () => {
+          if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+            nw.postMessage('SKIP_WAITING');
+          }
+        });
+      });
+      // Her uygulama açılışında güncelleme var mı diye kontrol et
+      setTimeout(() => reg.update().catch(()=>{}), 1500);
+    }).catch(()=>{});
+    let _reloaded = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (_reloaded) return;
+      _reloaded = true;
+      location.reload();
+    });
+  }
 });
 
 function enterApp() {
