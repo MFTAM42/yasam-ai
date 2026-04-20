@@ -963,14 +963,45 @@ function chatAttach(type) {
 function onChatFilePicked(e, kind) {
   const f = e.target.files && e.target.files[0];
   if (!f) return;
-  e.target.value = ''; // tekrar aynı dosya seçilebilsin
+  e.target.value = '';
+  // + menüsü açıksa kapat (kullanıcı dosya seçti, otomatik kapansın)
+  document.getElementById('attachMenu')?.classList.remove('open');
+  document.getElementById('attachBtn')?.classList.remove('open');
+
   if (f.type.startsWith('image/')) {
+    // Resim — vision modeline gönderilecek, data URL üretiyoruz
     const r = new FileReader();
-    r.onload = ev => addAttachBubble({ kind:'image', src:ev.target.result, name:f.name });
+    r.onload = ev => {
+      addAttachBubble({ kind:'image', src:ev.target.result, name:f.name });
+      analyzeImageWithAI(ev.target.result);
+    };
     r.readAsDataURL(f);
+  } else if (f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')) {
+    // PDF — içeriğini çıkar, AI'ya gönder
+    addAttachBubble({ kind:'file', name:f.name, size:formatSize(f.size) });
+    extractPdfAndAnalyze(f);
+  } else if (f.type.startsWith('text/') || /\.(txt|md|csv|log|json)$/i.test(f.name)) {
+    // Metin dosyası — oku, AI'ya gönder
+    addAttachBubble({ kind:'file', name:f.name, size:formatSize(f.size) });
+    const r = new FileReader();
+    r.onload = ev => analyzeTextWithAI(f.name, ev.target.result);
+    r.readAsText(f);
   } else {
-    addAttachBubble({ kind:'file', name:f.name, size:(f.size/1024).toFixed(1)+' KB' });
+    // Bilinmeyen format — sadece bildir
+    addAttachBubble({ kind:'file', name:f.name, size:formatSize(f.size) });
+    const typing = addBubble('yazıyor…', 'ai');
+    typing.classList.add('typing');
+    setTimeout(() => {
+      typing.remove();
+      addBubble('Bu dosya türünü (' + (f.type || 'bilinmiyor') + ') henüz okuyamıyorum. Resim, PDF veya metin dosyası gönderebilirsin — onları analiz edebilirim. Ya da içindekini yazıya çevirip mesaj olarak at?', 'ai');
+    }, 600);
   }
+}
+
+function formatSize(b) {
+  if (b < 1024) return b + ' B';
+  if (b < 1024*1024) return (b/1024).toFixed(1) + ' KB';
+  return (b/1024/1024).toFixed(1) + ' MB';
 }
 
 function addAttachBubble(att) {
@@ -989,26 +1020,142 @@ function addAttachBubble(att) {
   document.querySelector('.tab-content').scrollTop = 99999;
 
   // Ses için: transkript varsa AI'ya gerçek mesaj gibi gönder
-  if (att.kind === 'audio' && att.transcript && att.transcript.trim()) {
-    // chat history'ye kullanıcı mesajı olarak ekle + AI cevabı al
-    sendTranscribedVoice(att.transcript.trim());
-    return;
+  if (att.kind === 'audio') {
+    if (att.transcript && att.transcript.trim()) {
+      sendTranscribedVoice(att.transcript.trim());
+    } else {
+      // Transkript yok — kullanıcıya ne yapacağını söyle
+      const typing = addBubble('yazıyor…', 'ai');
+      typing.classList.add('typing');
+      setTimeout(() => {
+        typing.remove();
+        addBubble('Ses kaydını aldım ama ne dediğini anlayamadım (sessizlik, gürültü veya cihazın ses-yazı desteklemiyor olabilir). Birkaç kelimeyle ne anlatmak istediğini yazar mısın?', 'ai');
+      }, 600);
+    }
   }
+}
 
-  // Diğerleri için kısa AI yanıtı
-  const typing = addBubble('yazıyor…', 'ai');
+/* === Resmi AI'nın gerçekten analiz etmesi === */
+async function analyzeImageWithAI(dataUrl) {
+  const typing = addBubble('resme bakıyorum…', 'ai');
   typing.classList.add('typing');
-  setTimeout(() => {
+  try {
+    const mood = state.currentMood;
+    const userName = personalizeActive() ? (state.user?.name || 'dostum') : 'arkadaşım';
+    const system = `Sen Yaşam.AI'sın, Türkçe konuşan sıcak bir arkadaşsın. Kullanıcı sana bir resim gönderdi.
+Resme gerçekten bak ve içinde ne olduğunu somut olarak söyle — sonra kullanıcının duygusal durumuyla bağla.
+Kurallar: Türkçe, samimi, 3-5 cümle. Klişe YASAK. "Resim çok güzel" deme. Neyi gördüğünü net söyle ve dokunaklı/anlamlı bir yorum kat.
+${mood ? 'Kullanıcının ruh hali: ' + (moodPrompts[mood] || '') : ''}`;
+    const res = await fetch('https://text.pollinations.ai/openai', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'openai',
+        messages: [
+          { role: 'system', content: system },
+          { role: 'user', content: [
+            { type: 'text', text: 'Bu resmi benimle paylaştım. Gördüklerini söyle ve bana ne hissettirdiği hakkında konuşalım.' },
+            { type: 'image_url', image_url: { url: dataUrl } }
+          ] }
+        ],
+        max_tokens: 300
+      })
+    });
+    const data = await res.json();
+    let reply = data?.choices?.[0]?.message?.content?.trim() || '';
+    reply = reply.replace(/IMPORTANT NOTICE[\s\S]*?pollinations\.ai[^.]*\.?/gi, '').trim();
     typing.remove();
-    const msg = att.kind === 'image' ? 'Resmi aldım. Neyi anlatmak istedin anlatır mısın?' :
-                att.kind === 'audio' ? 'Sesli notunu aldım ama içinde konuşma yakalayamadım. Yazıyla yazar mısın?' :
-                'Dosyanı aldım. Bu dosyayla ilgili ne paylaşmak istiyorsun?';
-    addBubble(msg, 'ai');
-  }, 600);
+    if (!reply) { addBubble('Resmi aldım ama şu an tam çözemedim. Sen ne anlatmak istedin bu resimle?', 'ai'); return; }
+    addBubble(reply, 'ai');
+    chatHistory.push({ role:'user', content:'[Resim gönderdim]' });
+    chatHistory.push({ role:'assistant', content: reply });
+    saveChatHistory(mood);
+  } catch(e) {
+    typing.remove();
+    addBubble('Resmi inceleyemedim (bağlantı sorunu olabilir). Sen bana bu resimle ne anlatmak istediğini yazar mısın?', 'ai');
+  }
+}
+
+function personalizeActive() {
+  return state.privacy?.personalize !== false;
+}
+
+/* === PDF içeriğini çıkar ve AI'ya gönder === */
+async function extractPdfAndAnalyze(file) {
+  const typing = addBubble('dosyayı okuyorum…', 'ai');
+  typing.classList.add('typing');
+  try {
+    // PDF.js CDN yükle (yoksa)
+    if (!window.pdfjsLib) {
+      await new Promise((res, rej) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+        s.onload = res; s.onerror = rej;
+        document.head.appendChild(s);
+      });
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+    const buf = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+    let text = '';
+    const maxPages = Math.min(pdf.numPages, 10);
+    for (let i = 1; i <= maxPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      text += content.items.map(it => it.str).join(' ') + '\n\n';
+    }
+    text = text.trim();
+    if (!text) {
+      typing.remove();
+      addBubble('PDF\'ini açtım ama içinde metin bulamadım — sadece görsel olabilir. Ne hakkında olduğunu yazar mısın?', 'ai');
+      return;
+    }
+    // AI'ya gönder
+    const short = text.slice(0, 6000);
+    typing.remove();
+    analyzeTextWithAI(file.name, short, true);
+  } catch(e) {
+    typing.remove();
+    addBubble('PDF\'i okuyamadım: ' + (e.message || 'hata') + '. Metni kopyalayıp yazabilir misin?', 'ai');
+  }
+}
+
+/* === Metin dosyası / PDF içeriğini AI'ya yorumlat === */
+async function analyzeTextWithAI(fileName, text, isPdf=false) {
+  const typing = addBubble('okuyorum…', 'ai');
+  typing.classList.add('typing');
+  try {
+    const mood = state.currentMood;
+    const system = `Sen Yaşam.AI'sın — sıcak, Türkçe konuşan bir arkadaşsın. Kullanıcı sana ${isPdf?'bir PDF':'bir dosya'} gönderdi: "${fileName}".
+İçeriğini okudun. Kısaca ne olduğunu özetle (1-2 cümle), sonra kullanıcıya duygusal olarak destekleyici bir geri dönüş yap. Dosya kişisel bir yazıysa yorum yap, teknik bir şeyse yardım öner.
+Kurallar: Türkçe, samimi, 3-5 cümle. Klişe yok.
+${mood ? 'Kullanıcının ruh hali: ' + (moodPrompts[mood] || '') : ''}`;
+    const res = await fetch('https://text.pollinations.ai/openai', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'openai-fast',
+        messages: [
+          { role:'system', content: system },
+          { role:'user', content: `Dosya adı: ${fileName}\n\nİçerik:\n${text.slice(0, 6000)}` }
+        ],
+        max_tokens: 320
+      })
+    });
+    const data = await res.json();
+    let reply = data?.choices?.[0]?.message?.content?.trim() || '';
+    reply = reply.replace(/IMPORTANT NOTICE[\s\S]*?pollinations\.ai[^.]*\.?/gi, '').trim();
+    typing.remove();
+    if (!reply) { addBubble(`${fileName} dosyasını okudum ama şu an yorum üretemedim. Sen bu dosyayla ilgili ne düşündüğünü anlatır mısın?`, 'ai'); return; }
+    addBubble(reply, 'ai');
+    chatHistory.push({ role:'user', content:`[${fileName} gönderdim]` });
+    chatHistory.push({ role:'assistant', content: reply });
+    saveChatHistory(mood);
+  } catch(e) {
+    typing.remove();
+    addBubble('Dosyayı okumaya çalıştım ama bir sorun çıktı. İçinden önemli kısmı yazı olarak yapıştırır mısın?', 'ai');
+  }
 }
 
 async function sendTranscribedVoice(text) {
-  // Input'a koymadan direkt gönder — sendMsg mantığını birebir tekrarla
   const input = document.getElementById('chatInput');
   const old = input.value;
   input.value = text;
