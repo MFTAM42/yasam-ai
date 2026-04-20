@@ -1,5 +1,5 @@
 // Yaşam.AI — Service Worker (offline cache)
-const CACHE = 'yasamai-v28';
+const CACHE = 'yasamai-v29';
 const ASSETS = [
   './',
   './index.html',
