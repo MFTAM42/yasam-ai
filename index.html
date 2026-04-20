@@ -1478,13 +1478,20 @@ async function joinWaitlist() {
   if (!list.includes(m)) list.push(m);
   LS.set('yasamai_waitlist_all', list);
   LS.set('yasamai_waitlist', true);
-  // EmailJS ile gerçek mail bildirimi (template'i varsayarak)
+  // EmailJS ile: 1) kullanıcıya teşekkür 2) sana (admin) bildirim
   if (window.emailjs && EMAILJS_SERVICE_ID && EMAILJS_PUBLIC_KEY) {
     try {
       emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+      // Kullanıcıya teşekkür
       await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
         to_email: m, to_name: state.user?.name || 'Arkadaş',
         code: 'Yaşam.AI Premium erken erişim listesine kaydoldun. Lansman günü %50 indirim kuponu mail olarak gelecek!'
+      });
+      // Admin (sana) bildirim
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email: 'tam.4238@gmail.com',
+        to_name: 'Yaşam.AI Admin',
+        code: '🎉 YENİ PREMIUM WAITLIST KAYDI\n\nİsim: ' + (state.user?.name || 'Bilinmiyor') + '\nMail: ' + m + '\nTarih: ' + new Date().toLocaleString('tr-TR') + '\nToplam kayıtlı: ' + list.length
       });
     } catch(e) { /* sessiz */ }
   }
