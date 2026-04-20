@@ -1,5 +1,5 @@
 // Yaşam.AI — Service Worker (offline cache)
-const CACHE = 'yasamai-v23';
+const CACHE = 'yasamai-v24';
 const ASSETS = [
   './',
   './index.html',
@@ -23,6 +23,19 @@ self.addEventListener('activate', (e) => {
     )
   );
   self.clients.claim();
+});
+
+// Bildirime tıklayınca uygulamayı aç (veya fokusla)
+self.addEventListener('notificationclick', (e) => {
+  e.notification.close();
+  e.waitUntil(
+    self.clients.matchAll({ type:'window', includeUncontrolled:true }).then((clients) => {
+      for (const c of clients) {
+        if ('focus' in c) return c.focus();
+      }
+      if (self.clients.openWindow) return self.clients.openWindow('./');
+    })
+  );
 });
 
 self.addEventListener('fetch', (e) => {

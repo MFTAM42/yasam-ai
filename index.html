@@ -641,6 +641,15 @@ function enterApp() {
   switchTab('chat');
   // Geri tuşu yönetimi için başlangıç state'i
   try { history.replaceState({ app: true }, ''); } catch(e){}
+  // Bildirim izni daha önce istenmemişse, hatırlatıcı açıksa iste
+  if (state.reminderOn && 'Notification' in window && Notification.permission === 'default') {
+    setTimeout(async () => {
+      const granted = await ensureNotifyPermission();
+      if (granted) scheduleReminder();
+    }, 2000);
+  } else if (state.reminderOn && 'Notification' in window && Notification.permission === 'granted') {
+    setTimeout(scheduleReminder, 1000);
+  }
   // Mobil klavye açılınca input görünür kalsın
   const ci = document.getElementById('chatInput');
   if (ci) {
@@ -1365,6 +1374,8 @@ function renderSheetReminder() {
     <div class="day-toggles">${days.map(d=>`<div class="day-tg ${state.reminderDays.includes(d)?'on':''}" onclick="toggleDay('${d}')">${d[0]}</div>`).join('')}</div>
     <div class="setting" style="padding:12px 0"><div class="sl">Hatırlatıcı açık</div><div class="switch ${state.reminderOn?'on':''}" onclick="toggleRem()"></div></div>
     <button class="sheet-btn" onclick="saveReminder()">Kaydet</button>
+    <button class="sheet-btn" onclick="testReminder()" style="background:rgba(255,255,255,0.08);color:#fff;margin-top:8px">🔔 Test bildirimi gönder</button>
+    <p style="font-size:11px;color:#a0a3b8;margin-top:10px;line-height:1.5">💡 Uygulama kapalıyken bildirim gelmesi için telefon ayarlarından <b>"Yaşam.AI → Pil optimizasyonu → Kısıtlama yok"</b> seçmen gerekebilir.</p>
   `;
 }
 function adjTime(w, d) {
@@ -1380,23 +1391,161 @@ function toggleDay(d) {
   renderSheetReminder();
 }
 function toggleRem() { state.reminderOn = !state.reminderOn; renderSheetReminder(); }
+async function testReminder() {
+  const granted = await ensureNotifyPermission();
+  if (!granted) return;
+  fireReminder();
+  alert('✅ Test bildirimi gönderildi! Bildirim gelmezse:\n\n1) Ayarlar → Uygulamalar → Yaşam.AI → Bildirimler → AÇ\n2) Sessiz moddaysan bildirim sesini kontrol et');
+}
 async function saveReminder() {
   LS.set('yasamai_reminder', state.reminder);
   LS.set('yasamai_rdays', state.reminderDays);
   LS.set('yasamai_ron', state.reminderOn);
   document.getElementById('reminderVal').textContent = state.reminderOn ? state.reminder : 'Kapalı';
-  // Bildirim izni iste + zamanlamayı kur
   if (state.reminderOn) {
     const granted = await ensureNotifyPermission();
     if (!granted) {
-      alert('Bildirim izni verilmedi. Hatırlatma çalışmaz; tarayıcı ayarlarından izin verebilirsin.');
-    } else {
-      scheduleReminder();
-      alert('Hatırlatma kuruldu: Her ' + state.reminderDays.join(', ') + ' günü ' + state.reminder + '. İlk bildirim gelince dokunarak kontrol et.');
+      alert('Bildirim izni verilmedi. Telefon ayarlarından "Yaşam.AI → Bildirimler" kısmından izni aç.');
+      closeSheet();
+      return;
     }
+    scheduleReminder();
+    const next = nextReminderTime();
+    const when = next ? next.toLocaleString('tr-TR', { weekday:'long', hour:'2-digit', minute:'2-digit' }) : state.reminder;
+    alert('✅ Hatırlatma kuruldu!\n\nBir sonraki bildirim:\n' + when + '\n\nUygulama kapalıyken de gelmesi için telefonda "Pil optimizasyonunu kapat" demen gerekebilir.');
+  } else {
+    cancelReminder();
   }
   closeSheet();
 }
+
+/* === Bildirim izni === */
+async function ensureNotifyPermission() {
+  if (!('Notification' in window)) { alert('Bu cihaz bildirim desteklemiyor.'); return false; }
+  if (Notification.permission === 'granted') return true;
+  if (Notification.permission === 'denied') {
+    alert('Bildirim izni daha önce reddedilmiş. Telefon ayarlarından manuel açman gerekiyor:\n\nAyarlar → Uygulamalar → Yaşam.AI → Bildirimler → Aç');
+    return false;
+  }
+  const r = await Notification.requestPermission();
+  return r === 'granted';
+}
+
+/* === Sonraki hatırlatma zamanı === */
+const DAY_MAP = { 'Pzt':1,'Sal':2,'Çar':3,'Per':4,'Cum':5,'Cmt':6,'Paz':0 };
+function nextReminderTime() {
+  const days = (state.reminderDays || []).map(d => DAY_MAP[d]).filter(n => n !== undefined);
+  if (!days.length) return null;
+  const [h, m] = state.reminder.split(':').map(Number);
+  const now = new Date();
+  for (let i = 0; i < 8; i++) {
+    const d = new Date(now);
+    d.setDate(now.getDate() + i);
+    d.setHours(h, m, 0, 0);
+    if (days.includes(d.getDay()) && d > now) return d;
+  }
+  return null;
+}
+
+/* === Zamanlama ===
+   3 katmanlı çalışır:
+   1) Notification Triggers API (varsa — Chrome): uygulama kapalıyken bile çalışır
+   2) setTimeout: uygulama açıkken tam dakikada bildirim gönderir
+   3) Her dakika kontrol (fallback): setTimeout miss olursa yakalar
+*/
+let reminderTimer = null;
+let reminderCheckInterval = null;
+
+async function scheduleReminder() {
+  cancelReminder();
+  const next = nextReminderTime();
+  if (!next) return;
+
+  // 1) Service Worker + Notification Triggers (Chrome experimental)
+  try {
+    if ('serviceWorker' in navigator) {
+      const reg = await navigator.serviceWorker.ready;
+      if ('showTrigger' in Notification.prototype && reg.showNotification) {
+        // 7 günlük pencere için birden fazla tetikleyici planla
+        const days = (state.reminderDays || []).map(d => DAY_MAP[d]).filter(n => n !== undefined);
+        const [h, m] = state.reminder.split(':').map(Number);
+        const now = new Date();
+        for (let i = 0; i < 14; i++) {
+          const d = new Date(now);
+          d.setDate(now.getDate() + i);
+          d.setHours(h, m, 0, 0);
+          if (days.includes(d.getDay()) && d > now) {
+            try {
+              await reg.showNotification('Yaşam.AI 🌙', {
+                body: 'Günlük kontrol zamanı — bugün nasılsın?',
+                tag: 'yasamai-reminder-' + d.getTime(),
+                icon: './icon-192.png',
+                badge: './icon-192.png',
+                showTrigger: new TimestampTrigger(d.getTime())
+              });
+            } catch(e){}
+          }
+        }
+      }
+    }
+  } catch(e) { /* sessiz */ }
+
+  // 2) setTimeout — uygulama açıkken kesin çalışır
+  const delayMs = next - new Date();
+  if (delayMs > 0 && delayMs < 2147483647) { // setTimeout max 24.8 gün
+    reminderTimer = setTimeout(() => {
+      fireReminder();
+      scheduleReminder(); // bir sonrakini planla
+    }, delayMs);
+  }
+
+  // 3) Her dakika kontrol (fallback — cihaz uyanıp geri gelince sayımı kaçırdıysak)
+  reminderCheckInterval = setInterval(() => {
+    const now = new Date();
+    const last = LS.get('yasamai_rem_last', 0);
+    const [h, m] = state.reminder.split(':').map(Number);
+    const days = (state.reminderDays || []).map(d => DAY_MAP[d]).filter(n => n !== undefined);
+    if (!days.includes(now.getDay())) return;
+    if (now.getHours() === h && now.getMinutes() === m) {
+      // Aynı dakika içinde ikinci kez atmayalım
+      if (now - last > 120000) {
+        fireReminder();
+        LS.set('yasamai_rem_last', now.getTime());
+      }
+    }
+  }, 30000); // 30 saniyede bir kontrol
+}
+
+function cancelReminder() {
+  if (reminderTimer) { clearTimeout(reminderTimer); reminderTimer = null; }
+  if (reminderCheckInterval) { clearInterval(reminderCheckInterval); reminderCheckInterval = null; }
+}
+
+function fireReminder() {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  try {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then(reg => {
+        reg.showNotification('Yaşam.AI 🌙', {
+          body: 'Günlük kontrol zamanı — bugün nasılsın?',
+          icon: './icon-192.png',
+          badge: './icon-192.png',
+          tag: 'yasamai-reminder',
+          vibrate: [200, 100, 200]
+        });
+      });
+    } else {
+      new Notification('Yaşam.AI 🌙', { body: 'Günlük kontrol zamanı — bugün nasılsın?', icon: './icon-192.png' });
+    }
+  } catch(e) { console.warn('Reminder notification failed', e); }
+}
+
+// Uygulama açılışında hatırlatmayı planla (daha önce kurulmuşsa)
+window.addEventListener('load', () => {
+  if (state.reminderOn && 'Notification' in window && Notification.permission === 'granted') {
+    setTimeout(scheduleReminder, 1000);
+  }
+});
 
 function renderSheetPrivacy() {
   const p = state.privacy;
