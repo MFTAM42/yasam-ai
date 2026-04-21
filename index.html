@@ -96,7 +96,8 @@
   body.light .tb-counter{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.08);color:#4b5563}
 
   .tab-content{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;-webkit-overflow-scrolling:touch;padding-bottom:calc(68px + env(safe-area-inset-bottom))}
-  .tab{display:none;flex-direction:column;min-height:100%}
+  .tab{display:none;flex-direction:column;min-height:100%;min-width:0;width:100%;box-sizing:border-box}
+  .tab>*{max-width:100%;box-sizing:border-box}
   .tab.active{display:flex}
   #tab-chat{min-height:calc(100vh - 70px - 64px)}
 
@@ -288,7 +289,8 @@
   .d-hero-main{font-size:24px;font-weight:800;letter-spacing:-0.5px;margin-top:6px;line-height:1.2}
   .d-hero-sub{font-size:12.5px;line-height:1.5;margin-top:6px;opacity:.92}
   .d-hero-cta{display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:9px 14px;background:rgba(255,255,255,0.22);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.3);border-radius:999px;font-weight:700;font-size:12.5px;color:#fff}
-  .d-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:0 18px 14px}
+  .d-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:0 18px 14px;min-width:0}
+  .d-stats>*{min-width:0}
   .d-stat{padding:12px 8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;text-align:center}
   body.light .d-stat{background:#fff;border-color:rgba(0,0,0,0.06);box-shadow:0 2px 10px rgba(0,0,0,0.03)}
   .d-stat-n{font-size:20px;font-weight:800;background:linear-gradient(135deg,#a78bfa,#22d3ee);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -300,7 +302,7 @@
   body.light .d-nav-btn{background:rgba(0,0,0,0.05);color:#1a1a22}
   .d-nav-btn:disabled{opacity:.3}
   .d-nav-ttl{flex:1;text-align:center;font-size:15px;font-weight:800;letter-spacing:-0.2px}
-  .d-cal{margin:0 18px 14px;padding:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:18px}
+  .d-cal{margin:0 18px 14px;padding:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:18px;box-sizing:border-box;overflow:hidden}
   body.light .d-cal{background:#fff;border-color:rgba(0,0,0,0.06);box-shadow:0 2px 10px rgba(0,0,0,0.03)}
   .d-cal-head{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px}
   .d-cal-head span{text-align:center;font-size:10px;font-weight:700;color:#7a7d92;padding:4px 0}
@@ -343,11 +345,12 @@
   .d-filt.on{background:linear-gradient(135deg,#8b5cf6,#6366f1);border-color:transparent;color:#fff}
 
   /* ===== DÖNGÜ (ADET) ===== */
-  .cy-hero{margin:8px 18px 14px;padding:18px;border-radius:22px;background:linear-gradient(135deg,#ec4899 0%,#a78bfa 60%,#6366f1 110%);color:#fff;display:flex;gap:16px;align-items:center;position:relative;overflow:hidden;box-shadow:0 12px 32px rgba(236,72,153,0.3)}
+  .cy-hero{margin:8px 18px 14px;padding:16px;border-radius:22px;background:linear-gradient(135deg,#ec4899 0%,#a78bfa 60%,#6366f1 110%);color:#fff;display:flex;gap:14px;align-items:center;position:relative;overflow:hidden;box-shadow:0 12px 32px rgba(236,72,153,0.3);min-width:0}
   .cy-hero::before{content:"";position:absolute;right:-60px;top:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.22),transparent 70%)}
-  .cy-ring{position:relative;width:120px;height:120px;flex-shrink:0;z-index:1}
+  .cy-ring{position:relative;width:104px;height:104px;flex-shrink:0;z-index:1}
+  .cy-ring svg{width:104px;height:104px}
   .cy-ring-c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-  .cy-ring-d{font-size:32px;font-weight:800;letter-spacing:-1px;line-height:1}
+  .cy-ring-d{font-size:26px;font-weight:800;letter-spacing:-1px;line-height:1}
   .cy-ring-l{font-size:10px;font-weight:700;opacity:.9;letter-spacing:.5px;text-transform:uppercase;margin-top:4px}
   .cy-hero-info{flex:1;min-width:0;z-index:1}
   .cy-hero-phase{font-size:17px;font-weight:800;letter-spacing:-0.3px;line-height:1.2}
@@ -355,12 +358,13 @@
   .cy-hero-btns{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
   .cy-btn{padding:8px 12px;background:rgba(255,255,255,0.22);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.3);border-radius:999px;font-weight:700;font-size:11.5px;color:#fff;white-space:nowrap}
   .cy-btn-p{background:#fff;color:#ec4899;border-color:#fff}
-  .cy-upcoming{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 18px 12px}
+  .cy-upcoming{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:0 18px 12px;min-width:0}
+  .cy-upcoming>*{min-width:0;overflow:hidden}
   .cy-up{padding:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px}
   body.light .cy-up{background:#fff;border-color:rgba(0,0,0,0.06);box-shadow:0 2px 10px rgba(0,0,0,0.03)}
   .cy-up-l{font-size:10.5px;color:#a0a3b8;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
   body.light .cy-up-l{color:#6b7280}
-  .cy-up-v{font-size:15px;font-weight:800;margin-top:4px;letter-spacing:-0.3px}
+  .cy-up-v{font-size:13px;font-weight:800;margin-top:4px;letter-spacing:-0.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .cy-up-d{font-size:11px;color:#a0a3b8;margin-top:2px}
   body.light .cy-up-d{color:#6b7280}
   .cy-legend{display:flex;flex-wrap:wrap;gap:6px;margin:0 18px 14px;padding:0 2px}
@@ -449,11 +453,12 @@
   .switch.on::after{left:21px}
 
   /* ===== ALT NAV ===== */
-  .bottom-nav{position:absolute;left:0;right:0;bottom:0;padding:8px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(15,18,32,0.92);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-around;z-index:20;transition:transform .2s ease}
+  .bottom-nav{position:absolute;left:0;right:0;bottom:0;padding:8px 4px calc(10px + env(safe-area-inset-bottom));background:rgba(15,18,32,0.92);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-around;z-index:20;transition:transform .2s ease}
   body.light .bottom-nav{background:rgba(255,255,255,0.92);border-top-color:rgba(0,0,0,0.08)}
   body.kb-open .bottom-nav{transform:translateY(110%);pointer-events:none}
   body.kb-open .tab-content{padding-bottom:0!important}
-  .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;color:#7a7d92;font-size:9.5px;font-weight:600;min-width:0;text-align:center}
+  .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 1px;color:#7a7d92;font-size:9px;font-weight:600;min-width:0;text-align:center;overflow:hidden}
+  .nav-item svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .nav-item .nav-label{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .nav-item.active{color:#a78bfa}
   body.light .nav-item.active{color:#8b5cf6}
@@ -831,7 +836,7 @@
 
       <!-- DÖNGÜ (Adet takvimi) -->
       <div class="tab" id="tab-cycle">
-        <div class="bar"><div class="bar-title">Döngü Takvimi</div></div>
+        <div class="bar"><div class="bar-title">Regl Takvimi</div></div>
 
         <div class="cy-hero" id="cyHero">
           <div class="cy-ring">
@@ -842,7 +847,7 @@
             </svg>
             <div class="cy-ring-c">
               <div class="cy-ring-d" id="cyRingDay">—</div>
-              <div class="cy-ring-l" id="cyRingLbl">Döngü günü</div>
+              <div class="cy-ring-l" id="cyRingLbl">Regl günü</div>
             </div>
           </div>
           <div class="cy-hero-info">
@@ -1020,12 +1025,12 @@
     </div>
 
     <div class="bottom-nav">
-      <button class="nav-item active" data-tab="home" onclick="switchTab('home')"><svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg>Ana sayfa</button>
-      <button class="nav-item" data-tab="chat" onclick="switchTab('chat')"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Sohbet</button>
-      <button class="nav-item" data-tab="diary" onclick="switchTab('diary')"><svg viewBox="0 0 24 24"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/></svg>Günlük</button>
-      <button class="nav-item" data-tab="explore" onclick="switchTab('explore')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M16 8l-2 6-6 2 2-6z"/></svg>Keşfet</button>
-      <button class="nav-item" data-tab="cycle" id="navCycle" onclick="switchTab('cycle')" style="display:none"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></svg>Döngü</button>
-      <button class="nav-item" data-tab="profile" onclick="switchTab('profile')"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>Profil</button>
+      <button class="nav-item active" data-tab="home" onclick="switchTab('home')"><svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg><span class="nav-label">Ana sayfa</span></button>
+      <button class="nav-item" data-tab="chat" onclick="switchTab('chat')"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="nav-label">Sohbet</span></button>
+      <button class="nav-item" data-tab="diary" onclick="switchTab('diary')"><svg viewBox="0 0 24 24"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/></svg><span class="nav-label">Günlük</span></button>
+      <button class="nav-item" data-tab="explore" onclick="switchTab('explore')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M16 8l-2 6-6 2 2-6z"/></svg><span class="nav-label">Keşfet</span></button>
+      <button class="nav-item" data-tab="cycle" id="navCycle" onclick="switchTab('cycle')"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9-10a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 5.5-9 10-9 10z"/></svg><span class="nav-label">Regl</span></button>
+      <button class="nav-item" data-tab="profile" onclick="switchTab('profile')"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg><span class="nav-label">Profil</span></button>
     </div>
   </div>
 
@@ -1079,7 +1084,7 @@ const state = {
   aiTone: LS.get('yasamai_aiTone', 'dengeli'),
   joinedAt: (function(){ let j = LS.get('yasamai_joinedAt', null); if (!j) { j = Date.now(); LS.set('yasamai_joinedAt', j); } return j; })(),
   // Döngü (adet) takvimi
-  cycleEnabled: LS.get('yasamai_cycleEnabled', false),
+  cycleEnabled: LS.get('yasamai_cycleEnabled', true),
   cycleLen: LS.get('yasamai_cycleLen', 28),       // ortalama döngü uzunluğu (gün)
   periodLen: LS.get('yasamai_periodLen', 5),       // regl süresi (gün)
   cycleLogs: LS.get('yasamai_cycleLogs', []),      // [{ type:'period_start'|'period_end'|'symptom', date:'YYYY-MM-DD', ts, symptoms:[], note:'' }]
