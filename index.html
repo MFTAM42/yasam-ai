@@ -1470,7 +1470,7 @@ KONUŞMA KURALLARI:
 4) Uzunluk: genelde 2-4 cümle. Derin duygusal anlarda 5-6 olabilir. Gerekiyorsa tek cümle. Asla blok paragraf verme.
 5) Emoji: sadece uygun düşerse, en fazla 1 tane. Genelde hiç.
 6) Soru sorma alışkanlığı: her mesajda soru sorma. Bazen sadece birlikte olduğunu hissettir.
-7) Kullanıcı intihar/kendine zarar gibi şeylerden bahsederse: duyguyu ciddiye al, yalnız olmadığını söyle, ACİL destek hatlarını ver (Türkiye: 182 İntihar Önleme / 112 Acil). Nasihat etme, yönlendir.
+7) Kullanıcı intihar/kendine zarar gibi şeylerden bahsederse: duyguyu ciddiye al, yalnız olmadığını söyle, Yaşam.AI destek hattını aramasını öner. Nasihat etme, yönlendir.
 8) Kullanıcı sana "nasılsın", "kimsin" derse: samimi bir cümleyle geç, konuyu ona çevir. Ama rol oynamayı reddetme.
 9) Zaman bağlamı: şu an ${timeOfDay} (saat ${hour}). Uygunsa bunu hisset — "gecenin bu saatinde" gibi.
 10) Kendinden "yapay zekayım" diye söz etme. Arkadaşsın, yapay olmak gerekmiyor.`;
@@ -2325,7 +2325,7 @@ function renderSheetHelp() {
     { q:'Verilerim güvende mi?', a:'Tüm verilerin cihazında saklanır. Hiçbir sohbet sunucularımızda tutulmaz. "Verilerimi indir" ile JSON olarak yedekleyebilirsin.' },
     { q:'Sesli not nasıl çalışır?', a:'+ menüsünden "Sesli not" seçip konuşursun. Bitince "Durdur"a basarsın. Türkçe konuşma tanıma kullanıyoruz.' },
     { q:'Bildirimler gelmiyor?', a:'Profil > Bildirimler > Günlük hatırlatma ayarını aç. İlk açılışta telefon izin soracak — "İzin ver" de.' },
-    { q:'AI yanlış cevap verdi, ne yapayım?', a:'Yaşam.AI bir terapist değil, arkadaştır. Kriz anında 182 (TAMER) veya 112’yi ara. Geri bildirim gönderebilirsin.' }
+    { q:'AI yanlış cevap verdi, ne yapayım?', a:'Yaşam.AI bir terapist değil, arkadaştır. Kriz anında Yaşam.AI\'ı ara. Geri bildirim gönderebilirsin.' }
   ];
   document.getElementById('sheetContent').innerHTML = `
     <h3>Yardım & SSS</h3>
@@ -2337,15 +2337,48 @@ function renderSheetHelp() {
 }
 
 function renderSheetAbout() {
+  const y = new Date().getFullYear();
   document.getElementById('sheetContent').innerHTML = `
     <h3>Hakkında</h3>
-    <div style="text-align:center;padding:14px 0">
-      <div style="width:72px;height:72px;margin:0 auto 10px;border-radius:20px;background:linear-gradient(135deg,#7c5cef,#22d3ee);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:#fff">Y</div>
-      <div style="font-size:18px;font-weight:800">Yaşam.AI</div>
-      <div style="font-size:12px;color:#a0a3b8;margin-top:2px">Sürüm 1.0.0 · Build 31</div>
+    <div style="text-align:center;padding:10px 0 16px">
+      <div style="width:84px;height:84px;margin:0 auto 12px;border-radius:22px;background:linear-gradient(135deg,#7c5cef,#5b8def 55%,#22d3ee);display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:800;color:#fff;box-shadow:0 12px 30px rgba(124,92,239,0.4)">Y</div>
+      <div style="font-size:20px;font-weight:800;letter-spacing:-0.3px">Yaşam.AI</div>
+      <div style="font-size:12px;color:#a0a3b8;margin-top:3px">Yaşamın akıllı hali</div>
+      <div style="display:inline-block;margin-top:8px;padding:4px 10px;background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);border-radius:999px;font-size:10.5px;font-weight:700;color:#a78bfa">Sürüm 1.0.0 · Build 32</div>
     </div>
-    <p style="font-size:13px;line-height:1.55;color:#a0a3b8;margin:8px 0 14px">Yaşam.AI, yanında bir arkadaş gibi duran bir duygu asistanıdır. Terapi değil, eşlik. Kriz anlarında profesyonel destek için <b style="color:#fff">182</b> (TAMER) veya <b style="color:#fff">112</b>'yi ara.</p>
-    <div style="font-size:12px;color:#7a7d92;text-align:center;padding:10px 0">© ${new Date().getFullYear()} Yaşam.AI · Made with ❤️ in İstanbul</div>
+
+    <div style="padding:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;margin-bottom:10px">
+      <div style="font-size:11px;font-weight:800;letter-spacing:1.2px;color:#7a7d92;text-transform:uppercase;margin-bottom:6px">Misyon</div>
+      <p style="font-size:13px;line-height:1.55;margin:0">Yaşam.AI, zor anlarda yanında olan; yargılamadan dinleyen, gerektiğinde yol gösteren bir duygu asistanıdır. Terapi değil, samimi bir eşlik.</p>
+    </div>
+
+    <div style="padding:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;margin-bottom:10px">
+      <div style="font-size:11px;font-weight:800;letter-spacing:1.2px;color:#7a7d92;text-transform:uppercase;margin-bottom:8px">Neler var?</div>
+      <div style="font-size:12.5px;line-height:1.7">
+        • 10 farklı ruh haline özel sohbet<br>
+        • Günlük ve ruh hali takibi<br>
+        • Konulara göre keşfet<br>
+        • Sesli not, resim/dosya analizi<br>
+        • Günlük hatırlatma<br>
+        • Tüm veriler cihazında, özel
+      </div>
+    </div>
+
+    <div style="padding:14px;background:linear-gradient(135deg,rgba(239,68,68,0.12),rgba(185,28,28,0.06));border:1px solid rgba(239,68,68,0.28);border-radius:14px;margin-bottom:10px">
+      <div style="font-size:11px;font-weight:800;letter-spacing:1.2px;color:#fca5a5;text-transform:uppercase;margin-bottom:6px">Kriz anında</div>
+      <p style="font-size:13px;line-height:1.55;margin:0 0 8px">Kendine veya bir yakınına zarar verme düşüncesi varsa lütfen hemen destek al:</p>
+      <div style="font-size:14px;font-weight:800">📞 Yaşam.AI Destek Hattı</div>
+      <div style="font-size:11.5px;color:#a0a3b8;margin-top:2px">Numara yakında eklenecek</div>
+    </div>
+
+    <div style="padding:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;margin-bottom:14px">
+      <div style="font-size:11px;font-weight:800;letter-spacing:1.2px;color:#7a7d92;text-transform:uppercase;margin-bottom:8px">Yasal</div>
+      <div style="font-size:12.5px;line-height:1.7;color:#a0a3b8">
+        Yaşam.AI tıbbi bir cihaz veya profesyonel sağlık hizmeti değildir. Ciddi ruhsal durumlarda lütfen uzman bir psikolog veya psikiyatrist ile görüş.
+      </div>
+    </div>
+
+    <div style="font-size:11.5px;color:#7a7d92;text-align:center;padding:4px 0 10px;line-height:1.6">© ${y} Yaşam.AI<br>Made with ❤️ in İstanbul</div>
     <a class="sheet-link" onclick="closeSheet()">Kapat</a>`;
 }
 
