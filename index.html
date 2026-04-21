@@ -381,17 +381,74 @@
   .cy-log-sub{font-size:11px;color:#a0a3b8;margin-top:2px}
   body.light .cy-log-sub{color:#6b7280}
   .cy-log-del{background:rgba(239,68,68,0.15);color:#ef4444;width:28px;height:28px;border-radius:8px;font-size:14px;flex-shrink:0}
+  .cy-info{display:flex;gap:10px;align-items:flex-start;margin:0 18px 12px;padding:12px 14px;background:linear-gradient(135deg,rgba(20,184,166,0.14),rgba(139,92,246,0.12));border:1px solid rgba(94,234,212,0.25);border-radius:14px}
+  body.light .cy-info{background:linear-gradient(135deg,rgba(20,184,166,0.08),rgba(139,92,246,0.06));border-color:rgba(20,184,166,0.25)}
+  .cy-info-ic{font-size:18px;flex-shrink:0;line-height:1.2}
+  .cy-info-txt{font-size:11.5px;line-height:1.5;color:#c0c3d8}
+  body.light .cy-info-txt{color:#374151}
+  .cy-info-txt b{color:#5eead4;font-weight:700}
+  body.light .cy-info-txt b{color:#0d9488}
+  .cy-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:0 18px 14px;min-width:0}
+  .cy-stats>*{min-width:0}
+  .home-cycle-card{margin:10px 18px 14px;padding:14px 16px;border-radius:18px;background:linear-gradient(135deg,#ec4899,#a78bfa);color:#fff;display:flex;gap:12px;align-items:center;box-shadow:0 8px 24px rgba(236,72,153,0.28)}
+  .home-cycle-ic{width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,0.22);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+  .home-cycle-body{flex:1;min-width:0}
+  .home-cycle-ttl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;opacity:.9}
+  .home-cycle-main{font-size:15px;font-weight:800;letter-spacing:-0.2px;margin-top:2px}
+  .home-cycle-sub{font-size:11.5px;opacity:.9;margin-top:2px;line-height:1.3}
+  .home-cycle-arr{font-size:22px;opacity:.8;flex-shrink:0}
+  /* ===== App Tour ===== */
+  .tour-overlay{position:fixed;inset:0;background:rgba(10,12,22,0.82);backdrop-filter:blur(8px);z-index:200;display:none;align-items:center;justify-content:center;padding:24px}
+  .tour-overlay.show{display:flex}
+  .tour-card{width:100%;max-width:340px;background:linear-gradient(180deg,rgba(30,30,48,0.98),rgba(20,22,40,0.98));border:1px solid rgba(255,255,255,0.1);border-radius:24px;padding:28px 22px;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,0.5)}
+  body.light .tour-card{background:#fff;border-color:rgba(0,0,0,0.08)}
+  .tour-emoji{font-size:52px;margin-bottom:10px;line-height:1}
+  .tour-ttl{font-size:20px;font-weight:800;letter-spacing:-0.4px;margin-bottom:8px}
+  .tour-txt{font-size:13.5px;line-height:1.55;color:#c0c3d8;margin-bottom:18px}
+  body.light .tour-txt{color:#4b5563}
+  .tour-dots{display:flex;gap:6px;justify-content:center;margin-bottom:18px}
+  .tour-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.2);transition:all .2s}
+  body.light .tour-dot{background:rgba(0,0,0,0.15)}
+  .tour-dot.on{width:22px;border-radius:4px;background:var(--tg-accent,#14b8a6)}
+  .tour-btns{display:flex;gap:8px}
+  .tour-skip{flex:1;padding:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:14px;font-size:13px;font-weight:700;color:#c0c3d8}
+  body.light .tour-skip{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.08);color:#4b5563}
+  .tour-next{flex:2;padding:12px;background:linear-gradient(135deg,#14b8a6,#0d9488);border-radius:14px;font-size:13.5px;font-weight:800;color:#fff;letter-spacing:-0.2px}
 
   /* ===== KEŞFET ===== */
+  .ex-hero{margin:8px 18px 14px;padding:18px;border-radius:22px;background:linear-gradient(135deg,#0d9488 0%,#14b8a6 45%,#8b5cf6 120%);color:#fff;position:relative;overflow:hidden;box-shadow:0 12px 32px rgba(20,184,166,0.28)}
+  .ex-hero::before{content:"";position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.22),transparent 70%)}
+  .ex-hero-ttl{font-size:20px;font-weight:800;letter-spacing:-0.4px;line-height:1.2;z-index:1;position:relative}
+  .ex-hero-sub{font-size:12.5px;line-height:1.5;margin-top:6px;opacity:.92;z-index:1;position:relative}
+  .ex-hero-stats{display:flex;gap:8px;margin-top:12px;z-index:1;position:relative}
+  .ex-hs{padding:5px 11px;background:rgba(255,255,255,0.2);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.25);border-radius:999px;font-size:11.5px;font-weight:700}
+  .ex-hs span{font-weight:800}
+  .ex-section-h{font-size:11.5px;font-weight:800;color:#a0a3b8;text-transform:uppercase;letter-spacing:.8px;padding:4px 20px 10px}
+  body.light .ex-section-h{color:#6b7280}
+  .ex-featured{margin:0 18px 14px;display:grid;grid-template-columns:1fr;gap:10px}
+  .ex-featured:empty{display:none}
+  .ex-feat{display:flex;gap:12px;padding:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;text-align:left;align-items:center;position:relative;overflow:hidden;width:100%}
+  body.light .ex-feat{background:#fff;border-color:rgba(0,0,0,0.06);box-shadow:0 2px 10px rgba(0,0,0,0.03)}
+  .ex-feat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--feat-c,#8b5cf6)}
+  .ex-feat .fi{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .ex-feat .fi svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .ex-feat .fb{flex:1;min-width:0}
+  .ex-feat .ft{font-size:14px;font-weight:800;letter-spacing:-0.2px}
+  .ex-feat .fs{font-size:11.5px;color:#a0a3b8;margin-top:2px;line-height:1.35}
+  body.light .ex-feat .fs{color:#6b7280}
+  .ex-feat .fc{font-size:10.5px;font-weight:700;color:var(--feat-c,#8b5cf6);margin-top:4px}
+  .ex-feat .farr{color:#a0a3b8;font-size:20px;flex-shrink:0}
   .topics{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 18px 20px}
-  .topic{padding:14px;border-radius:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);text-align:left;transition:transform .15s}
-  body.light .topic{background:#fff;border-color:rgba(0,0,0,0.06)}
+  .topic{padding:14px;border-radius:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);text-align:left;transition:transform .15s;position:relative;overflow:hidden}
+  body.light .topic{background:#fff;border-color:rgba(0,0,0,0.06);box-shadow:0 2px 10px rgba(0,0,0,0.03)}
   .topic:active{transform:scale(0.97)}
-  .topic .ti{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
-  .topic .ti svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-  .topic .tl{font-size:13px;font-weight:700}
-  .topic .td{font-size:10px;color:#a0a3b8;margin-top:3px;line-height:1.35}
-  .topic .tcount{position:absolute;margin-top:-4px;font-size:9px;color:#a78bfa;margin-left:2px}
+  .topic .ti{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;box-shadow:0 4px 14px rgba(0,0,0,0.2)}
+  .topic .ti svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .topic .tl{font-size:13.5px;font-weight:800;letter-spacing:-0.2px}
+  .topic .td{font-size:10.5px;color:#a0a3b8;margin-top:3px;line-height:1.4}
+  body.light .topic .td{color:#6b7280}
+  .topic .tcnt{display:inline-flex;align-items:center;gap:4px;margin-top:8px;padding:3px 8px;background:rgba(139,92,246,0.15);border-radius:999px;font-size:10px;color:#a78bfa;font-weight:700}
+  body.light .topic .tcnt{background:rgba(139,92,246,0.1);color:#7c3aed}
 
   /* ===== KONU DETAY EKRANI ===== */
   #tab-topic{padding:0}
@@ -611,6 +668,16 @@
           <div class="hstat"><div class="hstat-n" id="hstDiary">0</div><div class="hstat-l">günlük girdi</div></div>
           <div class="hstat"><div class="hstat-n" id="hstChat">0</div><div class="hstat-l">sohbet mesajı</div></div>
         </div>
+
+        <button class="home-cycle-card" id="homeCycleCard" onclick="switchTab('cycle')" style="display:none;width:calc(100% - 36px);text-align:left">
+          <div class="home-cycle-ic">🌸</div>
+          <div class="home-cycle-body">
+            <div class="home-cycle-ttl" id="homeCycleTtl">Regl Takibi</div>
+            <div class="home-cycle-main" id="homeCycleMain">—</div>
+            <div class="home-cycle-sub" id="homeCycleSub">—</div>
+          </div>
+          <div class="home-cycle-arr">›</div>
+        </button>
         <div class="home-section">
           <div class="hs-h"><div class="hs-h-ttl">Bugünün ipucu</div></div>
           <div class="home-card home-tip">
@@ -816,7 +883,19 @@
       <!-- KEŞFET -->
       <div class="tab" id="tab-explore">
         <div class="bar"><div class="bar-title">Keşfet</div></div>
-        <div style="padding:0 20px 14px;color:#a0a3b8;font-size:12px">Üzerinde konuşmak istediğin bir konu seç</div>
+
+        <div class="ex-hero">
+          <div class="ex-hero-ttl">Derinleşmeye hazır mısın?</div>
+          <div class="ex-hero-sub">Hayatının farklı alanlarında ne hissettiğini keşfet. Yazdıkça kendini daha iyi tanırsın.</div>
+          <div class="ex-hero-stats">
+            <div class="ex-hs"><span id="exStatTopics">0</span> konu</div>
+            <div class="ex-hs"><span id="exStatNotes">0</span> not</div>
+          </div>
+        </div>
+
+        <div class="ex-featured" id="exFeatured"></div>
+
+        <div class="ex-section-h">Tüm konular</div>
         <div class="topics" id="topicsGrid"></div>
         <div style="height:40px"></div>
       </div>
@@ -837,6 +916,11 @@
       <!-- DÖNGÜ (Adet takvimi) -->
       <div class="tab" id="tab-cycle">
         <div class="bar"><div class="bar-title">Regl Takvimi</div></div>
+
+        <div class="cy-info" id="cyInfo" style="display:none">
+          <div class="cy-info-ic">ℹ️</div>
+          <div class="cy-info-txt"><b>Takviminiz öğreniyor.</b> En az <b>2 regl kaydı</b> girdikten sonra sistem sizin döngünüzü öğrenir ve tahminler kişiselleşir.</div>
+        </div>
 
         <div class="cy-hero" id="cyHero">
           <div class="cy-ring">
@@ -861,6 +945,12 @@
         </div>
 
         <div class="cy-upcoming" id="cyUpcoming"></div>
+
+        <div class="cy-stats" id="cyStats" style="display:none">
+          <div class="d-stat"><div class="d-stat-n" id="cyStatCycles">0</div><div class="d-stat-l">Kayıtlı döngü</div></div>
+          <div class="d-stat"><div class="d-stat-n" id="cyStatAvg">—</div><div class="d-stat-l">Ort. uzunluk</div></div>
+          <div class="d-stat"><div class="d-stat-n" id="cyStatLast">—</div><div class="d-stat-l">Son reglden</div></div>
+        </div>
 
         <div class="d-nav">
           <button class="d-nav-btn" onclick="cycleMonthShift(-1)">‹</button>
@@ -939,7 +1029,7 @@
           </button>
           <button class="setting" onclick="toggleDark()">
             <div class="si" style="background:linear-gradient(135deg,#6366f1,#4338ca)"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></div>
-            <div class="sl">Gece Modu</div><div class="switch on" id="darkSwitch"></div>
+            <div class="sl">Gece Modu</div><div class="sv" id="darkModeVal">Otomatik</div><div class="arr">›</div>
           </button>
           <button class="setting" onclick="openSheet('fontSize')">
             <div class="si" style="background:linear-gradient(135deg,#a78bfa,#7c5cef)"><svg viewBox="0 0 24 24"><path d="M4 7V5h16v2M9 5v14M15 5v14M7 19h4M13 19h4"/></svg></div>
@@ -1052,6 +1142,20 @@
   </div>
 
   <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="onAvatarPicked(event)">
+
+  <!-- App Tour Overlay -->
+  <div class="tour-overlay" id="tourOverlay">
+    <div class="tour-card">
+      <div class="tour-emoji" id="tourEmoji">👋</div>
+      <div class="tour-ttl" id="tourTtl">Yaşam.AI'ya hoş geldin</div>
+      <div class="tour-txt" id="tourTxt">Zihnine iyi gelecek kısa bir tura ne dersin?</div>
+      <div class="tour-dots" id="tourDots"></div>
+      <div class="tour-btns">
+        <button class="tour-skip" onclick="tourEnd()">Atla</button>
+        <button class="tour-next" id="tourNext" onclick="tourNext()">Devam</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -1064,8 +1168,14 @@ const LS = {
 
 const state = {
   user: LS.get('yasamai_user', null),
-  theme: LS.get('yasamai_theme', 'mor'),
-  dark: LS.get('yasamai_dark', true),
+  theme: LS.get('yasamai_theme', 'turkuaz'),
+  darkMode: LS.get('yasamai_darkMode', 'auto'), // 'auto' | 'dark' | 'light'
+  dark: (function(){
+    const m = LS.get('yasamai_darkMode', 'auto');
+    if (m === 'dark') return true;
+    if (m === 'light') return false;
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  })(),
   reminder: LS.get('yasamai_reminder', '21:00'),
   reminderDays: LS.get('yasamai_rdays', ['Pzt','Sal','Çar','Per','Cum']),
   reminderOn: LS.get('yasamai_ron', true),
@@ -1098,12 +1208,13 @@ try {
 } catch(e){}
 
 const themes = {
+  turkuaz:{ main:'#14b8a6', accent:'#5eead4', swatch:'linear-gradient(135deg,#14b8a6,#0d9488)' },
   mor:    { main:'#8b5cf6', accent:'#a78bfa', swatch:'linear-gradient(135deg,#8b5cf6,#6366f1)' },
   pembe:  { main:'#ec4899', accent:'#f472b6', swatch:'linear-gradient(135deg,#ec4899,#be185d)' },
   mavi:   { main:'#3b82f6', accent:'#60a5fa', swatch:'linear-gradient(135deg,#3b82f6,#1e40af)' },
-  turkuaz:{ main:'#14b8a6', accent:'#5eead4', swatch:'linear-gradient(135deg,#14b8a6,#0d9488)' },
   turuncu:{ main:'#f97316', accent:'#fb923c', swatch:'linear-gradient(135deg,#f97316,#ea580c)' },
-  yesil:  { main:'#10b981', accent:'#34d399', swatch:'linear-gradient(135deg,#10b981,#059669)' }
+  yesil:  { main:'#10b981', accent:'#34d399', swatch:'linear-gradient(135deg,#10b981,#059669)' },
+  beyaz:  { main:'#64748b', accent:'#94a3b8', swatch:'linear-gradient(135deg,#e2e8f0,#cbd5e1)' }
 };
 
 const topics = [
@@ -1184,6 +1295,10 @@ function enterApp() {
   refreshUser();
   renderDiary();
   renderTopics();
+  // İlk açılışta uygulama turu göster
+  if (!LS.get('yasamai_tourDone', false)) {
+    setTimeout(() => showAppTour(), 600);
+  }
   // Döngü sekmesi kadınlar için açıksa nav'da göster
   const navCy = document.getElementById('navCycle');
   if (navCy) navCy.style.display = state.cycleEnabled ? '' : 'none';
@@ -1277,8 +1392,8 @@ function refreshProfile() {
   const cs = document.getElementById('cycleSwitch'); if (cs) cs.className = 'switch' + (state.cycleEnabled ? ' on' : '');
 
   // Tema adı
-  const themeNames = { mor:'Mor', okyanus:'Okyanus', gunbatimi:'Günbatımı', orman:'Orman', seker:'Şeker' };
-  const tv = document.getElementById('themeVal'); if (tv) tv.textContent = themeNames[state.theme] || 'Mor';
+  const themeNames = { turkuaz:'Turkuaz', mor:'Mor', pembe:'Pembe', mavi:'Mavi', turuncu:'Turuncu', yesil:'Yeşil', beyaz:'Beyaz' };
+  const tv = document.getElementById('themeVal'); if (tv) tv.textContent = themeNames[state.theme] || 'Turkuaz';
 
   // Hatırlatıcı
   const rv = document.getElementById('reminderVal');
@@ -1519,6 +1634,39 @@ const homeQuotes = [
   { t:'Mükemmelliği kovalarsan yorulursun; ilerlemeyi kovalarsan varırsın.', a:'— Yaşam.AI' }
 ];
 
+/* ============ APP TOUR ============ */
+const TOUR_STEPS = [
+  { emoji:'👋', ttl:'Yaşam.AI\'ya hoş geldin', txt:'Ben senin akıllı halin. Zihnine iyi gelecek şeyleri birlikte keşfedelim. 30 saniyelik kısa bir tura ne dersin?' },
+  { emoji:'💬', ttl:'Sohbet: 10 farklı ruh hali', txt:'İçini dökmek, sakinleşmek, karar vermek ya da motive olmak… Nasıl hissediyorsan o tonda konuşuyoruz. Özel, yargısız, 7/24.' },
+  { emoji:'📔', ttl:'Günlük: Duygunun takvimi', txt:'Her gün ne hissettiğini yaz. Takvim üzerinden geçmişe bakabilir, kendi ruh halinin desenini görebilirsin.' },
+  { emoji:'🧭', ttl:'Keşfet: Hayatının alanları', txt:'İş, ilişki, aile, uyku… Her konuda ayrı not tutabilirsin. Kendini daha iyi tanımanın yolu.' },
+  { emoji:'🌸', ttl:'Regl Takvimi', txt:'Kadınlar için regl takibi dahil. İlk 2 kayıttan sonra sistem senin döngünü öğreniyor ve tahminler kişiselleşiyor. Dilediğin zaman profilden kapatabilirsin.' },
+  { emoji:'🎨', ttl:'Sen nasıl istersen', txt:'Tema rengi, gece modu (otomatik/açık/kapalı), yazı boyutu, AI konuşma tarzı — hepsi profilden ayarlanabilir. Haydi başlayalım!' }
+];
+let _tourIdx = 0;
+function showAppTour() {
+  _tourIdx = 0;
+  tourRender();
+  document.getElementById('tourOverlay').classList.add('show');
+}
+function tourRender() {
+  const s = TOUR_STEPS[_tourIdx];
+  document.getElementById('tourEmoji').textContent = s.emoji;
+  document.getElementById('tourTtl').textContent = s.ttl;
+  document.getElementById('tourTxt').textContent = s.txt;
+  const dots = document.getElementById('tourDots');
+  dots.innerHTML = TOUR_STEPS.map((_, i) => '<div class="tour-dot' + (i === _tourIdx ? ' on' : '') + '"></div>').join('');
+  document.getElementById('tourNext').textContent = _tourIdx === TOUR_STEPS.length - 1 ? 'Başlayalım 🚀' : 'Devam →';
+}
+function tourNext() {
+  if (_tourIdx < TOUR_STEPS.length - 1) { _tourIdx++; tourRender(); }
+  else tourEnd();
+}
+function tourEnd() {
+  document.getElementById('tourOverlay').classList.remove('show');
+  LS.set('yasamai_tourDone', true);
+}
+
 function refreshHome() {
   const now = new Date();
   const hour = now.getHours();
@@ -1587,6 +1735,38 @@ function refreshHome() {
   if (st) st.textContent = streak;
   if (sd) sd.textContent = (state.diary || []).length;
   if (sc) sc.textContent = chatMsgCount;
+
+  // Regl kartı (açıksa)
+  const hcc = document.getElementById('homeCycleCard');
+  if (hcc) {
+    if (state.cycleEnabled) {
+      hcc.style.display = '';
+      const last = cycleLastPeriodStart();
+      const cl = state.cycleLen || 28;
+      const pl = state.periodLen || 5;
+      if (!last) {
+        document.getElementById('homeCycleMain').textContent = 'Henüz kayıt yok';
+        document.getElementById('homeCycleSub').textContent = 'İlk regl gününü kaydet, takvim oluşsun';
+      } else {
+        const sFor = cycleStatusFor(new Date());
+        const nextStart = addDays(last, cl);
+        const toNext = daysBetween(new Date(), nextStart);
+        const fmt = (d) => d.getDate() + ' ' + ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'][d.getMonth()];
+        if (sFor.type === 'period') {
+          document.getElementById('homeCycleMain').textContent = 'Regl günü · ' + sFor.day + '. gün';
+          document.getElementById('homeCycleSub').textContent = 'Kendine iyi bak 🌸';
+        } else if (toNext <= 3 && toNext >= 0) {
+          document.getElementById('homeCycleMain').textContent = toNext === 0 ? 'Bugün regl başlayabilir' : toNext + ' gün sonra regl beklentisi';
+          document.getElementById('homeCycleSub').textContent = fmt(nextStart) + ' · tahmini başlangıç';
+        } else {
+          document.getElementById('homeCycleMain').textContent = 'Sonraki regl: ' + fmt(nextStart);
+          document.getElementById('homeCycleSub').textContent = toNext + ' gün kaldı · ' + sFor.phase;
+        }
+      }
+    } else {
+      hcc.style.display = 'none';
+    }
+  }
 
   // Kaldığın yerden kartı
   const lw = document.getElementById('hhLastWrap');
@@ -2286,6 +2466,34 @@ function renderCycle() {
   const last = cycleLastPeriodStart();
   const cl = state.cycleLen || 28;
   const pl = state.periodLen || 5;
+
+  // Info banner: <2 period_start kaydı varsa öğrenme uyarısı göster
+  const periodStarts = (state.cycleLogs || []).filter(l => l.type === 'period_start').length;
+  const infoEl = document.getElementById('cyInfo');
+  if (infoEl) {
+    if (periodStarts < 2) {
+      infoEl.style.display = '';
+      infoEl.querySelector('.cy-info-txt').innerHTML =
+        periodStarts === 0
+          ? '<b>Takviminiz henüz hazır değil.</b> İlk regl gününü kaydettiğinizde takvim oluşmaya başlar. En az <b>2 regl sonra</b> size özel tahminler netleşir.'
+          : '<b>Harika başlangıç!</b> 1 kayıt aldık. <b>1 regl daha</b> kaydettiğinde sistem sizin döngünüzü öğrenecek ve tahminler kişiselleşecek.';
+    } else {
+      infoEl.style.display = 'none';
+    }
+  }
+  // İstatistikler
+  const stEl = document.getElementById('cyStats');
+  if (stEl) {
+    if (periodStarts >= 1) {
+      stEl.style.display = '';
+      document.getElementById('cyStatCycles').textContent = periodStarts;
+      document.getElementById('cyStatAvg').textContent = (cycleAutoLen() || cl) + 'g';
+      const lastDiff = last ? daysBetween(last, new Date()) : '—';
+      document.getElementById('cyStatLast').textContent = (typeof lastDiff === 'number' ? (lastDiff >= 0 ? lastDiff + 'g' : '—') : '—');
+    } else {
+      stEl.style.display = 'none';
+    }
+  }
   const ring = document.getElementById('cyRingArc');
   const ringLabel = document.getElementById('cyRingDay');
   const phaseEl = document.getElementById('cyPhase');
@@ -2354,14 +2562,16 @@ function renderCycleCalendar() {
   const y = _cycleView.year, m = _cycleView.month;
   const mnames = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
   if (ttl) ttl.textContent = mnames[m] + ' ' + y;
-  const first = new Date(y, m, 1);
-  const startDow = (first.getDay() + 6) % 7; // Pzt=0
+  const first = new Date(y, m, 1, 12, 0, 0); // öğlen — DST güvenliği
+  // Pzt=0, Sal=1, ..., Paz=6  (JS getDay: Paz=0..Cmt=6)
+  const jsDay = first.getDay();
+  const startDow = (jsDay === 0) ? 6 : (jsDay - 1);
   const daysInMonth = new Date(y, m + 1, 0).getDate();
   const today = new Date();
   let html = '';
   for (let i = 0; i < startDow; i++) html += '<div class="d-day empty"></div>';
   for (let d = 1; d <= daysInMonth; d++) {
-    const date = new Date(y, m, d);
+    const date = new Date(y, m, d, 12, 0, 0);
     const st = cycleStatusFor(date);
     const isToday = date.toDateString() === today.toDateString();
     let cls = 'd-day';
@@ -2637,9 +2847,10 @@ function renderDiaryCalendar(diaryByDate, today) {
   const grid = document.getElementById('dCalGrid');
   if (!grid) return;
   const y = _diaryView.year, m = _diaryView.month;
-  const first = new Date(y, m, 1);
+  const first = new Date(y, m, 1, 12, 0, 0);
   const last = new Date(y, m + 1, 0);
-  const firstDow = (first.getDay() + 6) % 7; // Pzt=0
+  const jsDay = first.getDay();
+  const firstDow = (jsDay === 0) ? 6 : (jsDay - 1); // Pzt=0..Paz=6
   const todayKey = today.toISOString().slice(0,10);
   let html = '';
   // Baştaki boşluklar
@@ -2775,13 +2986,39 @@ function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').rep
 
 /* ============ KEŞFET / KONU ============ */
 function renderTopics() {
+  const totalNotes = Object.values(state.topicEntries || {}).reduce((s, a) => s + (a?.length || 0), 0);
+  const exT = document.getElementById('exStatTopics'); if (exT) exT.textContent = topics.length;
+  const exN = document.getElementById('exStatNotes'); if (exN) exN.textContent = totalNotes;
+
+  // Öne çıkan: en çok not yazılan 2 konu + hiç yazılmamış 1 öneri
+  const withCounts = topics.map(t => ({ ...t, count: (state.topicEntries[t.id] || []).length }));
+  const sorted = withCounts.slice().sort((a, b) => b.count - a.count);
+  const featured = [];
+  sorted.filter(t => t.count > 0).slice(0, 2).forEach(t => featured.push({ ...t, badge: t.count + ' notun var' }));
+  const unwritten = withCounts.find(t => t.count === 0);
+  if (unwritten && featured.length < 3) featured.push({ ...unwritten, badge: 'Yeni başla' });
+
+  const feat = document.getElementById('exFeatured');
+  if (feat) {
+    feat.innerHTML = featured.slice(0, 2).map(t => {
+      // feat-c için gradient'in ilk rengini çekelim
+      const m = (t.grad || '').match(/#[0-9a-f]{3,8}/i);
+      const color = m ? m[0] : '#8b5cf6';
+      return `<button class="ex-feat" style="--feat-c:${color}" onclick="openTopic('${t.id}')">
+        <div class="fi" style="background:${t.grad}"><svg viewBox="0 0 24 24">${t.icon}</svg></div>
+        <div class="fb"><div class="ft">${t.name}</div><div class="fs">${t.sub}</div><div class="fc">${t.badge} →</div></div>
+        <div class="farr">›</div>
+      </button>`;
+    }).join('');
+  }
+
   document.getElementById('topicsGrid').innerHTML = topics.map(t => {
     const count = (state.topicEntries[t.id] || []).length;
     return `<button class="topic" onclick="openTopic('${t.id}')">
       <div class="ti" style="background:${t.grad}"><svg viewBox="0 0 24 24">${t.icon}</svg></div>
       <div class="tl">${t.name}</div>
       <div class="td">${t.sub}</div>
-      ${count ? `<div style="font-size:10px;color:#a78bfa;margin-top:6px;font-weight:700">${count} notun var →</div>` : ''}
+      ${count ? `<div class="tcnt">${count} not →</div>` : ''}
     </button>`;
   }).join('');
 }
@@ -2889,13 +3126,30 @@ function applyDark() {
   document.body.classList.toggle('light', !state.dark);
   const sw = document.getElementById('darkSwitch');
   if (sw) sw.classList.toggle('on', state.dark);
+  const lbl = document.getElementById('darkModeVal');
+  if (lbl) lbl.textContent = state.darkMode === 'auto' ? 'Otomatik' : (state.darkMode === 'dark' ? 'Açık' : 'Kapalı');
 }
 
 function toggleDark() {
-  state.dark = !state.dark;
-  LS.set('yasamai_dark', state.dark);
-  applyDark();
+  // Auto → Dark → Light → Auto döngüsü
+  const next = state.darkMode === 'auto' ? 'dark' : (state.darkMode === 'dark' ? 'light' : 'auto');
+  setDarkMode(next);
 }
+function setDarkMode(mode) {
+  state.darkMode = mode;
+  LS.set('yasamai_darkMode', mode);
+  if (mode === 'dark') state.dark = true;
+  else if (mode === 'light') state.dark = false;
+  else state.dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyDark();
+  refreshProfile();
+}
+// Sistem teması değişince auto modda uygula
+try {
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (state.darkMode === 'auto') { state.dark = e.matches; applyDark(); }
+  });
+} catch(e){}
 
 function setTheme(n) {
   state.theme = n;
