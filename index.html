@@ -414,6 +414,12 @@
   .tour-skip{flex:1;padding:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:14px;font-size:13px;font-weight:700;color:#c0c3d8}
   body.light .tour-skip{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.08);color:#4b5563}
   .tour-next{flex:2;padding:12px;background:linear-gradient(135deg,#14b8a6,#0d9488);border-radius:14px;font-size:13.5px;font-weight:800;color:#fff;letter-spacing:-0.2px}
+  .gender-pick{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:4px}
+  .gender-opt{padding:10px 6px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;font-weight:600;color:inherit;cursor:pointer;transition:all .15s}
+  body.light .gender-opt{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.08)}
+  .gender-opt .ge{font-size:20px;line-height:1}
+  .gender-opt.on{background:linear-gradient(135deg,rgba(20,184,166,0.18),rgba(139,92,246,0.12));border-color:#14b8a6;color:#5eead4}
+  body.light .gender-opt.on{color:#0d9488}
 
   /* ===== KEŞFET ===== */
   .ex-hero{margin:8px 18px 14px;padding:18px;border-radius:22px;background:linear-gradient(135deg,#0d9488 0%,#14b8a6 45%,#8b5cf6 120%);color:#fff;position:relative;overflow:hidden;box-shadow:0 12px 32px rgba(20,184,166,0.28)}
@@ -3784,6 +3790,21 @@ function renderSheetSignup() {
     <div class="form-row"><label>İsim</label><input type="text" id="suName" placeholder="Adın"></div>
     <div class="form-row"><label>E-posta</label><input type="email" id="suMail" placeholder="sen@ornek.com" autocomplete="email"></div>
     <div class="form-row"><label>Doğum tarihin</label><input type="date" id="suBirth"></div>
+    <div class="form-row">
+      <label>Cinsiyet</label>
+      <div class="gender-pick" id="suGenderPick">
+        <button type="button" class="gender-opt" data-gender="kadin" onclick="pickGender(this)">
+          <span class="ge">🌸</span><span>Kadın</span>
+        </button>
+        <button type="button" class="gender-opt" data-gender="erkek" onclick="pickGender(this)">
+          <span class="ge">👤</span><span>Erkek</span>
+        </button>
+        <button type="button" class="gender-opt" data-gender="diger" onclick="pickGender(this)">
+          <span class="ge">✨</span><span>Diğer</span>
+        </button>
+      </div>
+      <div style="font-size:10.5px;color:#a0a3b8;margin-top:4px">Kadın seçersen regl takvimi otomatik açık gelir. Her zaman profilden değiştirebilirsin.</div>
+    </div>
     <div class="form-row"><label>Şifre</label><input type="password" id="suPass" placeholder="En az 6 karakter" autocomplete="new-password"></div>
     <div style="font-size:11px;color:#a0a3b8;margin:-6px 0 10px">⚠️ Yaşam.AI 18 yaş altı için uygun değildir.</div>
     <button class="sheet-btn" onclick="doSignup()">Hesap oluştur</button>
@@ -3799,12 +3820,19 @@ function ageFromBirth(iso) {
   return a;
 }
 
+function pickGender(btn) {
+  document.querySelectorAll('#suGenderPick .gender-opt').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+}
 async function doSignup() {
   const n = document.getElementById('suName').value.trim();
   const m = document.getElementById('suMail').value.trim();
   const birth = document.getElementById('suBirth').value;
   const p = document.getElementById('suPass').value;
+  const genderEl = document.querySelector('#suGenderPick .gender-opt.on');
+  const gender = genderEl ? genderEl.dataset.gender : '';
   if (!n || !m || !p || !birth) { alert('Tüm alanları doldur (doğum tarihi dahil).'); return; }
+  if (!gender) { alert('Cinsiyetini seç.'); return; }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m)) { alert('Geçerli bir e-posta gir.'); return; }
   if (p.length < 6) { alert('Şifren en az 6 karakter olmalı.'); return; }
   const age = ageFromBirth(birth);
@@ -3812,7 +3840,7 @@ async function doSignup() {
   const accounts = LS.get('yasamai_accounts', []);
   const mLow = m.toLowerCase();
   if (accounts.find(a => (a.email||'').toLowerCase() === mLow)) { alert('Bu e-posta zaten kayıtlı. "Giriş yap"ı kullan.'); return; }
-  await sendVerifyCodeAndShow({ name:n, email:m, pass:p, birth, mode:'email' });
+  await sendVerifyCodeAndShow({ name:n, email:m, pass:p, birth, gender, mode:'email' });
 }
 
 /* ============ MAIL DOĞRULAMA (EmailJS) ============ */
@@ -3873,11 +3901,15 @@ function doVerify() {
   const accounts = LS.get('yasamai_accounts', []);
   // Aynı mailde kayıt varsa üzerine yazma, güncelle
   const idx = accounts.findIndex(a => (a.email||'').toLowerCase() === (pendingSignup.email||'').toLowerCase());
-  const rec = { name: pendingSignup.name, email: pendingSignup.email, pass: pendingSignup.pass, birth: pendingSignup.birth, mode: pendingSignup.mode, verified: true };
+  const rec = { name: pendingSignup.name, email: pendingSignup.email, pass: pendingSignup.pass, birth: pendingSignup.birth, gender: pendingSignup.gender || '', mode: pendingSignup.mode, verified: true };
   if (idx >= 0) accounts[idx] = rec; else accounts.push(rec);
   LS.set('yasamai_accounts', accounts);
-  state.user = { name: pendingSignup.name, email: pendingSignup.email, mode: pendingSignup.mode, verified: true };
+  state.user = { name: pendingSignup.name, email: pendingSignup.email, gender: pendingSignup.gender || '', mode: pendingSignup.mode, verified: true };
   LS.set('yasamai_user', state.user);
+  // Cinsiyete göre regl takvimi otomatik ayarla
+  const gen = (pendingSignup.gender || '').toLowerCase();
+  state.cycleEnabled = (gen === 'kadin');
+  LS.set('yasamai_cycleEnabled', state.cycleEnabled);
   if (pendingSignup.mode === 'google' || pendingSignup.mode === 'apple') {
     state.avatar = null; LS.set('yasamai_avatar', null);
   }
@@ -3974,17 +4006,33 @@ function handleGoogleCredential(resp) {
 function renderSheetGAge() {
   document.getElementById('sheetContent').innerHTML = `
     <h3>Son bir adım</h3>
-    <p style="font-size:13px;color:#a0a3b8;margin-bottom:14px"><b>${esc(pendingGoogle?.email||'')}</b> hesabıyla devam ediyorsun. Yaşam.AI 18+ bir uygulama — doğum tarihini onayla:</p>
+    <p style="font-size:13px;color:#a0a3b8;margin-bottom:14px"><b>${esc(pendingGoogle?.email||'')}</b> hesabıyla devam ediyorsun. Yaşam.AI 18+ bir uygulama — doğum tarihini ve cinsiyetini onayla:</p>
     <div class="form-row"><label>Doğum tarihin</label><input type="date" id="gBirth"></div>
+    <div class="form-row">
+      <label>Cinsiyet</label>
+      <div class="gender-pick" id="gGenderPick">
+        <button type="button" class="gender-opt" data-gender="kadin" onclick="pickGenderG(this)"><span class="ge">🌸</span><span>Kadın</span></button>
+        <button type="button" class="gender-opt" data-gender="erkek" onclick="pickGenderG(this)"><span class="ge">👤</span><span>Erkek</span></button>
+        <button type="button" class="gender-opt" data-gender="diger" onclick="pickGenderG(this)"><span class="ge">✨</span><span>Diğer</span></button>
+      </div>
+      <div style="font-size:10.5px;color:#a0a3b8;margin-top:4px">Kadın seçersen regl takvimi otomatik açık gelir.</div>
+    </div>
     <div style="font-size:11px;color:#a0a3b8;margin:-6px 0 14px">⚠️ 18 yaş altı kullanıcıların kaydı reddedilir.</div>
     <button class="sheet-btn" onclick="doGoogleAge()">Devam et</button>
     <a class="sheet-link" onclick="closeSheet()">İptal</a>
   `;
 }
+function pickGenderG(btn) {
+  document.querySelectorAll('#gGenderPick .gender-opt').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+}
 
 async function doGoogleAge() {
   const birth = document.getElementById('gBirth').value;
+  const genderEl = document.querySelector('#gGenderPick .gender-opt.on');
+  const gender = genderEl ? genderEl.dataset.gender : '';
   if (!birth) { alert('Doğum tarihini gir.'); return; }
+  if (!gender) { alert('Cinsiyetini seç.'); return; }
   const age = ageFromBirth(birth);
   if (age < 18) { alert('Yaşam.AI 18 yaş altı için uygun değildir. Kayıt reddedildi.'); pendingGoogle = null; closeSheet(); return; }
   if (!pendingGoogle) return;
@@ -3994,6 +4042,7 @@ async function doGoogleAge() {
     email: pendingGoogle.email,
     pass: null,
     birth,
+    gender,
     mode: 'google'
   });
   pendingGoogle = null;
@@ -4069,6 +4118,15 @@ function renderSheetApple() {
     : 'Apple ID e-posta adresini gir. Yaşam.AI 18+ olduğu için doğum tarihi de istenecek.';
   const birthRow = authMode === 'login' ? '' : `
       <div class="form-row"><label>Doğum tarihin</label><input type="date" id="appBirth"></div>
+      <div class="form-row">
+        <label>Cinsiyet</label>
+        <div class="gender-pick" id="appGenderPick">
+          <button type="button" class="gender-opt" data-gender="kadin" onclick="pickGenderApp(this)"><span class="ge">🌸</span><span>Kadın</span></button>
+          <button type="button" class="gender-opt" data-gender="erkek" onclick="pickGenderApp(this)"><span class="ge">👤</span><span>Erkek</span></button>
+          <button type="button" class="gender-opt" data-gender="diger" onclick="pickGenderApp(this)"><span class="ge">✨</span><span>Diğer</span></button>
+        </div>
+        <div style="font-size:10.5px;color:#a0a3b8;margin-top:4px">Kadın seçersen regl takvimi otomatik açık gelir.</div>
+      </div>
       <div style="font-size:11px;color:#a0a3b8;margin:-6px 0 10px">⚠️ 18 yaş altı kayıt reddedilir.</div>`;
   document.getElementById('sheetContent').innerHTML = `
     <div style="background:#000;margin:-16px -20px 0;padding:22px 20px;border-radius:24px 24px 0 0;color:#fff;text-align:center">
@@ -4102,10 +4160,17 @@ async function doApple() {
   // Signup
   if (existing) { alert('Bu Apple ID ile zaten kayıt olunmuş. "Giriş yap"ı kullan.'); return; }
   const birth = document.getElementById('appBirth').value;
+  const genderEl = document.querySelector('#appGenderPick .gender-opt.on');
+  const gender = genderEl ? genderEl.dataset.gender : '';
   if (!birth) { alert('Doğum tarihini gir.'); return; }
+  if (!gender) { alert('Cinsiyetini seç.'); return; }
   const age = ageFromBirth(birth);
   if (age < 18) { alert('Yaşam.AI 18 yaş altı için uygun değildir. Kayıt reddedildi.'); return; }
-  await sendVerifyCodeAndShow({ name, email, pass:null, birth, mode:'apple' });
+  await sendVerifyCodeAndShow({ name, email, pass:null, birth, gender, mode:'apple' });
+}
+function pickGenderApp(btn) {
+  document.querySelectorAll('#appGenderPick .gender-opt').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
 }
 
 /* ============ GÜNLÜK YENİ GİRDİ ============ */
