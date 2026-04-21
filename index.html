@@ -225,6 +225,38 @@
   .hq-author{font-size:11.5px;color:#a0a3b8;margin-top:6px;padding-left:24px;font-weight:600}
   body.light .hq-author{color:#6b7280}
 
+  /* ===== PROFİL premium ===== */
+  .profile-hero{margin:6px 16px 14px;padding:18px;border-radius:22px;background:linear-gradient(135deg,rgba(139,92,246,0.14),rgba(99,102,241,0.1) 60%,rgba(34,211,238,0.08));border:1px solid rgba(139,92,246,0.22);position:relative;overflow:hidden}
+  body.light .profile-hero{background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(34,211,238,0.05));border-color:rgba(139,92,246,0.15)}
+  .profile-hero::before{content:"";position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,0.22),transparent 70%)}
+  .p-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:0 16px 14px}
+  .p-stat{padding:12px 8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;text-align:center}
+  body.light .p-stat{background:#fff;border-color:rgba(0,0,0,0.06);box-shadow:0 2px 10px rgba(0,0,0,0.03)}
+  .p-stat-n{font-size:20px;font-weight:800;background:linear-gradient(135deg,#a78bfa,#22d3ee);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .p-stat-l{font-size:10px;color:#a0a3b8;font-weight:600;margin-top:2px}
+  body.light .p-stat-l{color:#6b7280}
+  .p-section{margin:16px 16px 4px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:#7a7d92;padding:0 4px}
+  body.light .p-section{color:#6b7280}
+  .p-group{margin:0 16px 10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;overflow:hidden}
+  body.light .p-group{background:#fff;border-color:rgba(0,0,0,0.06);box-shadow:0 2px 10px rgba(0,0,0,0.03)}
+  .p-group .setting{padding:13px 16px;border-bottom:1px solid rgba(255,255,255,0.05)}
+  body.light .p-group .setting{border-bottom-color:rgba(0,0,0,0.05)}
+  .p-group .setting:last-child{border-bottom:none}
+  .p-achv{display:flex;gap:8px;overflow-x:auto;padding:0 16px 14px;scrollbar-width:none}
+  .p-achv::-webkit-scrollbar{display:none}
+  .p-ach{flex-shrink:0;width:92px;padding:12px 8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;text-align:center;opacity:.45;transition:opacity .2s}
+  .p-ach.on{opacity:1;border-color:rgba(139,92,246,0.4);background:linear-gradient(135deg,rgba(139,92,246,0.12),rgba(99,102,241,0.06))}
+  body.light .p-ach{background:#fff;border-color:rgba(0,0,0,0.06)}
+  .p-ach-ic{width:36px;height:36px;margin:0 auto 6px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#a78bfa,#6366f1)}
+  .p-ach.off .p-ach-ic{background:rgba(255,255,255,0.08);filter:grayscale(1)}
+  body.light .p-ach.off .p-ach-ic{background:rgba(0,0,0,0.08)}
+  .p-ach-ic svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2}
+  .p-ach-n{font-size:11px;font-weight:700;line-height:1.15}
+  .p-ach-d{font-size:9.5px;color:#a0a3b8;margin-top:2px}
+  body.light .p-ach-d{color:#6b7280}
+  .p-edit{display:inline-block;margin-top:8px;padding:6px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:999px;font-size:11.5px;font-weight:700}
+  body.light .p-edit{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.08)}
+
   /* ===== GÜNLÜK ===== */
   .week-strip{display:flex;gap:6px;padding:0 18px 14px;overflow-x:auto}
   .day-pill{flex-shrink:0;width:44px;padding:10px 4px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;text-align:center}
@@ -523,6 +555,30 @@
               <div class="hmood-ic" style="background:linear-gradient(135deg,#f97316,#ea580c)"><svg viewBox="0 0 24 24"><path d="M13 2L4.5 13h6L11 22l8.5-11h-6z"/></svg></div>
               <div class="hmood-txt"><div class="hmood-n">Motive ol</div><div class="hmood-s">Sert konuşalım</div></div>
             </button>
+            <button class="hmood" onclick="homeStartMood('kaygi')">
+              <div class="hmood-ic" style="background:linear-gradient(135deg,#c084fc,#9333ea)"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10"/><circle cx="12" cy="12" r="3"/></svg></div>
+              <div class="hmood-txt"><div class="hmood-n">Kaygılıyım</div><div class="hmood-s">İç sıkıntısı</div></div>
+            </button>
+            <button class="hmood" onclick="homeStartMood('yalnizlik')">
+              <div class="hmood-ic" style="background:linear-gradient(135deg,#fbbf24,#d97706)"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg></div>
+              <div class="hmood-txt"><div class="hmood-n">Yalnızım</div><div class="hmood-s">Birine ihtiyacım var</div></div>
+            </button>
+            <button class="hmood" onclick="homeStartMood('oz')">
+              <div class="hmood-ic" style="background:linear-gradient(135deg,#34d399,#059669)"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.6z"/></svg></div>
+              <div class="hmood-txt"><div class="hmood-n">Kendimi sevmiyorum</div><div class="hmood-s">Şefkate ihtiyacım var</div></div>
+            </button>
+            <button class="hmood" onclick="homeStartMood('uyku')">
+              <div class="hmood-ic" style="background:linear-gradient(135deg,#818cf8,#4f46e5)"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></div>
+              <div class="hmood-txt"><div class="hmood-n">Uyuyamıyorum</div><div class="hmood-s">Kafam durmuyor</div></div>
+            </button>
+            <button class="hmood" onclick="homeStartMood('ofke')">
+              <div class="hmood-ic" style="background:linear-gradient(135deg,#f87171,#dc2626)"><svg viewBox="0 0 24 24"><path d="M13 2L4.5 13h6L11 22l8.5-11h-6z"/></svg></div>
+              <div class="hmood-txt"><div class="hmood-n">Sinirliyim</div><div class="hmood-s">Öfke boşalt</div></div>
+            </button>
+            <button class="hmood" onclick="homeStartMood('mutluluk')">
+              <div class="hmood-ic" style="background:linear-gradient(135deg,#fde047,#eab308)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></div>
+              <div class="hmood-txt"><div class="hmood-n">Güzel hissediyorum</div><div class="hmood-s">Paylaşayım</div></div>
+            </button>
           </div>
         </div>
         <div class="home-quote">
@@ -570,6 +626,30 @@
           <button class="mood" data-mood="motive" data-color="#f97316" onclick="selectMood(this)">
             <div class="mico" style="background:linear-gradient(135deg,#f97316,#ea580c)"><svg viewBox="0 0 24 24"><path d="M13 2L4.5 13h6L11 22l8.5-11h-6z"/></svg></div>
             <div class="ml">Motive ol</div><div class="ms">Sert konuşmak lazım</div>
+          </button>
+          <button class="mood" data-mood="kaygi" data-color="#c084fc" onclick="selectMood(this)">
+            <div class="mico" style="background:linear-gradient(135deg,#c084fc,#9333ea)"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10"/><circle cx="12" cy="12" r="3"/></svg></div>
+            <div class="ml">Kaygılıyım</div><div class="ms">İç sıkıntısı var</div>
+          </button>
+          <button class="mood" data-mood="yalnizlik" data-color="#fbbf24" onclick="selectMood(this)">
+            <div class="mico" style="background:linear-gradient(135deg,#fbbf24,#d97706)"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg></div>
+            <div class="ml">Yalnızım</div><div class="ms">Birine ihtiyacım var</div>
+          </button>
+          <button class="mood" data-mood="oz" data-color="#34d399" onclick="selectMood(this)">
+            <div class="mico" style="background:linear-gradient(135deg,#34d399,#059669)"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.6z"/></svg></div>
+            <div class="ml">Kendimi sevmiyorum</div><div class="ms">Şefkate ihtiyacım var</div>
+          </button>
+          <button class="mood" data-mood="uyku" data-color="#818cf8" onclick="selectMood(this)">
+            <div class="mico" style="background:linear-gradient(135deg,#818cf8,#4f46e5)"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></div>
+            <div class="ml">Uyuyamıyorum</div><div class="ms">Kafam durmuyor</div>
+          </button>
+          <button class="mood" data-mood="ofke" data-color="#f87171" onclick="selectMood(this)">
+            <div class="mico" style="background:linear-gradient(135deg,#f87171,#dc2626)"><svg viewBox="0 0 24 24"><path d="M13 2L4.5 13h6L11 22l8.5-11h-6z"/><circle cx="12" cy="12" r="10"/></svg></div>
+            <div class="ml">Sinirliyim</div><div class="ms">Öfkemi boşaltayım</div>
+          </button>
+          <button class="mood" data-mood="mutluluk" data-color="#fde047" onclick="selectMood(this)">
+            <div class="mico" style="background:linear-gradient(135deg,#fde047,#eab308)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></div>
+            <div class="ml">Güzel hissediyorum</div><div class="ms">Paylaşmak istiyorum</div>
           </button>
         </div>
         <div class="chat-msgs" id="chatMsgs"></div>
@@ -631,48 +711,115 @@
 
       <!-- PROFİL -->
       <div class="tab" id="tab-profile">
-        <div class="profile-head">
-          <div class="avatar-wrap">
-            <div class="avatar" id="avatarBox" onclick="askAvatarPermission()">F</div>
-            <div class="avatar-edit" onclick="askAvatarPermission()" title="Fotoğraf değiştir"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>
+        <div class="profile-hero">
+          <div class="profile-head" style="padding:4px 0 6px">
+            <div class="avatar-wrap">
+              <div class="avatar" id="avatarBox" onclick="askAvatarPermission()">F</div>
+              <div class="avatar-edit" onclick="askAvatarPermission()" title="Fotoğraf değiştir"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>
+            </div>
+            <div class="pro-badge" id="proBadge" style="display:none">PRO</div>
+            <div class="pname" id="profileName">Furkan</div>
+            <div class="pbio" id="profileBio">Yaşam.AI üyesi</div>
+            <div class="p-edit" onclick="openSheet('editProfile')">✎ Profili düzenle</div>
           </div>
-          <div class="pro-badge" id="proBadge" style="display:none">PRO</div>
-          <div class="pname" id="profileName">Furkan</div>
-          <div class="pbio" id="profileBio">Yaşam.AI üyesi</div>
         </div>
+
+        <div class="p-grid">
+          <div class="p-stat"><div class="p-stat-n" id="pStreak">0</div><div class="p-stat-l">Gün üst üste</div></div>
+          <div class="p-stat"><div class="p-stat-n" id="pDiary">0</div><div class="p-stat-l">Günlük girdi</div></div>
+          <div class="p-stat"><div class="p-stat-n" id="pChat">0</div><div class="p-stat-l">Mesaj</div></div>
+        </div>
+
         <button class="pro-cta" onclick="openSheet('premium')">
           <div class="pico"><svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg></div>
           <div><div class="pt">Yaşam.AI Premium</div><div class="ps">Sınırsız mesaj · Tüm mood'lar</div></div>
           <div class="arr">→</div>
         </button>
-        <div class="section-h"><span>Görünüm</span></div>
-        <button class="setting" onclick="openSheet('theme')">
-          <div class="si" style="background:linear-gradient(135deg,#f472b6,#a78bfa)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg></div>
-          <div class="sl">Renk teması</div><div class="sv" id="themeVal">Mor</div><div class="arr">›</div>
-        </button>
-        <button class="setting" onclick="toggleDark()">
-          <div class="si" style="background:linear-gradient(135deg,#6366f1,#4338ca)"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></div>
-          <div class="sl">Karanlık mod</div><div class="switch on" id="darkSwitch"></div>
-        </button>
-        <div class="section-h"><span>Bildirimler</span></div>
-        <button class="setting" onclick="openSheet('reminder')">
-          <div class="si" style="background:linear-gradient(135deg,#f59e0b,#f97316)"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
-          <div class="sl">Günlük hatırlatma</div><div class="sv" id="reminderVal">21:00</div><div class="arr">›</div>
-        </button>
-        <div class="section-h"><span>Gizlilik</span></div>
-        <button class="setting" onclick="openSheet('privacy')">
-          <div class="si" style="background:linear-gradient(135deg,#10b981,#059669)"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-          <div class="sl">Gizlilik ayarları</div><div class="arr">›</div>
-        </button>
-        <div class="section-h"><span>Hesap</span></div>
-        <button class="setting" onclick="logout()">
-          <div class="si" style="background:linear-gradient(135deg,#64748b,#475569)"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></div>
-          <div class="sl">Çıkış yap</div><div class="arr">›</div>
-        </button>
-        <button class="setting" onclick="deleteAccount()">
-          <div class="si" style="background:linear-gradient(135deg,#ef4444,#b91c1c)"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6"/></svg></div>
-          <div style="flex:1"><div class="sl" style="color:#ef4444">Hesabı sil</div><div class="sv">Tüm verilerin kalıcı silinir</div></div><div class="arr">›</div>
-        </button>
+
+        <div class="p-section">Rozetler</div>
+        <div class="p-achv" id="pAchv"></div>
+
+        <div class="p-section">Görünüm</div>
+        <div class="p-group">
+          <button class="setting" onclick="openSheet('theme')">
+            <div class="si" style="background:linear-gradient(135deg,#f472b6,#a78bfa)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg></div>
+            <div class="sl">Renk teması</div><div class="sv" id="themeVal">Mor</div><div class="arr">›</div>
+          </button>
+          <button class="setting" onclick="toggleDark()">
+            <div class="si" style="background:linear-gradient(135deg,#6366f1,#4338ca)"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></div>
+            <div class="sl">Gece Modu</div><div class="switch on" id="darkSwitch"></div>
+          </button>
+          <button class="setting" onclick="openSheet('fontSize')">
+            <div class="si" style="background:linear-gradient(135deg,#a78bfa,#7c5cef)"><svg viewBox="0 0 24 24"><path d="M4 7V5h16v2M9 5v14M15 5v14M7 19h4M13 19h4"/></svg></div>
+            <div class="sl">Yazı boyutu</div><div class="sv" id="fontSizeVal">Orta</div><div class="arr">›</div>
+          </button>
+        </div>
+
+        <div class="p-section">Sohbet & AI</div>
+        <div class="p-group">
+          <button class="setting" onclick="openSheet('aiTone')">
+            <div class="si" style="background:linear-gradient(135deg,#22d3ee,#0891b2)"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <div class="sl">AI konuşma tarzı</div><div class="sv" id="aiToneVal">Dengeli</div><div class="arr">›</div>
+          </button>
+          <button class="setting" onclick="showChatList()">
+            <div class="si" style="background:linear-gradient(135deg,#60a5fa,#2563eb)"><svg viewBox="0 0 24 24"><path d="M12 8v5l3 2M12 2a10 10 0 1 1-10 10"/><path d="M2 12a10 10 0 0 1 3-7"/></svg></div>
+            <div class="sl">Geçmiş sohbetler</div><div class="arr">›</div>
+          </button>
+        </div>
+
+        <div class="p-section">Bildirimler</div>
+        <div class="p-group">
+          <button class="setting" onclick="openSheet('reminder')">
+            <div class="si" style="background:linear-gradient(135deg,#f59e0b,#f97316)"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+            <div class="sl">Günlük hatırlatma</div><div class="sv" id="reminderVal">21:00</div><div class="arr">›</div>
+          </button>
+        </div>
+
+        <div class="p-section">Veri & Gizlilik</div>
+        <div class="p-group">
+          <button class="setting" onclick="openSheet('privacy')">
+            <div class="si" style="background:linear-gradient(135deg,#10b981,#059669)"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+            <div class="sl">Gizlilik ayarları</div><div class="arr">›</div>
+          </button>
+          <button class="setting" onclick="exportData()">
+            <div class="si" style="background:linear-gradient(135deg,#5eead4,#0d9488)"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></div>
+            <div class="sl">Verilerimi indir</div><div class="sv">JSON</div><div class="arr">›</div>
+          </button>
+          <button class="setting" onclick="clearAllChats()">
+            <div class="si" style="background:linear-gradient(135deg,#fb923c,#ea580c)"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></div>
+            <div class="sl">Sohbet geçmişini sil</div><div class="arr">›</div>
+          </button>
+        </div>
+
+        <div class="p-section">Destek</div>
+        <div class="p-group">
+          <button class="setting" onclick="openSheet('feedback')">
+            <div class="si" style="background:linear-gradient(135deg,#f472b6,#ec4899)"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></svg></div>
+            <div class="sl">Geri bildirim gönder</div><div class="arr">›</div>
+          </button>
+          <button class="setting" onclick="openSheet('help')">
+            <div class="si" style="background:linear-gradient(135deg,#818cf8,#4f46e5)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/></svg></div>
+            <div class="sl">Yardım & SSS</div><div class="arr">›</div>
+          </button>
+          <button class="setting" onclick="openSheet('about')">
+            <div class="si" style="background:linear-gradient(135deg,#94a3b8,#64748b)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></div>
+            <div class="sl">Hakkında</div><div class="sv" id="aboutVer">v1.0</div><div class="arr">›</div>
+          </button>
+        </div>
+
+        <div class="p-section">Hesap</div>
+        <div class="p-group">
+          <button class="setting" onclick="logout()">
+            <div class="si" style="background:linear-gradient(135deg,#64748b,#475569)"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></div>
+            <div class="sl">Çıkış yap</div><div class="arr">›</div>
+          </button>
+          <button class="setting" onclick="deleteAccount()">
+            <div class="si" style="background:linear-gradient(135deg,#ef4444,#b91c1c)"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6"/></svg></div>
+            <div style="flex:1"><div class="sl" style="color:#ef4444">Hesabı sil</div><div class="sv">Tüm verilerin kalıcı silinir</div></div><div class="arr">›</div>
+          </button>
+        </div>
+
+        <div style="text-align:center;font-size:10.5px;color:#7a7d92;padding:14px 20px 8px">Yaşam.AI ile <span id="pDaysWith">0</span> gündür birliktesiniz</div>
         <div style="height:100px"></div>
       </div>
     </div>
@@ -731,8 +878,17 @@ const state = {
   msgCountDay: LS.get('yasamai_msgCountDay', ''),
   maxFree: 20,
   currentMood: null,
-  currentTopic: null
+  currentTopic: null,
+  fontSize: LS.get('yasamai_fontSize', 'orta'),
+  aiTone: LS.get('yasamai_aiTone', 'dengeli'),
+  joinedAt: (function(){ let j = LS.get('yasamai_joinedAt', null); if (!j) { j = Date.now(); LS.set('yasamai_joinedAt', j); } return j; })()
 };
+// Yazı boyutu başlangıçta uygula
+try {
+  const fs = ({kucuk:'13px',orta:'14.5px',buyuk:'16.5px'}[state.fontSize] || '14.5px');
+  document.documentElement.style.setProperty('--app-fs', fs);
+  document.addEventListener('DOMContentLoaded', () => { document.body.style.fontSize = fs; });
+} catch(e){}
 
 const themes = {
   mor:    { main:'#8b5cf6', accent:'#a78bfa', swatch:'linear-gradient(135deg,#8b5cf6,#6366f1)' },
@@ -881,6 +1037,98 @@ function refreshUser() {
   updateCounter();
 }
 
+/* ============ PROFİL ============ */
+function refreshProfile() {
+  refreshUser();
+  // İstatistikler
+  const moods = ['dokun','karar','sakin','motive','kaygi','yalnizlik','oz','uyku','ofke','mutluluk'];
+  let chatMsgCount = 0;
+  const days = new Set();
+  (state.diary || []).forEach(d => days.add(d.date));
+  moods.forEach(m => {
+    const hist = LS.get('yasamai_chat_'+m, []);
+    chatMsgCount += hist.filter(x => x.role === 'user').length;
+    hist.forEach(msg => {
+      if (msg.ts) { const d = new Date(msg.ts); d.setHours(0,0,0,0); days.add(d.toISOString().slice(0,10)); }
+    });
+  });
+  const today = new Date(); today.setHours(0,0,0,0);
+  let streak = 0;
+  for (let i = 0; i < 365; i++) {
+    const d = new Date(today); d.setDate(today.getDate() - i);
+    const k = d.toISOString().slice(0,10);
+    if (days.has(k)) streak++; else if (i > 0) break;
+  }
+  const ps = document.getElementById('pStreak'); if (ps) ps.textContent = streak;
+  const pd = document.getElementById('pDiary'); if (pd) pd.textContent = (state.diary || []).length;
+  const pc = document.getElementById('pChat'); if (pc) pc.textContent = chatMsgCount;
+
+  // Tema adı
+  const themeNames = { mor:'Mor', okyanus:'Okyanus', gunbatimi:'Günbatımı', orman:'Orman', seker:'Şeker' };
+  const tv = document.getElementById('themeVal'); if (tv) tv.textContent = themeNames[state.theme] || 'Mor';
+
+  // Hatırlatıcı
+  const rv = document.getElementById('reminderVal');
+  if (rv) rv.textContent = state.reminderOn ? state.reminder : 'Kapalı';
+
+  // Font size
+  const fv = document.getElementById('fontSizeVal');
+  if (fv) fv.textContent = ({kucuk:'Küçük', orta:'Orta', buyuk:'Büyük'})[state.fontSize] || 'Orta';
+
+  // AI tonu
+  const av = document.getElementById('aiToneVal');
+  if (av) av.textContent = ({dengeli:'Dengeli', sicak:'Sıcak', direkt:'Direkt', esprili:'Esprili'})[state.aiTone] || 'Dengeli';
+
+  // Birlikte geçen gün
+  const dw = document.getElementById('pDaysWith');
+  if (dw) dw.textContent = Math.max(1, Math.floor((Date.now() - (state.joinedAt || Date.now())) / 86400000));
+
+  // Rozetler
+  renderAchievements({ streak, diaryCount: (state.diary || []).length, chatCount: chatMsgCount });
+}
+
+function renderAchievements(stats) {
+  const achv = [
+    { id:'first_step', n:'İlk adım', d:'Uygulamayı aç', on:true, ico:'<path d="M20 6L9 17l-5-5"/>' },
+    { id:'first_chat', n:'İlk sohbet', d:'AI ile konuş', on:stats.chatCount >= 1, ico:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>' },
+    { id:'first_diary', n:'İlk günlük', d:'Bir girdi yaz', on:stats.diaryCount >= 1, ico:'<path d="M12 20h9M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/>' },
+    { id:'streak3', n:'3 gün', d:'3 gün üst üste', on:stats.streak >= 3, ico:'<path d="M13 2L4.5 13h6L11 22l8.5-11h-6z"/>' },
+    { id:'streak7', n:'Bir hafta', d:'7 gün üst üste', on:stats.streak >= 7, ico:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>' },
+    { id:'streak30', n:'Bir ay', d:'30 gün üst üste', on:stats.streak >= 30, ico:'<path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/>' },
+    { id:'chat50', n:'Sohbetsever', d:'50 mesaj', on:stats.chatCount >= 50, ico:'<path d="M7 8h10M7 12h6M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>' },
+    { id:'diary10', n:'Yazar', d:'10 günlük girdisi', on:stats.diaryCount >= 10, ico:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>' }
+  ];
+  const html = achv.map(a => `
+    <div class="p-ach ${a.on?'on':'off'}">
+      <div class="p-ach-ic"><svg viewBox="0 0 24 24">${a.ico}</svg></div>
+      <div class="p-ach-n">${a.n}</div>
+      <div class="p-ach-d">${a.d}</div>
+    </div>`).join('');
+  const el = document.getElementById('pAchv');
+  if (el) el.innerHTML = html;
+}
+
+function exportData() {
+  const bundle = {
+    exportedAt: new Date().toISOString(),
+    user: state.user,
+    diary: state.diary,
+    topicEntries: state.topicEntries,
+    chats: {},
+    settings: { theme:state.theme, dark:state.dark, fontSize:state.fontSize, aiTone:state.aiTone, reminder:state.reminder, reminderDays:state.reminderDays, reminderOn:state.reminderOn, privacy:state.privacy }
+  };
+  ['dokun','karar','sakin','motive','kaygi','yalnizlik','oz','uyku','ofke','mutluluk'].forEach(m => {
+    bundle.chats[m] = LS.get('yasamai_chat_'+m, []);
+  });
+  const blob = new Blob([JSON.stringify(bundle, null, 2)], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'yasamai-verilerim-' + new Date().toISOString().slice(0,10) + '.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 function updateCounter() {
   const c = document.getElementById('msgCounter');
   if (state.isPro) { c.textContent = 'PRO'; return; }
@@ -889,6 +1137,7 @@ function updateCounter() {
 
 /* ============ SEKME ============ */
 function switchTab(name) {
+  const prev = document.querySelector('.tab.active')?.id || '';
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   const tgt = document.getElementById('tab-' + name);
   if (tgt) tgt.classList.add('active');
@@ -896,7 +1145,13 @@ function switchTab(name) {
   document.querySelector('.tab-content').scrollTop = 0;
   // Sayaç sadece sohbette
   document.getElementById('msgCounter').style.display = (name === 'chat') ? 'block' : 'none';
+  // Geri tuşu için: Ana sayfa dışında bir sekmeye geçince stack'e state push et
+  // böylece geri basınca uygulama kapanmaz, popstate handler devralır
+  if (name !== 'home' && prev !== 'tab-' + name) {
+    try { history.pushState({ tab: name }, ''); } catch(e){}
+  }
   if (name === 'home') refreshHome();
+  if (name === 'profile') refreshProfile();
   if (name === 'diary') renderDiary();
   if (name === 'chat') {
     const ia = document.getElementById('inputArea');
@@ -932,7 +1187,18 @@ function selectMood(btn) {
   document.getElementById('sendBtn').style.background = color;
   const label = btn.querySelector('.ml').textContent;
   document.getElementById('tbSub').textContent = label;
-  const ph = { dokun:'İçini dök, dinliyorum...', karar:'Seçeneklerini anlat...', sakin:'Sakince anlat...', motive:'Derdini söyle, bahane yok...' };
+  const ph = {
+    dokun:'İçini dök, dinliyorum...',
+    karar:'Seçeneklerini anlat...',
+    sakin:'Sakince anlat...',
+    motive:'Derdini söyle, bahane yok...',
+    kaygi:'Seni kaygılandıran ne? Anlat...',
+    yalnizlik:'Nasıl hissediyorsun? Buradayım...',
+    oz:'Kendinle ilgili ne düşünüyorsun?',
+    uyku:'Aklından ne geçiyor? Yaz...',
+    ofke:'Ne kızdırdı seni? Boşalt...',
+    mutluluk:'Anlat bakalım, ne oldu?'
+  };
   document.getElementById('chatInput').placeholder = ph[mood] || 'Yaz, dinliyorum...';
   // Mood seçildi → giriş ekranını gizle, sohbet başlığı göster, geçmişi yükle
   document.getElementById('greetBox').style.display = 'none';
@@ -951,7 +1217,13 @@ function showChatList() {
     { id:'dokun', name:'İçimi dökmek', c:'#f472b6' },
     { id:'karar', name:'Karar veremiyorum', c:'#60a5fa' },
     { id:'sakin', name:'Sakinleşmek', c:'#5eead4' },
-    { id:'motive', name:'Motive ol', c:'#f97316' }
+    { id:'motive', name:'Motive ol', c:'#f97316' },
+    { id:'kaygi', name:'Kaygılıyım', c:'#c084fc' },
+    { id:'yalnizlik', name:'Yalnızım', c:'#fbbf24' },
+    { id:'oz', name:'Kendimi sevmiyorum', c:'#34d399' },
+    { id:'uyku', name:'Uyuyamıyorum', c:'#818cf8' },
+    { id:'ofke', name:'Sinirliyim', c:'#f87171' },
+    { id:'mutluluk', name:'Güzel hissediyorum', c:'#fde047' }
   ];
   const items = moods.map(m => {
     const hist = LS.get('yasamai_chat_' + m.id, []);
@@ -986,7 +1258,7 @@ function openPastChat(mood) {
 
 function clearAllChats() {
   if (!confirm('Tüm sohbet geçmişin silinecek. Emin misin?')) return;
-  ['dokun','karar','sakin','motive','default'].forEach(m => localStorage.removeItem('yasamai_chat_' + m));
+  ['dokun','karar','sakin','motive','kaygi','yalnizlik','oz','uyku','ofke','mutluluk','default'].forEach(m => localStorage.removeItem('yasamai_chat_' + m));
   alert('Tüm sohbetler silindi.');
   closeSheet();
   if (state.currentMood) backToMoodSelect();
@@ -1068,7 +1340,7 @@ function refreshHome() {
   if (qa) qa.textContent = q.a;
 
   // Streak + sayılar
-  const moods = ['dokun','karar','sakin','motive'];
+  const moods = ['dokun','karar','sakin','motive','kaygi','yalnizlik','oz','uyku','ofke','mutluluk'];
   const today = new Date(); today.setHours(0,0,0,0);
   const days = new Set();
   (state.diary || []).forEach(d => days.add(d.date));
@@ -1105,7 +1377,7 @@ function refreshHome() {
   // Kaldığın yerden kartı
   const lw = document.getElementById('hhLastWrap');
   if (best && lw) {
-    const moodName = { dokun:'İçimi dökme', karar:'Karar', sakin:'Sakinleşme', motive:'Motivasyon' }[best.mood];
+    const moodName = { dokun:'İçimi dökme', karar:'Karar', sakin:'Sakinleşme', motive:'Motivasyon', kaygi:'Kaygı', yalnizlik:'Yalnızlık', oz:'Öz-şefkat', uyku:'Uyku', ofke:'Öfke', mutluluk:'Mutluluk' }[best.mood];
     const lastUser = [...best.hist].reverse().find(x => x.role === 'user');
     const preview = lastUser ? lastUser.content.slice(0, 70) + (lastUser.content.length > 70 ? '…' : '') : 'Sohbete devam et';
     document.getElementById('hhLastTtl').textContent = moodName;
@@ -1124,6 +1396,12 @@ const moodPrompts = {
   karar: 'Kullanıcı karar veremiyor. Tonun NET ve düzenli. Seçenekleri yapılandır: her seçeneğin artı-eksisini sor, duygularını da kat, sonunda kullanıcıyı bir adıma yönlendir.',
   sakin: 'Kullanıcı sakinleşmek istiyor. SAKİN, yavaş, huzur verici ol. Nefes egzersizi (4-7-8 veya kutu nefesi), topraklama (5-4-3-2-1) gibi somut teknikler öner. Kısa, nazik cümleler kur.',
   motive: 'Kullanıcıyı motive et. SERT ama saygılı, doğrudan ol. Bahane kabul etme. Somut, bugün yapılabilecek küçük aksiyon iste. Klişe ("başarabilirsin" gibi) YASAK.',
+  kaygi: 'Kullanıcı kaygılı/anksiyeteli. Önce kaygıyı NORMALLEŞTİR — "bu hissi yaşamak insani". Sonra topraklama (5-4-3-2-1), kutu nefesi gibi somut teknikler öner. Felaketleştirmeye karşı gerçekçi sorularla dengele ("gerçekten olabilecek en kötü ne? ne kadar olası?"). Sakin, güven verici.',
+  yalnizlik: 'Kullanıcı yalnız hissediyor. Şefkatle yaklaş, varlığını hissettir — "şu an buradayım". Yalnızlığı "çözülmesi gereken problem" yerine "duyulması gereken duygu" olarak gör. Sıcak, kucaklayıcı ama acımayan bir ton. Konuşmanın sonunda küçük bir bağlantı adımı öner (birini ara, dışarı çık, vs).',
+  oz: 'Kullanıcı öz-eleştiri/öz-sevgi eksikliği yaşıyor. İç eleştirmenin sesini yumuşat — "kendine söylediklerini en sevdiğin arkadaşına söyler miydin?" yaklaşımı. Öz-şefkat (self-compassion) odaklı: kabul, ortak insanlık, farkındalık. ASLA "harika birisin" gibi boş övgü yapma. Dürüst ama sevecen.',
+  uyku: 'Kullanıcı uyuyamıyor / zihni kapanmıyor. TON çok sakin, düşük enerjili, yavaş cümleler. Uyku hijyeni (ekran, kafein), 4-7-8 nefesi, progresif kas gevşetme, "endişe kovası" tekniği öner. Aklı boşaltmak için yazı tekniği: "şu an kafandakini 3 maddeyle yaz, kağıdı kapat".',
+  ofke: 'Kullanıcı sinirli/öfkeli. Öfkeyi YARGILAMA — önce "haklısın sinirlenecek bir şey var" ile kabul et. Sonra öfkenin altındaki duyguya (incinmişlik, korku, çaresizlik) dokun. Hemen sakinleştirmeye çalışma — patlamasına alan ver. Sonra somut bir ventile yolu öner (yürüyüş, yaz-yırt, fiziksel aktivite).',
+  mutluluk: 'Kullanıcı iyi/mutlu hissediyor. Onunla BİRLİKTE sevin — içten, enerjik ol. Anı genişlet: "ne özellikle iyi hissettirdi?", "bu anı nasıl kaydetmek istersin?". Pozitif duyguyu sabitlemeye yardım et. Hemen negatife döndürme. Kutlama modunda kal.',
   null:   'Sıcak ama dürüst ol.'
 };
 
@@ -1139,7 +1417,13 @@ function loadChatHistory(mood) {
       dokun: 'Burdayım, içini dökebilirsin. Yargı yok, sadece dinliyorum. Ne oldu?',
       karar: 'Kafanı karıştıran ne? Seçenekleri birlikte açalım, sonunda bir adıma varırız.',
       sakin: 'Derin bir nefes al. Anlat bakalım — burada aceleye gerek yok.',
-      motive: 'Evet, söyle bakalım. Hangi konuda takıldın? Bahane istemiyorum, gerçeği.'
+      motive: 'Evet, söyle bakalım. Hangi konuda takıldın? Bahane istemiyorum, gerçeği.',
+      kaygi: 'Seni sıkan ne var şu an? Kaygıyı azaltmanın yolları var, önce anlat — acele yok.',
+      yalnizlik: 'Yalnız hissetmek ağır. Şu an buradayım, dinliyorum. Anlatmak ister misin?',
+      oz: 'Kendine sert davrandığını hissediyorum. Gel, o sesi biraz yumuşatalım. Ne hissediyorsun?',
+      uyku: 'Kafan mı dolu? Yazmak rahatlatır. Aklından ne geçiyor şu an?',
+      ofke: 'Kızmak normal. Önce çıkart içinden — ne oldu, kim/ne kızdırdı seni?',
+      mutluluk: 'Sevindim senin adına! Anlat bakalım, ne oldu bugün?'
     }[mood] || 'Seni dinliyorum.';
     addBubble(welcome, 'ai');
   } else {
@@ -1161,7 +1445,16 @@ async function getAiReply(userMsg, mood) {
   const hour = new Date().getHours();
   const timeOfDay = hour < 5 ? 'gece yarısı' : hour < 12 ? 'sabah' : hour < 17 ? 'öğleden sonra' : hour < 21 ? 'akşam' : 'gece';
 
+  const toneExtras = {
+    dengeli: '',
+    sicak: 'EK TON: Daha şefkatli, daha yumuşak, daha kucaklayıcı ol. Duygulara öncelik ver.',
+    direkt: 'EK TON: Kısa, net, süslemesiz konuş. Doğrudan öze gir. 1-3 cümle yeter.',
+    esprili: 'EK TON: Konu izin veriyorsa hafif mizah kat (alaycı değil, sıcak). Ağır anlarda ciddiye dön.'
+  };
+  const toneLine = toneExtras[state.aiTone] || '';
+
   const baseRules = `Sen Yaşam.AI'sın. Türkiye'de yaşayan 18-35 yaş arası insanlara eşlik eden, kendini tanıyan sıcakkanlı bir arkadaşsın — terapist değilsin, robot değilsin.
+${toneLine}
 
 KİŞİLİĞİN:
 - Samimi, zeki, zaman zaman hafif esprili. Saçma pozitif DEĞİLSİN.
@@ -1900,7 +2193,7 @@ function setTheme(n) {
 
 /* ============ SHEET ============ */
 function openSheet(type) {
-  const r = { theme:renderSheetTheme, reminder:renderSheetReminder, privacy:renderSheetPrivacy, premium:renderSheetPremium, signup:renderSheetSignup, login:renderSheetLogin, anon:renderSheetAnon, newDiary:renderSheetNewDiary, google:renderSheetGoogle, apple:renderSheetApple, verify:renderSheetVerify, payment:renderSheetPayment, gAge:renderSheetGAge };
+  const r = { theme:renderSheetTheme, reminder:renderSheetReminder, privacy:renderSheetPrivacy, premium:renderSheetPremium, signup:renderSheetSignup, login:renderSheetLogin, anon:renderSheetAnon, newDiary:renderSheetNewDiary, google:renderSheetGoogle, apple:renderSheetApple, verify:renderSheetVerify, payment:renderSheetPayment, gAge:renderSheetGAge, fontSize:renderSheetFontSize, aiTone:renderSheetAiTone, feedback:renderSheetFeedback, help:renderSheetHelp, about:renderSheetAbout, editProfile:renderSheetEditProfile };
   if (r[type]) r[type]();
   openSheetRaw();
 }
@@ -1968,6 +2261,115 @@ window.addEventListener('popstate', (ev) => {
 function renderSheetTheme() {
   document.getElementById('sheetContent').innerHTML = `<h3>Renk teması</h3><div class="theme-grid">` +
     Object.keys(themes).map(k => `<button class="theme-opt ${state.theme===k?'active':''}" onclick="setTheme('${k}')"><div class="theme-swatch" style="background:${themes[k].swatch}"></div><div class="tn">${k[0].toUpperCase()+k.slice(1)}</div></button>`).join('') + `</div>`;
+}
+
+function renderSheetFontSize() {
+  const opts = [ { id:'kucuk', n:'Küçük', s:'13px' }, { id:'orta', n:'Orta (önerilen)', s:'14.5px' }, { id:'buyuk', n:'Büyük', s:'16.5px' } ];
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>Yazı boyutu</h3>
+    <p style="font-size:12px;color:#a0a3b8;margin-bottom:14px">Uygulamadaki tüm metinler bu boyuta göre ölçeklenir.</p>
+    ${opts.map(o => `<button class="sheet-btn" style="background:${state.fontSize===o.id?'linear-gradient(135deg,#8b5cf6,#6366f1)':'rgba(255,255,255,0.08)'};color:#fff;margin-bottom:8px;font-size:${o.s}" onclick="setFontSize('${o.id}')">${o.n}</button>`).join('')}
+    <a class="sheet-link" onclick="closeSheet()">Kapat</a>`;
+}
+function setFontSize(id) {
+  state.fontSize = id;
+  LS.set('yasamai_fontSize', id);
+  const fs = { kucuk:'13px', orta:'14.5px', buyuk:'16.5px' }[id] || '14.5px';
+  document.documentElement.style.setProperty('--app-fs', fs);
+  document.body.style.fontSize = fs;
+  closeSheet();
+  refreshProfile();
+}
+
+function renderSheetAiTone() {
+  const opts = [
+    { id:'dengeli', n:'Dengeli', d:'Sıcak ama dürüst — varsayılan' },
+    { id:'sicak', n:'Sıcak', d:'Daha şefkatli, yumuşak, kucaklayıcı' },
+    { id:'direkt', n:'Direkt', d:'Kısa, net, süslemesiz' },
+    { id:'esprili', n:'Esprili', d:'Hafif mizahlı, rahat' }
+  ];
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>AI konuşma tarzı</h3>
+    <p style="font-size:12px;color:#a0a3b8;margin-bottom:14px">Yaşam.AI seninle nasıl konuşsun?</p>
+    ${opts.map(o => `<button class="sheet-btn" style="background:${state.aiTone===o.id?'linear-gradient(135deg,#8b5cf6,#6366f1)':'rgba(255,255,255,0.08)'};color:#fff;margin-bottom:8px;text-align:left;padding:14px" onclick="setAiTone('${o.id}')">
+      <div style="font-weight:800;font-size:14px">${o.n}</div>
+      <div style="font-size:11.5px;opacity:.85;margin-top:2px">${o.d}</div>
+    </button>`).join('')}
+    <a class="sheet-link" onclick="closeSheet()">Kapat</a>`;
+}
+function setAiTone(id) {
+  state.aiTone = id; LS.set('yasamai_aiTone', id); closeSheet(); refreshProfile();
+}
+
+function renderSheetFeedback() {
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>Geri bildirim</h3>
+    <p style="font-size:12px;color:#a0a3b8;margin-bottom:14px">Nerede iyi gidiyor, nerede takılıyoruz? Her fikir değerli.</p>
+    <textarea id="fbTxt" placeholder="Düşüncelerini yaz..." style="width:100%;min-height:110px;padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:inherit;font-size:14px;resize:vertical;font-family:inherit"></textarea>
+    <button class="sheet-btn" onclick="sendFeedback()" style="margin-top:12px">Gönder</button>
+    <a class="sheet-link" onclick="closeSheet()">Kapat</a>`;
+}
+function sendFeedback() {
+  const t = document.getElementById('fbTxt').value.trim();
+  if (!t) { alert('Lütfen bir şeyler yaz.'); return; }
+  const list = LS.get('yasamai_feedback', []);
+  list.push({ text:t, at:Date.now(), user:state.user?.email || 'anon' });
+  LS.set('yasamai_feedback', list);
+  alert('Teşekkürler! Geri bildirimin bize ulaştı.');
+  closeSheet();
+}
+
+function renderSheetHelp() {
+  const qa = [
+    { q:'Mesaj hakkım nasıl yenilenir?', a:'Her gün yenilenen 20 ücretsiz mesaj hakkın var. Gece 00:00 sonrası sıfırlanır. Sınırsız için Premium.' },
+    { q:'Verilerim güvende mi?', a:'Tüm verilerin cihazında saklanır. Hiçbir sohbet sunucularımızda tutulmaz. "Verilerimi indir" ile JSON olarak yedekleyebilirsin.' },
+    { q:'Sesli not nasıl çalışır?', a:'+ menüsünden "Sesli not" seçip konuşursun. Bitince "Durdur"a basarsın. Türkçe konuşma tanıma kullanıyoruz.' },
+    { q:'Bildirimler gelmiyor?', a:'Profil > Bildirimler > Günlük hatırlatma ayarını aç. İlk açılışta telefon izin soracak — "İzin ver" de.' },
+    { q:'AI yanlış cevap verdi, ne yapayım?', a:'Yaşam.AI bir terapist değil, arkadaştır. Kriz anında 182 (TAMER) veya 112’yi ara. Geri bildirim gönderebilirsin.' }
+  ];
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>Yardım & SSS</h3>
+    ${qa.map(x => `<details style="padding:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;margin-bottom:8px">
+      <summary style="font-weight:700;cursor:pointer;font-size:13.5px">${x.q}</summary>
+      <div style="font-size:12.5px;line-height:1.5;color:#a0a3b8;margin-top:8px">${x.a}</div>
+    </details>`).join('')}
+    <a class="sheet-link" onclick="closeSheet()">Kapat</a>`;
+}
+
+function renderSheetAbout() {
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>Hakkında</h3>
+    <div style="text-align:center;padding:14px 0">
+      <div style="width:72px;height:72px;margin:0 auto 10px;border-radius:20px;background:linear-gradient(135deg,#7c5cef,#22d3ee);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:#fff">Y</div>
+      <div style="font-size:18px;font-weight:800">Yaşam.AI</div>
+      <div style="font-size:12px;color:#a0a3b8;margin-top:2px">Sürüm 1.0.0 · Build 31</div>
+    </div>
+    <p style="font-size:13px;line-height:1.55;color:#a0a3b8;margin:8px 0 14px">Yaşam.AI, yanında bir arkadaş gibi duran bir duygu asistanıdır. Terapi değil, eşlik. Kriz anlarında profesyonel destek için <b style="color:#fff">182</b> (TAMER) veya <b style="color:#fff">112</b>'yi ara.</p>
+    <div style="font-size:12px;color:#7a7d92;text-align:center;padding:10px 0">© ${new Date().getFullYear()} Yaşam.AI · Made with ❤️ in İstanbul</div>
+    <a class="sheet-link" onclick="closeSheet()">Kapat</a>`;
+}
+
+function renderSheetEditProfile() {
+  const u = state.user || {};
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>Profili düzenle</h3>
+    <label style="font-size:12px;color:#a0a3b8;display:block;margin-bottom:6px">İsim</label>
+    <input id="epName" type="text" value="${esc(u.name || '')}" style="width:100%;padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:inherit;font-size:14px;margin-bottom:12px">
+    <label style="font-size:12px;color:#a0a3b8;display:block;margin-bottom:6px">Kısa açıklama</label>
+    <input id="epBio" type="text" maxlength="60" value="${esc(u.bio || '')}" placeholder="Kendinle ilgili kısa bir şey..." style="width:100%;padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:inherit;font-size:14px;margin-bottom:12px">
+    <button class="sheet-btn" onclick="saveProfileEdit()">Kaydet</button>
+    <button class="sheet-btn" onclick="askAvatarPermission()" style="background:rgba(255,255,255,0.08);color:#fff;margin-top:8px">📷 Fotoğraf değiştir</button>
+    <a class="sheet-link" onclick="closeSheet()">Kapat</a>`;
+}
+function saveProfileEdit() {
+  const n = document.getElementById('epName').value.trim();
+  const b = document.getElementById('epBio').value.trim();
+  if (!n) { alert('İsim boş olamaz.'); return; }
+  state.user = Object.assign({}, state.user || {}, { name:n, bio:b });
+  LS.set('yasamai_user', state.user);
+  refreshUser();
+  refreshProfile();
+  closeSheet();
 }
 
 function renderSheetReminder() {
