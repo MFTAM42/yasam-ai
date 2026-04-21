@@ -285,6 +285,67 @@
   .entry .ep{font-size:11px;color:#a0a3b8;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .empty{text-align:center;padding:30px 20px;color:#7a7d92;font-size:13px}
 
+  /* ===== GÜNLÜK PREMIUM ===== */
+  .d-hero{margin:8px 16px 14px;padding:18px;border-radius:22px;background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 55%,#ec4899 110%);color:#fff;position:relative;overflow:hidden;box-shadow:0 12px 32px rgba(99,102,241,0.3)}
+  .d-hero::before{content:"";position:absolute;right:-50px;top:-50px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.22),transparent 70%)}
+  .d-hero-ttl{font-size:11px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;opacity:.9}
+  .d-hero-main{font-size:24px;font-weight:800;letter-spacing:-0.5px;margin-top:6px;line-height:1.2}
+  .d-hero-sub{font-size:12.5px;line-height:1.5;margin-top:6px;opacity:.92}
+  .d-hero-cta{display:inline-flex;align-items:center;gap:6px;margin-top:14px;padding:9px 14px;background:rgba(255,255,255,0.22);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.3);border-radius:999px;font-weight:700;font-size:12.5px;color:#fff}
+  .d-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:0 16px 14px}
+  .d-stat{padding:12px 8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;text-align:center}
+  body.light .d-stat{background:#fff;border-color:rgba(0,0,0,0.06);box-shadow:0 2px 10px rgba(0,0,0,0.03)}
+  .d-stat-n{font-size:20px;font-weight:800;background:linear-gradient(135deg,#a78bfa,#22d3ee);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .d-stat-l{font-size:10px;color:#a0a3b8;font-weight:600;margin-top:2px}
+  body.light .d-stat-l{color:#6b7280}
+  .d-nav{display:flex;align-items:center;justify-content:space-between;margin:4px 16px 10px;padding:10px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px}
+  body.light .d-nav{background:#fff;border-color:rgba(0,0,0,0.06)}
+  .d-nav-btn{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.06);color:#fff;font-size:18px;font-weight:700;flex-shrink:0}
+  body.light .d-nav-btn{background:rgba(0,0,0,0.05);color:#1a1a22}
+  .d-nav-btn:disabled{opacity:.3}
+  .d-nav-ttl{flex:1;text-align:center;font-size:15px;font-weight:800;letter-spacing:-0.2px}
+  .d-cal{margin:0 16px 14px;padding:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:18px}
+  body.light .d-cal{background:#fff;border-color:rgba(0,0,0,0.06);box-shadow:0 2px 10px rgba(0,0,0,0.03)}
+  .d-cal-head{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px}
+  .d-cal-head span{text-align:center;font-size:10px;font-weight:700;color:#7a7d92;padding:4px 0}
+  .d-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+  .d-day{aspect-ratio:1;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;font-weight:600;background:rgba(255,255,255,0.03);position:relative;transition:transform .12s}
+  body.light .d-day{background:rgba(0,0,0,0.02)}
+  .d-day.empty{background:transparent;pointer-events:none}
+  .d-day.has{background:linear-gradient(135deg,var(--dc1),var(--dc2));color:#fff;font-weight:800;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+  .d-day.today{outline:2px solid #a78bfa;outline-offset:1px}
+  .d-day:active{transform:scale(0.92)}
+  .d-day .d-dots{position:absolute;bottom:3px;display:flex;gap:2px}
+  .d-day .d-dot{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,0.85)}
+  .d-day.future{opacity:.35}
+  .d-legend{display:flex;flex-wrap:wrap;gap:6px;margin:10px 16px 14px;padding:0 2px}
+  .d-leg{display:flex;align-items:center;gap:4px;padding:4px 9px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:999px;font-size:10.5px;font-weight:600}
+  body.light .d-leg{background:#fff;border-color:rgba(0,0,0,0.06)}
+  .d-leg-sw{width:10px;height:10px;border-radius:3px}
+  .d-tl-head{display:flex;align-items:center;justify-content:space-between;margin:14px 20px 10px}
+  .d-tl-h-ttl{font-size:12.5px;font-weight:800;letter-spacing:-0.2px;text-transform:uppercase;color:#a0a3b8}
+  body.light .d-tl-h-ttl{color:#6b7280}
+  .d-tl-group{margin:0 16px 14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;overflow:hidden}
+  body.light .d-tl-group{background:#fff;border-color:rgba(0,0,0,0.06);box-shadow:0 2px 10px rgba(0,0,0,0.03)}
+  .d-tl-date{padding:10px 14px;background:rgba(139,92,246,0.07);border-bottom:1px solid rgba(255,255,255,0.05);font-size:12px;font-weight:700;color:#a78bfa;display:flex;justify-content:space-between;align-items:center}
+  body.light .d-tl-date{background:rgba(139,92,246,0.05);border-bottom-color:rgba(0,0,0,0.05);color:#7c3aed}
+  .d-tl-date .d-tl-cnt{font-size:10px;color:#7a7d92;font-weight:600}
+  .d-tl-e{display:flex;gap:12px;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.04);text-align:left;width:100%}
+  .d-tl-e:last-child{border-bottom:none}
+  .d-tl-e:active{background:rgba(255,255,255,0.03)}
+  body.light .d-tl-e{border-bottom-color:rgba(0,0,0,0.04)}
+  .d-tl-dot{width:10px;height:10px;border-radius:50%;margin-top:5px;flex-shrink:0;box-shadow:0 0 0 2px rgba(255,255,255,0.08)}
+  .d-tl-body{flex:1;min-width:0}
+  .d-tl-ttl{font-size:13.5px;font-weight:700;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+  .d-tl-time{font-size:10.5px;color:#7a7d92;font-weight:500;flex-shrink:0}
+  .d-tl-txt{font-size:11.5px;color:#a0a3b8;margin-top:3px;line-height:1.4;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  body.light .d-tl-txt{color:#6b7280}
+  .d-filter{display:flex;gap:6px;padding:0 16px 10px;overflow-x:auto;scrollbar-width:none}
+  .d-filter::-webkit-scrollbar{display:none}
+  .d-filt{flex-shrink:0;padding:6px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:999px;font-size:11.5px;font-weight:600;white-space:nowrap}
+  body.light .d-filt{background:#fff;border-color:rgba(0,0,0,0.06)}
+  .d-filt.on{background:linear-gradient(135deg,#8b5cf6,#6366f1);border-color:transparent;color:#fff}
+
   /* ===== KEŞFET ===== */
   .topics{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 18px 20px}
   .topic{padding:14px;border-radius:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);text-align:left;transition:transform .15s}
@@ -676,16 +737,42 @@
       <!-- GÜNLÜK -->
       <div class="tab" id="tab-diary">
         <div class="bar"><div class="bar-title">Günlüğüm</div></div>
-        <div style="padding:0 20px 12px;color:#a0a3b8;font-size:12px;" id="diaryWeekLabel">Bu haftaki ruh halin</div>
-        <div class="week-strip" id="weekStrip"></div>
-        <div class="card">
-          <div class="ct">Haftalık ruh hali <span id="diaryCountTxt">0 girdi</span></div>
-          <div class="bars" id="weekBars"></div>
-          <div class="bar-labels"><span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span><span>Cmt</span><span>Paz</span></div>
+
+        <div class="d-hero">
+          <div class="d-hero-ttl" id="dHeroDate">—</div>
+          <div class="d-hero-main" id="dHeroMain">Bugün nasıl bir gündü?</div>
+          <div class="d-hero-sub" id="dHeroSub">Duygularını yazmak, onları anlamanın en güçlü yolu. Bugünü kaydet.</div>
+          <button class="d-hero-cta" onclick="openSheet('newDiary')">✎ Yeni girdi</button>
         </div>
-        <div class="section-h"><span>Son girdiler</span><button class="add" onclick="openSheet('newDiary')">+ Yeni girdi</button></div>
+
+        <div class="d-stats">
+          <div class="d-stat"><div class="d-stat-n" id="dStatTotal">0</div><div class="d-stat-l">Toplam girdi</div></div>
+          <div class="d-stat"><div class="d-stat-n" id="dStatMonth">0</div><div class="d-stat-l">Bu ay</div></div>
+          <div class="d-stat"><div class="d-stat-n" id="dStatStreak">0</div><div class="d-stat-l">Gün üst üste</div></div>
+        </div>
+
+        <div class="d-nav">
+          <button class="d-nav-btn" id="dNavPrev" onclick="diaryMonthShift(-1)">‹</button>
+          <div class="d-nav-ttl" id="dNavTitle">—</div>
+          <button class="d-nav-btn" id="dNavNext" onclick="diaryMonthShift(1)">›</button>
+        </div>
+
+        <div class="d-cal">
+          <div class="d-cal-head"><span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span><span>Cmt</span><span>Paz</span></div>
+          <div class="d-cal-grid" id="dCalGrid"></div>
+        </div>
+
+        <div class="d-legend" id="dLegend"></div>
+
+        <div class="d-tl-head">
+          <div class="d-tl-h-ttl" id="dTlTitle">Tüm girdiler</div>
+          <button class="hs-h-link" onclick="diaryJumpToday()">Bugüne dön</button>
+        </div>
+
+        <div class="d-filter" id="dFilter"></div>
+
         <div id="diaryList"></div>
-        <div style="height:60px"></div>
+        <div style="height:80px"></div>
       </div>
 
       <!-- KEŞFET -->
@@ -1979,55 +2066,249 @@ function onAvatarPicked(e) {
 }
 
 /* ============ GÜNLÜK ============ */
+/* ============ GÜNLÜK ============ */
+// Günlükte görüntülenen ay (ve filtre). Kullanıcı gezinirken korunur.
+let _diaryView = { year: new Date().getFullYear(), month: new Date().getMonth() };
+let _diaryFilter = 'all'; // 'all' veya moodId
+
+function diaryMonthShift(delta) {
+  const d = new Date(_diaryView.year, _diaryView.month + delta, 1);
+  _diaryView.year = d.getFullYear();
+  _diaryView.month = d.getMonth();
+  renderDiary();
+}
+function diaryJumpToday() {
+  const n = new Date();
+  _diaryView.year = n.getFullYear();
+  _diaryView.month = n.getMonth();
+  renderDiary();
+  // Bugünün girdilerine kaydır
+  setTimeout(() => {
+    const el = document.querySelector('[data-diary-date="'+n.toISOString().slice(0,10)+'"]');
+    if (el) el.scrollIntoView({ behavior:'smooth', block:'center' });
+  }, 100);
+}
+function diarySetFilter(f) {
+  _diaryFilter = f;
+  renderDiary();
+}
+
+const DIARY_MONTHS = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+const DIARY_MOODS = [
+  { id:'dokun', n:'İçimi dökme', c:'#f472b6' },
+  { id:'karar', n:'Karar', c:'#60a5fa' },
+  { id:'sakin', n:'Sakinleşme', c:'#5eead4' },
+  { id:'motive', n:'Motivasyon', c:'#f97316' },
+  { id:'kaygi', n:'Kaygı', c:'#c084fc' },
+  { id:'yalnizlik', n:'Yalnızlık', c:'#fbbf24' },
+  { id:'oz', n:'Öz-şefkat', c:'#34d399' },
+  { id:'uyku', n:'Uyku', c:'#818cf8' },
+  { id:'ofke', n:'Öfke', c:'#f87171' },
+  { id:'mutluluk', n:'Mutluluk', c:'#fde047' }
+];
+
 function renderDiary() {
-  // Haftanın dotları
   const today = new Date();
-  const wk = document.getElementById('weekStrip');
-  const bars = document.getElementById('weekBars');
-  wk.innerHTML = '';
-  bars.innerHTML = '';
-  const dayNames = ['PAZ','PZT','SAL','ÇAR','PER','CUM','CMT'];
+  const todayKey = today.toISOString().slice(0,10);
   const diaryByDate = {};
-  state.diary.forEach(d => { (diaryByDate[d.date] ||= []).push(d); });
+  (state.diary || []).forEach(d => { (diaryByDate[d.date] ||= []).push(d); });
 
-  // Bu haftanın pazartesisinden başla
-  const monday = new Date(today);
-  const dow = (today.getDay() + 6) % 7; // pzt=0
-  monday.setDate(today.getDate() - dow);
-
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(monday);
-    d.setDate(monday.getDate() + i);
-    const key = d.toISOString().slice(0,10);
-    const entries = diaryByDate[key] || [];
-    const isToday = key === today.toISOString().slice(0,10);
-    const moodCol = entries[0]?.moodColor || (isToday ? '#fff' : 'rgba(255,255,255,0.15)');
-    const pill = document.createElement('div');
-    pill.className = 'day-pill' + (isToday ? ' today' : '');
-    pill.innerHTML = `<div class="dn">${isToday?'BUGÜN':dayNames[(i+1)%7]}</div><div class="dnum">${d.getDate()}</div><div class="mood-dot" style="background:${moodCol}"></div>`;
-    wk.appendChild(pill);
-
-    const h = entries.length ? Math.min(100, 30 + entries.length * 25) : 15;
-    const bc = entries[0]?.moodColor || '#7a7d92';
-    const bar = document.createElement('div');
-    bar.className = 'bar';
-    bar.style.height = h + '%';
-    bar.style.background = entries.length ? `linear-gradient(to top,${bc},${bc}aa)` : '#7a7d92';
-    bar.style.opacity = entries.length ? 1 : 0.3;
-    bars.appendChild(bar);
+  // Hero — bugünün durumu
+  const dateStr = today.toLocaleDateString('tr-TR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  const hh = document.getElementById('dHeroDate'); if (hh) hh.textContent = dateStr.toUpperCase();
+  const todayEntries = diaryByDate[todayKey] || [];
+  const hMain = document.getElementById('dHeroMain');
+  const hSub = document.getElementById('dHeroSub');
+  if (hMain && hSub) {
+    if (todayEntries.length === 0) {
+      hMain.textContent = 'Bugün nasıl bir gündü?';
+      hSub.textContent = 'Duygularını yazmak, onları anlamanın en güçlü yolu. Bugünü kaydet.';
+    } else {
+      hMain.textContent = `Bugün ${todayEntries.length} girdi eklediniz`;
+      hSub.textContent = 'Harika — kendini kaydetmeye devam et. İstersen bir tane daha ekle.';
+    }
   }
 
-  document.getElementById('diaryCountTxt').textContent = state.diary.length + ' girdi';
+  // İstatistikler
+  const totalEl = document.getElementById('dStatTotal');
+  const monthEl = document.getElementById('dStatMonth');
+  const streakEl = document.getElementById('dStatStreak');
+  if (totalEl) totalEl.textContent = (state.diary || []).length;
+  const nowMonthPrefix = today.toISOString().slice(0,7);
+  const thisMonth = (state.diary || []).filter(d => (d.date || '').startsWith(nowMonthPrefix)).length;
+  if (monthEl) monthEl.textContent = thisMonth;
+  // streak
+  const days = new Set((state.diary || []).map(d => d.date));
+  let streak = 0;
+  const t0 = new Date(today); t0.setHours(0,0,0,0);
+  for (let i = 0; i < 365; i++) {
+    const d = new Date(t0); d.setDate(t0.getDate() - i);
+    const k = d.toISOString().slice(0,10);
+    if (days.has(k)) streak++; else if (i > 0) break;
+  }
+  if (streakEl) streakEl.textContent = streak;
+
+  // Ay başlığı
+  const navTtl = document.getElementById('dNavTitle');
+  if (navTtl) navTtl.textContent = DIARY_MONTHS[_diaryView.month] + ' ' + _diaryView.year;
+  // İleri butonu geleceğe izin vermesin
+  const nextBtn = document.getElementById('dNavNext');
+  if (nextBtn) {
+    const nextIsFuture = (_diaryView.year > today.getFullYear()) ||
+                        (_diaryView.year === today.getFullYear() && _diaryView.month >= today.getMonth());
+    nextBtn.disabled = nextIsFuture;
+  }
+  // Geri butonu çok eskiye gitmesin (ilk girdiden 12 ay öncesi yeter)
+  const prevBtn = document.getElementById('dNavPrev');
+  if (prevBtn) {
+    const first = (state.diary || [])[0];
+    if (first) {
+      const fd = new Date(first.ts || first.date);
+      const lim = new Date(fd.getFullYear(), fd.getMonth() - 1, 1);
+      const cur = new Date(_diaryView.year, _diaryView.month, 1);
+      prevBtn.disabled = cur <= lim;
+    } else {
+      prevBtn.disabled = true;
+    }
+  }
+
+  // Takvim gridi
+  renderDiaryCalendar(diaryByDate, today);
+
+  // Lejant
+  const usedMoods = new Set();
+  (state.diary || []).forEach(d => { if (d.mood) usedMoods.add(d.mood); });
+  const legendEl = document.getElementById('dLegend');
+  if (legendEl) {
+    legendEl.innerHTML = DIARY_MOODS
+      .filter(m => usedMoods.has(m.id))
+      .map(m => `<div class="d-leg"><div class="d-leg-sw" style="background:${m.c}"></div>${m.n}</div>`)
+      .join('') || '<div style="font-size:11.5px;color:#7a7d92;padding:0 4px">Henüz hiçbir ruh hali kaydedilmemiş</div>';
+  }
+
+  // Filtre chip'leri
+  const filterEl = document.getElementById('dFilter');
+  if (filterEl) {
+    const chips = [`<button class="d-filt ${_diaryFilter==='all'?'on':''}" onclick="diarySetFilter('all')">Tümü</button>`]
+      .concat(DIARY_MOODS.filter(m => usedMoods.has(m.id)).map(m =>
+        `<button class="d-filt ${_diaryFilter===m.id?'on':''}" onclick="diarySetFilter('${m.id}')" style="${_diaryFilter===m.id?'':'border-color:'+m.c+'66'}">
+          <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${m.c};margin-right:5px;vertical-align:middle"></span>${m.n}
+        </button>`));
+    filterEl.innerHTML = chips.join('');
+  }
+
+  // Timeline — görüntülenen ayın girdileri (filtreli), tarihe göre grupla
+  renderDiaryTimeline(diaryByDate);
+}
+
+function renderDiaryCalendar(diaryByDate, today) {
+  const grid = document.getElementById('dCalGrid');
+  if (!grid) return;
+  const y = _diaryView.year, m = _diaryView.month;
+  const first = new Date(y, m, 1);
+  const last = new Date(y, m + 1, 0);
+  const firstDow = (first.getDay() + 6) % 7; // Pzt=0
+  const todayKey = today.toISOString().slice(0,10);
+  let html = '';
+  // Baştaki boşluklar
+  for (let i = 0; i < firstDow; i++) html += `<div class="d-day empty"></div>`;
+  for (let d = 1; d <= last.getDate(); d++) {
+    const dt = new Date(y, m, d);
+    const key = dt.toISOString().slice(0,10);
+    const entries = diaryByDate[key] || [];
+    const isToday = key === todayKey;
+    const isFuture = dt > today;
+    if (entries.length > 0) {
+      // İlk 2 mood rengini gradient yap
+      const c1 = entries[0].moodColor || '#8b5cf6';
+      const c2 = entries[1]?.moodColor || c1;
+      const dots = entries.length > 1
+        ? `<div class="d-dots">${entries.slice(0, Math.min(3, entries.length)).map(()=>'<span class="d-dot"></span>').join('')}</div>`
+        : '';
+      html += `<button class="d-day has ${isToday?'today':''}" style="--dc1:${c1};--dc2:${c2}" onclick="diaryShowDay('${key}')" data-diary-date="${key}">${d}${dots}</button>`;
+    } else {
+      html += `<button class="d-day ${isToday?'today':''} ${isFuture?'future':''}" ${isFuture?'disabled':''} onclick="diaryShowDay('${key}')">${d}</button>`;
+    }
+  }
+  grid.innerHTML = html;
+}
+
+function renderDiaryTimeline(diaryByDate) {
   const list = document.getElementById('diaryList');
-  if (state.diary.length === 0) {
-    list.innerHTML = '<div class="empty">Henüz bir girdi yok.<br>Yukarıdan "+" ile ilk notunu ekleyebilirsin.</div>';
+  const ttlEl = document.getElementById('dTlTitle');
+  if (!list) return;
+  const monthName = DIARY_MONTHS[_diaryView.month] + ' ' + _diaryView.year;
+  if (ttlEl) ttlEl.textContent = monthName + ' girdileri' + (_diaryFilter!=='all' ? ' · ' + (DIARY_MOODS.find(m=>m.id===_diaryFilter)?.n || '') : '');
+
+  // Görüntülenen aydaki tarihleri bul
+  const prefix = _diaryView.year + '-' + String(_diaryView.month + 1).padStart(2, '0');
+  const dates = Object.keys(diaryByDate)
+    .filter(k => k.startsWith(prefix))
+    .sort((a,b) => b.localeCompare(a)); // en yeni üstte
+
+  const filteredDates = dates.map(k => {
+    const entries = (diaryByDate[k] || []).filter(e => _diaryFilter === 'all' || e.mood === _diaryFilter);
+    return { key:k, entries };
+  }).filter(x => x.entries.length > 0);
+
+  if (filteredDates.length === 0) {
+    list.innerHTML = `<div class="empty">Bu ayda ${_diaryFilter==='all'?'hiç girdi yok':'seçili ruh halinde girdi yok'}.<br>Yukarıdaki takvimden başka bir ay seçebilir veya <b>+ Yeni girdi</b> ile ekleyebilirsin.</div>`;
     return;
   }
-  list.innerHTML = state.diary.slice().reverse().map((d,i) => {
-    const idx = state.diary.length - 1 - i;
-    const rel = relTime(d.ts);
-    return `<button class="entry" onclick="viewDiary(${idx})"><div class="dot" style="background:${d.moodColor||'#8b5cf6'}"></div><div class="eb"><div class="et"><span>${esc(d.title)}</span><span class="tm">${rel}</span></div><div class="ep">${esc(d.text.slice(0,80))}${d.text.length>80?'…':''}</div></div></button>`;
+
+  list.innerHTML = filteredDates.map(({ key, entries }) => {
+    const dObj = new Date(key);
+    const dayName = dObj.toLocaleDateString('tr-TR', { weekday:'long' });
+    const dayLabel = dObj.getDate() + ' ' + DIARY_MONTHS[dObj.getMonth()];
+    const isToday = key === new Date().toISOString().slice(0,10);
+    const header = `<div class="d-tl-date" data-diary-date="${key}"><span>${isToday?'Bugün · ':''}${dayLabel} <span style="opacity:.6;font-weight:500">· ${dayName}</span></span><span class="d-tl-cnt">${entries.length} girdi</span></div>`;
+    const items = entries.slice().sort((a,b) => (b.ts||0)-(a.ts||0)).map(e => {
+      // Orijinal state.diary içindeki idx
+      const idx = state.diary.indexOf(e);
+      const time = e.ts ? new Date(e.ts).toLocaleTimeString('tr-TR', { hour:'2-digit', minute:'2-digit' }) : '';
+      return `<button class="d-tl-e" onclick="viewDiary(${idx})">
+        <div class="d-tl-dot" style="background:${e.moodColor||'#8b5cf6'}"></div>
+        <div class="d-tl-body">
+          <div class="d-tl-ttl"><span>${esc(e.title||'(başlıksız)')}</span><span class="d-tl-time">${time}</span></div>
+          <div class="d-tl-txt">${esc((e.text||'').slice(0, 140))}${(e.text||'').length>140?'…':''}</div>
+        </div>
+      </button>`;
+    }).join('');
+    return `<div class="d-tl-group">${header}${items}</div>`;
   }).join('');
+}
+
+// Takvimde bir güne tıklayınca o gündeki tüm girdileri sheet'te göster
+function diaryShowDay(dateKey) {
+  const entries = (state.diary || []).filter(d => d.date === dateKey);
+  const d = new Date(dateKey);
+  const dateLabel = d.toLocaleDateString('tr-TR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  if (entries.length === 0) {
+    document.getElementById('sheetContent').innerHTML = `
+      <h3>${dateLabel}</h3>
+      <p style="color:#a0a3b8;font-size:13px;margin-bottom:14px">Bu günde henüz bir girdi yok.</p>
+      <button class="sheet-btn" onclick="closeSheet();setTimeout(()=>openSheet('newDiary'),200)">Bu güne girdi ekle</button>
+      <a class="sheet-link" onclick="closeSheet()">Kapat</a>`;
+    openSheetRaw();
+    return;
+  }
+  const items = entries.slice().sort((a,b) => (b.ts||0)-(a.ts||0)).map(e => {
+    const idx = state.diary.indexOf(e);
+    const time = e.ts ? new Date(e.ts).toLocaleTimeString('tr-TR', { hour:'2-digit', minute:'2-digit' }) : '';
+    return `<button class="d-tl-e" style="border-bottom:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.03);border-radius:12px;margin-bottom:8px" onclick="closeSheet();setTimeout(()=>viewDiary(${idx}),200)">
+      <div class="d-tl-dot" style="background:${e.moodColor||'#8b5cf6'}"></div>
+      <div class="d-tl-body">
+        <div class="d-tl-ttl"><span>${esc(e.title||'(başlıksız)')}</span><span class="d-tl-time">${time}</span></div>
+        <div class="d-tl-txt">${esc((e.text||'').slice(0, 140))}${(e.text||'').length>140?'…':''}</div>
+      </div>
+    </button>`;
+  }).join('');
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>${dateLabel}</h3>
+    <p style="color:#a0a3b8;font-size:12px;margin-bottom:14px">${entries.length} girdi</p>
+    ${items}
+    <a class="sheet-link" onclick="closeSheet()">Kapat</a>`;
+  openSheetRaw();
 }
 
 function viewDiary(idx) {
@@ -3143,7 +3424,18 @@ async function doApple() {
 
 /* ============ GÜNLÜK YENİ GİRDİ ============ */
 function renderSheetNewDiary() {
-  const moods = [{id:'dokun',n:'İçimi dök',c:'#f472b6'},{id:'karar',n:'Kararsız',c:'#60a5fa'},{id:'sakin',n:'Sakin',c:'#5eead4'},{id:'motive',n:'Motive',c:'#f97316'}];
+  const moods = [
+    {id:'dokun',n:'İçimi dök',c:'#f472b6'},
+    {id:'karar',n:'Kararsız',c:'#60a5fa'},
+    {id:'sakin',n:'Sakin',c:'#5eead4'},
+    {id:'motive',n:'Motive',c:'#f97316'},
+    {id:'kaygi',n:'Kaygılı',c:'#c084fc'},
+    {id:'yalnizlik',n:'Yalnız',c:'#fbbf24'},
+    {id:'oz',n:'Öz-şefkat',c:'#34d399'},
+    {id:'uyku',n:'Uykusuz',c:'#818cf8'},
+    {id:'ofke',n:'Sinirli',c:'#f87171'},
+    {id:'mutluluk',n:'Mutlu',c:'#fde047'}
+  ];
   document.getElementById('sheetContent').innerHTML = `
     <h3>Yeni günlük girdisi</h3>
     <div class="form-row"><label>Başlık</label><input type="text" id="dTitle" placeholder="Bugün ne yaşadın?" maxlength="60"></div>
@@ -3174,6 +3466,10 @@ function saveDiary() {
   const today = new Date();
   state.diary.push({ title, text, moodColor, mood: moodId, ts: Date.now(), date: today.toISOString().slice(0,10) });
   LS.set('yasamai_diary', state.diary);
+  // Yeni girdi sonrası takvimi bu aya getir
+  _diaryView.year = today.getFullYear();
+  _diaryView.month = today.getMonth();
+  _diaryFilter = 'all';
   closeSheet(); renderDiary();
 }
 
