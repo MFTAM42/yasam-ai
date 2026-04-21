@@ -1252,18 +1252,25 @@ window.addEventListener('load', () => {
   resetDailyIfNeeded();
   applyTheme();
   applyDark();
+  // Bekleyen doğrulama varsa splash'ı ATLA — kullanıcı maile bakıp döndüğünde anında verify ekranı
+  const hasPendingVerify = (() => {
+    try {
+      return !state.user && pendingSignup && pendingSignup.expires && Date.now() < pendingSignup.expires;
+    } catch(e) { return false; }
+  })();
+  const splashDelay = hasPendingVerify ? 0 : 1200;
   setTimeout(() => {
     document.getElementById('splash').classList.add('hidden');
-    if (state.user) enterApp();
-    else document.getElementById('onboard').classList.remove('hidden');
-    // Bekleyen doğrulama var mı? (kullanıcı maile bakmaya gidip geldi)
-    try {
-      if (!state.user && pendingSignup && pendingSignup.expires && Date.now() < pendingSignup.expires) {
-        document.getElementById('onboard').classList.add('hidden');
-        setTimeout(()=>openSheet('verify'), 300);
-      }
-    } catch(e){}
-  }, 1500);
+    if (state.user) {
+      enterApp();
+    } else if (hasPendingVerify) {
+      // Onboard'ı bile gösterme, direkt verify'a atla
+      document.getElementById('onboard').classList.add('hidden');
+      openSheet('verify');
+    } else {
+      document.getElementById('onboard').classList.remove('hidden');
+    }
+  }, splashDelay);
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').then((reg) => {
       // Yeni SW bulundu mu? Hazır olunca devreye al ve sayfayı bir kerelik yenile.
@@ -1286,9 +1293,7 @@ window.addEventListener('load', () => {
   // Sayfa arka planda kaldıktan sonra (telefon kilitlendi/açıldı) geri dönünce UI'yi sıfırla
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') {
-      // Açık kalmış sheet/overlay/rec-badge varsa kapat (zombi UI düzelir)
-      try { document.getElementById('sheetBg')?.classList.remove('show'); } catch(e){}
-      try { document.getElementById('sheet')?.classList.remove('show'); } catch(e){}
+      // permOverlay ve recBadge zombi temizliği (sheet'i KAPATMA — verify açıksa kapanmasın!)
       try { document.getElementById('permOverlay')?.classList.remove('show'); } catch(e){}
       if (typeof speechRec !== 'undefined' && speechRec) {
         try { speechRec.abort(); } catch(e){}
@@ -1296,8 +1301,16 @@ window.addEventListener('load', () => {
       }
       document.getElementById('recBadge')?.classList.remove('show');
       document.body.classList.remove('kb-open');
-      // History state'i tazele
       try { history.replaceState({ app:true }, ''); } catch(e){}
+      // Bekleyen doğrulama varsa ve sheet kapalıysa, verify'i geri aç
+      try {
+        const sheetOpen = document.getElementById('sheet')?.classList.contains('show');
+        const pending = LS.get('yasamai_pendingSignup', null);
+        if (!sheetOpen && !state.user && pending && pending.expires && Date.now() < pending.expires) {
+          pendingSignup = pending;
+          openSheet('verify');
+        }
+      } catch(e){}
     }
   });
 });
