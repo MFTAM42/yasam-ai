@@ -1256,6 +1256,13 @@ window.addEventListener('load', () => {
     document.getElementById('splash').classList.add('hidden');
     if (state.user) enterApp();
     else document.getElementById('onboard').classList.remove('hidden');
+    // Bekleyen doğrulama var mı? (kullanıcı maile bakmaya gidip geldi)
+    try {
+      if (!state.user && pendingSignup && pendingSignup.expires && Date.now() < pendingSignup.expires) {
+        document.getElementById('onboard').classList.add('hidden');
+        setTimeout(()=>openSheet('verify'), 300);
+      }
+    } catch(e){}
   }, 1500);
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').then((reg) => {
@@ -2625,8 +2632,8 @@ function cycleDeleteLog(idx) {
 function renderSheetCycleLog() {
   const def = _cyclePreDate || new Date().toISOString().slice(0,10);
   _cyclePreDate = null;
-  document.getElementById('sheetTtl').textContent = 'Regl kaydı';
-  document.getElementById('sheetBody').innerHTML =
+  document.getElementById('sheetContent').innerHTML =
+    '<h3 class="sheet-ttl">Regl kaydı</h3>' +
     '<label class="lbl">Tarih</label><input type="date" id="cyLogDate" class="inp" value="' + def + '">' +
     '<label class="lbl" style="margin-top:10px">Tip</label>' +
     '<select id="cyLogType" class="inp"><option value="period_start">Regl başlangıcı</option><option value="period_end">Regl bitişi</option></select>' +
@@ -2648,8 +2655,8 @@ function renderSheetCycleSymptom() {
   const def = _cyclePreDate || new Date().toISOString().slice(0,10);
   _cyclePreDate = null;
   const syms = ['Kramp','Baş ağrısı','Yorgunluk','Şişkinlik','Hassasiyet','Sivilce','Huysuzluk','İstek'];
-  document.getElementById('sheetTtl').textContent = 'Belirti ekle';
-  document.getElementById('sheetBody').innerHTML =
+  document.getElementById('sheetContent').innerHTML =
+    '<h3 class="sheet-ttl">Belirti ekle</h3>' +
     '<label class="lbl">Tarih</label><input type="date" id="cySymDate" class="inp" value="' + def + '">' +
     '<label class="lbl" style="margin-top:10px">Belirtiler</label>' +
     '<div class="chips-w" id="cySymChips">' + syms.map(s => '<button type="button" class="chip" onclick="this.classList.toggle(\'on\')">' + s + '</button>').join('') + '</div>' +
@@ -2669,13 +2676,12 @@ function saveCycleSymptom() {
   renderCycle();
 }
 function renderSheetCycleSettings() {
-  document.getElementById('sheetTtl').textContent = 'Döngü uzunluğu';
-  let html = '<p class="sheet-p">Ortalama döngü uzunluğun kaç gün?</p><div class="list">';
+  let html = '<h3 class="sheet-ttl">Döngü uzunluğu</h3><p class="sheet-p">Ortalama döngü uzunluğun kaç gün?</p><div class="list">';
   for (let n = 21; n <= 40; n++) {
     html += '<button class="setting" onclick="setCycleLen(' + n + ')"><div class="setting-l"><div class="setting-t">' + n + ' gün</div></div>' + (state.cycleLen === n ? '<div class="setting-r">✓</div>' : '') + '</button>';
   }
   html += '</div>';
-  document.getElementById('sheetBody').innerHTML = html;
+  document.getElementById('sheetContent').innerHTML = html;
 }
 function setCycleLen(n) {
   state.cycleLen = n;
@@ -2684,13 +2690,12 @@ function setCycleLen(n) {
   renderCycle();
 }
 function renderSheetCyclePeriodLen() {
-  document.getElementById('sheetTtl').textContent = 'Regl süresi';
-  let html = '<p class="sheet-p">Reglin ortalama kaç gün sürüyor?</p><div class="list">';
+  let html = '<h3 class="sheet-ttl">Regl süresi</h3><p class="sheet-p">Reglin ortalama kaç gün sürüyor?</p><div class="list">';
   for (let n = 2; n <= 10; n++) {
     html += '<button class="setting" onclick="setPeriodLen(' + n + ')"><div class="setting-l"><div class="setting-t">' + n + ' gün</div></div>' + (state.periodLen === n ? '<div class="setting-r">✓</div>' : '') + '</button>';
   }
   html += '</div>';
-  document.getElementById('sheetBody').innerHTML = html;
+  document.getElementById('sheetContent').innerHTML = html;
 }
 function setPeriodLen(n) {
   state.periodLen = n;
@@ -3851,11 +3856,17 @@ const EMAILJS_TEMPLATE_ID = 'template_pxhmwmg';
 const EMAILJS_PUBLIC_KEY  = 'zfs1IYU-M6IyLL6uP';
 
 function genCode() { return (''+Math.floor(100000 + Math.random()*900000)); }
-let pendingSignup = null;
+let pendingSignup = LS.get('yasamai_pendingSignup', null);
+// Süresi dolmuşsa temizle
+if (pendingSignup && pendingSignup.expires && Date.now() > pendingSignup.expires) {
+  pendingSignup = null;
+  LS.set('yasamai_pendingSignup', null);
+}
 
 async function sendVerifyCodeAndShow(data) {
   const code = genCode();
   pendingSignup = { ...data, code, expires: Date.now() + 10*60*1000 };
+  LS.set('yasamai_pendingSignup', pendingSignup);
   const configured = EMAILJS_PUBLIC_KEY && EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID && window.emailjs;
   if (configured) {
     try {
@@ -3914,6 +3925,7 @@ function doVerify() {
     state.avatar = null; LS.set('yasamai_avatar', null);
   }
   pendingSignup = null;
+  LS.set('yasamai_pendingSignup', null);
   closeSheet();
   enterApp();
 }
