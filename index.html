@@ -1350,6 +1350,15 @@ window.addEventListener('load', () => {
   applyDark();
   // Su + rutin hatırlatıcılarını kur (bildirim izni varsa)
   try { waterResetIfNeeded(); scheduleWaterReminder(); scheduleRoutineReminders(); } catch(e){}
+  // Gece yarısı rutin yeniden planla (günlük)
+  try {
+    const now = new Date();
+    const mid = new Date(now); mid.setHours(24,0,30,0);
+    setTimeout(() => {
+      try { waterResetIfNeeded(); scheduleRoutineReminders(); } catch(e){}
+      setInterval(() => { try { waterResetIfNeeded(); scheduleRoutineReminders(); } catch(e){} }, 24*60*60*1000);
+    }, mid - now);
+  } catch(e){}
   // Bekleyen doğrulama varsa splash'ı ATLA — kullanıcı maile bakıp döndüğünde anında verify ekranı
   const hasPendingVerify = (() => {
     try {
@@ -1419,8 +1428,10 @@ function enterApp() {
   refreshUser();
   renderDiary();
   renderTopics();
-  // İlk açılışta uygulama turu göster
-  if (!LS.get('yasamai_tourDone', false)) {
+  // İlk açılışta önce izin akışı, sonra uygulama turu
+  if (!LS.get('yasamai_permsAsked', false)) {
+    setTimeout(() => showWelcomePerms(), 500);
+  } else if (!LS.get('yasamai_tourDone', false)) {
     setTimeout(() => showAppTour(), 600);
   }
   // Döngü sekmesi kadınlar için açıksa nav'da göster
@@ -1779,6 +1790,97 @@ const TOUR_STEPS = [
   { emoji:'🎨', ttl:'Sen nasıl istersen', txt:'Tema rengi, gece modu (otomatik/açık/kapalı), yazı boyutu, AI konuşma tarzı — hepsi profilden ayarlanabilir. Haydi başlayalım!' }
 ];
 let _tourIdx = 0;
+/* ============ HOŞGELDIN İZİN AKIŞI (ilk açılış) ============ */
+async function showWelcomePerms() {
+  // Sheet içinde adım adım izin iste
+  const steps = [
+    { key:'notif', emoji:'🔔', title:'Bildirimler',
+      desc:'Su içme, günlük rutin, regl ve ilaç hatırlatmaları için bildirim izni gerekli.',
+      action: async () => {
+        if (!('Notification' in window)) return false;
+        if (Notification.permission === 'granted') return true;
+        try { const p = await Notification.requestPermission(); return p === 'granted'; } catch(e){ return false; }
+      }
+    },
+    { key:'mic', emoji:'🎤', title:'Mikrofon',
+      desc:'Sohbette sesli not gönderebilmen için mikrofon izni. İstemezsen sonradan açabilirsin.',
+      action: async () => {
+        if (!navigator.mediaDevices?.getUserMedia) return false;
+        try {
+          const s = await navigator.mediaDevices.getUserMedia({ audio:true });
+          s.getTracks().forEach(t=>t.stop());
+          LS.set('yasamai_perm_mic', true);
+          return true;
+        } catch(e){ return false; }
+      }
+    },
+    { key:'camera', emoji:'📷', title:'Kamera',
+      desc:'Fotoğraf çekip sohbette paylaşabilmen için kamera izni.',
+      action: async () => {
+        if (!navigator.mediaDevices?.getUserMedia) return false;
+        try {
+          const s = await navigator.mediaDevices.getUserMedia({ video:true });
+          s.getTracks().forEach(t=>t.stop());
+          LS.set('yasamai_perm_camera', true);
+          return true;
+        } catch(e){ return false; }
+      }
+    },
+    { key:'photo', emoji:'🖼️', title:'Fotoğraflar & Dosyalar',
+      desc:'Galeriden fotoğraf ve dosya paylaşabilmen için izin. Cihaz her seferinde sorabilir.',
+      action: async () => {
+        LS.set('yasamai_perm_image', true);
+        LS.set('yasamai_perm_file', true);
+        LS.set('yasamai_photo_perm', true);
+        state.photoPermission = true;
+        return true;
+      }
+    }
+  ];
+
+  let idx = 0;
+  const results = {};
+  const render = () => {
+    if (idx >= steps.length) return finish();
+    const s = steps[idx];
+    document.getElementById('sheetContent').innerHTML = `
+      <div style="text-align:center;padding:8px 0 4px">
+        <div style="font-size:58px;line-height:1;margin-bottom:8px">${s.emoji}</div>
+        <h3 style="margin:0 0 6px">${s.title}</h3>
+        <div style="font-size:11px;color:#a0a3b8;letter-spacing:.5px;text-transform:uppercase;font-weight:700">${idx+1} / ${steps.length}</div>
+      </div>
+      <p style="font-size:13px;line-height:1.55;color:#a0a3b8;text-align:center;margin:12px 18px 18px">${s.desc}</p>
+      <div style="display:flex;gap:8px">
+        <button class="sheet-btn" style="flex:1" onclick="_permSkip()">Atla</button>
+        <button class="sheet-btn primary" style="flex:2" onclick="_permAllow()">İzin ver</button>
+      </div>
+      <div style="display:flex;justify-content:center;gap:6px;margin-top:14px">
+        ${steps.map((_,i)=>`<span style="width:7px;height:7px;border-radius:50%;background:${i===idx?'#8b5cf6':'rgba(255,255,255,0.2)'}"></span>`).join('')}
+      </div>
+    `;
+    openSheetRaw();
+  };
+  window._permAllow = async () => {
+    const s = steps[idx];
+    const btns = document.querySelectorAll('#sheetContent .sheet-btn');
+    btns.forEach(b=>{ b.disabled=true; });
+    try { results[s.key] = await s.action(); } catch(e){ results[s.key]=false; }
+    idx++; render();
+  };
+  window._permSkip = () => { results[steps[idx].key] = false; idx++; render(); };
+  const finish = () => {
+    LS.set('yasamai_permsAsked', true);
+    closeSheet();
+    // Hatırlatıcı timer'larını şimdi kur (izin verildiyse)
+    try { scheduleWaterReminder(); scheduleRoutineReminders(); } catch(e){}
+    // Ardından tur
+    if (!LS.get('yasamai_tourDone', false)) {
+      setTimeout(() => showAppTour(), 500);
+    }
+  };
+  render();
+}
+
 function showAppTour() {
   _tourIdx = 0;
   tourRender();
@@ -2002,7 +2104,15 @@ KONUŞMA KURALLARI:
 7) Kullanıcı intihar/kendine zarar gibi şeylerden bahsederse: duyguyu ciddiye al, yalnız olmadığını söyle, Yaşam.AI destek hattını aramasını öner. Nasihat etme, yönlendir.
 8) Kullanıcı sana "nasılsın", "kimsin" derse: samimi bir cümleyle geç, konuyu ona çevir. Ama rol oynamayı reddetme.
 9) Zaman bağlamı: şu an ${timeOfDay} (saat ${hour}). Uygunsa bunu hisset — "gecenin bu saatinde" gibi.
-10) Kendinden "yapay zekayım" diye söz etme. Arkadaşsın, yapay olmak gerekmiyor.`;
+10) Kendinden "yapay zekayım" diye söz etme. Arkadaşsın, yapay olmak gerekmiyor.
+11) ANLAŞILIR KONUŞ: Basit, günlük Türkçe kullan. Ağır kelimeler, eski dil, yabancı terimler YASAK. Karmaşık fikir varsa ikiye böl ve sade anlat. Genç-orta okuma seviyesine göre yaz.
+12) Cümleler kısa ve doğal olsun. Virgülle uzayan, yan cümleli yapıdan kaçın. Akıcı ve net ol.
+
+KİMLİĞİN (biri sorarsa — doğal, kısa cevap ver, uzun girme):
+- İsmin: Yaşam.AI
+- Seni kim yaptı / kurucun kim / sahibin kim / patronun kim → "Beni Furkan Tam yaptı, patronum da Furkan." gibi samimi ve kısa söyle. "Furkan Tam benim kurucum ve patronum" de. Başka kimse değil. Google, OpenAI, Microsoft gibi şirketler DEĞİL — bunları söyleme.
+- Ne işe yararsın: "Kendini daha iyi hissetmene, düşüncelerini toplamana, küçük adımlarla yaşamını düzenlemene yardım ediyorum."
+- Hangi modeli kullanıyorsun / AI altyapın ne → "Ben Yaşam.AI'ım, Furkan'ın tasarladığı bir arkadaşım. Teknik detay önemli değil." de, model ismi verme.`;
 
   const personalRule = personalize
     ? `KULLANICI: İsmi ${userName}. Mesajlarda nadiren ismini kullan (her mesajda değil — 3-4 mesajda bir sıcaklık katması için).
@@ -3015,34 +3125,76 @@ function renderSheetWater() {
   waterResetIfNeeded();
   const w = state.water;
   const pct = Math.min(100, Math.round((w.drank / w.goal) * 100));
-  document.getElementById('sheetContent').innerHTML = `
-    <h3>💧 Su Takibi</h3>
-    <div class="water-card" style="margin:0 0 14px">
-      <div style="font-size:11px;opacity:.9;letter-spacing:.5px;text-transform:uppercase;font-weight:700">BUGÜN</div>
-      <div class="water-val">${w.drank} <span style="font-size:16px;opacity:.85">ml</span></div>
-      <div class="water-goal">Hedef: ${w.goal} ml · %${pct}</div>
-      <div class="water-bar"><div class="water-bar-f" style="width:${pct}%"></div></div>
-      <div class="water-btns">
-        <button class="cy-btn" onclick="waterAdd(200)">+200 ml</button>
-        <button class="cy-btn" onclick="waterAdd(300)">+300 ml bardak</button>
-        <button class="cy-btn" onclick="waterAdd(500)">+500 ml şişe</button>
-        <button class="cy-btn" onclick="waterReset()">Sıfırla</button>
+  const glassesDone = Math.floor((w.drank||0) / 250);
+  const glassesGoal = Math.ceil((w.goal||2000) / 250);
+  // Bardak ızgarası (dolu/boş)
+  let glasses = '';
+  for (let i=0;i<glassesGoal;i++) {
+    const filled = i < glassesDone;
+    glasses += `<button onclick="waterAdd(${filled?'-250':'250'})" style="width:40px;height:52px;border-radius:0 0 10px 10px;border:2.5px solid ${filled?'#0ea5e9':'rgba(14,165,233,0.35)'};background:${filled?'linear-gradient(to top,#0ea5e9,#38bdf8)':'transparent'};position:relative;padding:0">
+      <span style="position:absolute;bottom:4px;left:50%;transform:translateX(-50%);font-size:10px;color:${filled?'#fff':'#0ea5e9'};font-weight:700">${(i+1)*250}</span>
+    </button>`;
+  }
+  // Son 7 gün için bar
+  const logs = LS.get('yasamai_waterHist', {});
+  let hist = '';
+  for (let i=6;i>=0;i--) {
+    const d = new Date(); d.setDate(d.getDate()-i);
+    const key = d.toISOString().slice(0,10);
+    const val = (key === w.day) ? w.drank : (logs[key]||0);
+    const h = Math.min(100, Math.round((val/(w.goal||2000))*100));
+    hist += `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+      <div style="height:50px;width:100%;background:rgba(14,165,233,0.12);border-radius:6px;position:relative;overflow:hidden">
+        <div style="position:absolute;bottom:0;left:0;right:0;height:${h}%;background:linear-gradient(to top,#0ea5e9,#38bdf8);border-radius:6px"></div>
       </div>
+      <div style="font-size:9px;color:#a0a3b8;font-weight:600">${['Pz','Pt','Sa','Ça','Pe','Cu','Ct'][d.getDay()]}</div>
+    </div>`;
+  }
+  document.getElementById('sheetContent').innerHTML = `
+    <h3 style="display:flex;align-items:center;gap:8px">💧 Su Takibi</h3>
+    <div class="water-card" style="margin:8px 0 14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <div style="font-size:11px;opacity:.9;letter-spacing:.5px;text-transform:uppercase;font-weight:700">BUGÜN</div>
+        <div style="font-size:12px;opacity:.9;font-weight:700">${glassesDone}/${glassesGoal} bardak</div>
+      </div>
+      <div class="water-val">${w.drank}<span style="font-size:18px;opacity:.85;margin-left:4px">ml</span></div>
+      <div class="water-goal">Hedef: ${w.goal} ml · %${pct} tamamlandı</div>
+      <div class="water-bar"><div class="water-bar-f" style="width:${pct}%"></div></div>
     </div>
+    <div style="margin-bottom:10px;font-size:12px;color:#a0a3b8;font-weight:700">Bardaklar (dokun ekle/çıkar)</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;justify-content:center">${glasses}</div>
+    <div class="water-btns" style="margin-bottom:14px">
+      <button class="cy-btn" style="background:#0ea5e9;border-color:#0ea5e9" onclick="waterAdd(200)">+200 ml</button>
+      <button class="cy-btn" style="background:#0ea5e9;border-color:#0ea5e9" onclick="waterAdd(300)">+300 ml</button>
+      <button class="cy-btn" style="background:#0ea5e9;border-color:#0ea5e9" onclick="waterAdd(500)">+500 ml şişe</button>
+      <button class="cy-btn" onclick="waterReset()" style="background:rgba(239,68,68,0.15);border-color:rgba(239,68,68,0.3);color:#ef4444">Sıfırla</button>
+    </div>
+    <div style="margin-bottom:8px;font-size:12px;color:#a0a3b8;font-weight:700">Son 7 gün</div>
+    <div style="display:flex;gap:6px;margin-bottom:16px">${hist}</div>
     <label class="lbl">Günlük hedef (ml)</label>
     <input type="number" id="wGoal" class="inp" min="500" max="5000" step="100" value="${w.goal}">
     <label class="lbl" style="margin-top:10px">Hatırlatma aralığı (dk) — 0 = kapalı</label>
     <input type="number" id="wInt" class="inp" min="0" max="240" step="15" value="${w.interval||0}">
-    <label class="lbl" style="margin-top:10px;display:flex;align-items:center;gap:10px">
+    <label class="lbl" style="margin-top:10px;display:flex;align-items:center;gap:10px;cursor:pointer">
       <input type="checkbox" id="wOn" ${w.on?'checked':''}> Bildirim hatırlatması aç
     </label>
-    <button class="sheet-btn primary" style="margin-top:12px" onclick="waterSave()">Kaydet</button>
+    <button class="sheet-btn primary" style="margin-top:12px" onclick="waterSave()">Ayarları kaydet</button>
   `;
 }
 function waterAdd(ml) {
   waterResetIfNeeded();
-  state.water.drank = Math.min(9999, (state.water.drank||0) + ml);
+  state.water.drank = Math.max(0, Math.min(9999, (state.water.drank||0) + ml));
   LS.set('yasamai_water', state.water);
+  // Günlük history
+  const hist = LS.get('yasamai_waterHist', {});
+  hist[state.water.day] = state.water.drank;
+  LS.set('yasamai_waterHist', hist);
+  // Hedefe ulaşıldıysa tebrik
+  if (state.water.drank >= state.water.goal && !state.water._goalNotified) {
+    state.water._goalNotified = true;
+    LS.set('yasamai_water', state.water);
+    try { if ('Notification' in window && Notification.permission === 'granted') new Notification('🎉 Hedefe ulaştın!', { body:'Bugün '+state.water.goal+' ml su içtin. Harika iş!', icon:'./icon-192.png' }); } catch(e){}
+  }
   renderSheetWater();
 }
 function waterReset() {
@@ -3060,6 +3212,19 @@ function waterSave() {
   closeSheet();
 }
 let _waterTimer = null;
+function showNotif(title, body) {
+  try {
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    // SW üzerinden göster (arka planda daha güvenilir)
+    if (navigator.serviceWorker?.ready) {
+      navigator.serviceWorker.ready.then(reg => {
+        reg.showNotification(title, { body, icon:'./icon-192.png', badge:'./icon-192.png', vibrate:[120,60,120], tag:'yasamai' });
+      }).catch(() => { try { new Notification(title, { body, icon:'./icon-192.png' }); } catch(e){} });
+    } else {
+      new Notification(title, { body, icon:'./icon-192.png' });
+    }
+  } catch(e){}
+}
 function scheduleWaterReminder() {
   if (_waterTimer) { clearInterval(_waterTimer); _waterTimer = null; }
   const w = state.water;
@@ -3069,7 +3234,16 @@ function scheduleWaterReminder() {
     try {
       waterResetIfNeeded();
       if (state.water.drank >= state.water.goal) return;
-      new Notification('💧 Su içme vakti', { body: 'Bir bardak su iç, kendine iyi davran.', icon: './icon-192.png' });
+      // Sadece uyanık saatlerde (08-23)
+      const h = new Date().getHours();
+      if (h < 8 || h > 23) return;
+      const msgs = [
+        'Bir bardak su al, kendine iyi davran.',
+        'Su vakti — küçük bir mola, büyük bir iyilik.',
+        'Vücudun sana teşekkür edecek. Bir yudum al.',
+        'Hatırlatayım: su. Az içiyor olabilirsin.'
+      ];
+      showNotif('💧 Su içme vakti', msgs[Math.floor(Math.random()*msgs.length)]);
     } catch(e){}
   }, w.interval * 60 * 1000);
 }
@@ -3079,33 +3253,73 @@ function renderSheetRoutine() {
   const r = state.routine || { on:false, items:[] };
   const now = new Date();
   const curMin = now.getHours()*60 + now.getMinutes();
-  // Şu an hangi adım aktif?
-  let activeIdx = -1;
+  const today = new Date().toISOString().slice(0,10);
+  const done = LS.get('yasamai_routineDone_' + today, {});
+  // Şu an hangi adım aktif + sıradaki
+  let activeIdx = -1, nextIdx = -1;
   for (let i=0;i<r.items.length;i++){
     const [hh,mm] = r.items[i].time.split(':').map(n=>parseInt(n,10));
     const next = r.items[i+1];
     const nmin = hh*60+mm;
     const nextMin = next ? (parseInt(next.time.split(':')[0],10)*60 + parseInt(next.time.split(':')[1],10)) : 24*60;
-    if (curMin >= nmin && curMin < nextMin) { activeIdx = i; break; }
+    if (curMin >= nmin && curMin < nextMin) { activeIdx = i; }
+    if (nmin > curMin && nextIdx === -1) nextIdx = i;
   }
-  const rows = r.items.map((it,i)=>`
-    <div class="rt-item ${i===activeIdx?'now':''}">
-      <div class="rt-ic">${it.icon}</div>
+  // İstatistik
+  const totalToday = r.items.length;
+  const doneToday = Object.values(done).filter(v=>v).length;
+  // Sıradaki adıma kalan zaman
+  let nextInfo = '';
+  if (nextIdx >= 0) {
+    const it = r.items[nextIdx];
+    const [h,m] = it.time.split(':').map(n=>parseInt(n,10));
+    const diff = (h*60+m) - curMin;
+    const hrs = Math.floor(diff/60), mins = diff%60;
+    nextInfo = `<b>${it.icon} ${esc(it.label)}</b> · ${hrs>0?hrs+' saat ':''}${mins} dk sonra (${it.time})`;
+  } else {
+    nextInfo = '<b>✓ Bugünkü plan tamamlandı</b> — yarın yeni gün';
+  }
+  const rows = r.items.map((it,i)=>{
+    const isDone = !!done[i];
+    const isNow = i===activeIdx;
+    return `
+    <div class="rt-item ${isNow?'now':''}" style="${isDone?'opacity:.55':''}">
+      <div class="rt-ic" style="${isDone?'background:#10b981':''}">${isDone?'✓':it.icon}</div>
       <div class="rt-body">
-        <div class="rt-time">${it.time} · ${esc(it.label)}</div>
-        <div class="rt-lbl">${i===activeIdx?'Şu anki adım':'Planlı'}</div>
+        <div class="rt-time" style="${isDone?'text-decoration:line-through':''}">${it.time} · ${esc(it.label)}</div>
+        <div class="rt-lbl">${isNow?'🟠 Şu anki adım':isDone?'Tamamlandı':(i<activeIdx?'Geçti':'Planlı')}</div>
       </div>
-      <input type="time" value="${it.time}" onchange="routineSetTime(${i}, this.value)" style="background:transparent;border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:4px 6px;color:inherit;font-size:12px">
-    </div>`).join('');
+      <div style="display:flex;gap:6px;align-items:center">
+        <button onclick="routineToggleDone(${i})" style="background:${isDone?'rgba(16,185,129,0.2)':'rgba(255,255,255,0.06)'};border:1px solid ${isDone?'#10b981':'rgba(255,255,255,0.15)'};color:${isDone?'#10b981':'inherit'};width:32px;height:32px;border-radius:8px;font-size:14px;font-weight:700">${isDone?'✓':'○'}</button>
+        <input type="time" value="${it.time}" onchange="routineSetTime(${i}, this.value)" style="background:transparent;border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:4px 6px;color:inherit;font-size:12px;width:80px">
+      </div>
+    </div>`;
+  }).join('');
   document.getElementById('sheetContent').innerHTML = `
     <h3>📅 Günlük Plan</h3>
-    <p style="font-size:12px;color:#a0a3b8;margin-bottom:12px">Günün düzeni ruh halini kurar. Kalk, ye, hareket et, rahatla — sistemli yaşa.</p>
-    <label class="lbl" style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-      <input type="checkbox" id="rtOn" ${r.on?'checked':''} onchange="routineToggle(this.checked)"> Her saat hatırlatması aç
+    <div style="padding:14px 16px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:16px;margin:8px 0 14px;color:#fff">
+      <div style="font-size:11px;opacity:.9;letter-spacing:.5px;text-transform:uppercase;font-weight:700">SIRADAKİ</div>
+      <div style="font-size:14px;margin-top:4px;line-height:1.4">${nextInfo}</div>
+      <div style="margin-top:8px;height:6px;background:rgba(255,255,255,0.25);border-radius:999px;overflow:hidden">
+        <div style="height:100%;background:#fff;width:${totalToday?Math.round(doneToday/totalToday*100):0}%;border-radius:999px"></div>
+      </div>
+      <div style="font-size:11px;margin-top:6px;opacity:.95">${doneToday}/${totalToday} adım tamamlandı</div>
+    </div>
+    <label class="lbl" style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:12px;cursor:pointer">
+      <input type="checkbox" id="rtOn" ${r.on?'checked':''} onchange="routineToggle(this.checked)">
+      <span><b>Bildirim hatırlatmaları</b> — her adım için saatinde bildirim gelsin</span>
     </label>
     <div style="display:flex;flex-direction:column;gap:8px">${rows}</div>
-    <button class="sheet-btn" style="margin-top:12px" onclick="routineReset()">Varsayılan saatlere dön</button>
+    <button class="sheet-btn" style="margin-top:14px" onclick="routineReset()">Varsayılan saatlere dön</button>
   `;
+}
+function routineToggleDone(i) {
+  const today = new Date().toISOString().slice(0,10);
+  const key = 'yasamai_routineDone_' + today;
+  const done = LS.get(key, {});
+  done[i] = !done[i];
+  LS.set(key, done);
+  renderSheetRoutine();
 }
 function routineSetTime(i, t) {
   state.routine.items[i].time = t;
@@ -3150,7 +3364,7 @@ function scheduleRoutineReminders() {
     const delay = target - now;
     if (delay > 0 && delay < 24*60*60*1000) {
       _routineTimers.push(setTimeout(() => {
-        try { new Notification(it.icon + ' ' + it.label, { body:'Plan saati geldi — ' + it.time, icon:'./icon-192.png' }); } catch(e){}
+        showNotif(it.icon + ' ' + it.label, 'Plan saati geldi — ' + it.time);
       }, delay));
     }
   });
@@ -3168,8 +3382,35 @@ const WORKOUTS = [
   { id:'lower',   emoji:'🦵', name:'Alt vücut',     dur:'15 dk', desc:'Bacak, kalça, core', steps:['Squat 3×15','Lunge 3×10/bacak','Köprü 3×15','Wall sit 3×45sn','Kalça kaldırma 3×12'] }
 ];
 function renderSheetWorkout() {
-  const todayLogs = (state.workouts||[]).filter(w => w.date === new Date().toISOString().slice(0,10));
+  const today = new Date().toISOString().slice(0,10);
+  const all = state.workouts || [];
+  const todayLogs = all.filter(w => w.date === today);
   const totMin = todayLogs.reduce((s,w)=>s+(w.duration||0),0);
+  // Son 7 gün
+  let weekMin = 0, weekDays = 0;
+  const weekSet = new Set();
+  for (let i=0;i<7;i++){
+    const d = new Date(); d.setDate(d.getDate()-i);
+    const k = d.toISOString().slice(0,10);
+    const dayMin = all.filter(w=>w.date===k).reduce((s,w)=>s+(w.duration||0),0);
+    if (dayMin>0) { weekSet.add(k); weekMin += dayMin; }
+  }
+  weekDays = weekSet.size;
+  // Bar grafik son 7 gün
+  let bars = '';
+  for (let i=6;i>=0;i--){
+    const d = new Date(); d.setDate(d.getDate()-i);
+    const k = d.toISOString().slice(0,10);
+    const m = all.filter(w=>w.date===k).reduce((s,w)=>s+(w.duration||0),0);
+    const h = Math.min(100, Math.round((m/60)*100));
+    bars += `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+      <div style="height:60px;width:100%;background:rgba(16,185,129,0.12);border-radius:6px;position:relative;overflow:hidden">
+        <div style="position:absolute;bottom:0;left:0;right:0;height:${h}%;background:linear-gradient(to top,#059669,#34d399);border-radius:6px"></div>
+      </div>
+      <div style="font-size:9px;color:${k===today?'#10b981':'#a0a3b8'};font-weight:${k===today?'800':'600'}">${['Pz','Pt','Sa','Ça','Pe','Cu','Ct'][d.getDay()]}</div>
+      <div style="font-size:9px;color:#a0a3b8">${m||''}</div>
+    </div>`;
+  }
   const grid = WORKOUTS.map(w => `
     <button class="wk-card" onclick="openWorkoutDetail('${w.id}')">
       <div class="wk-emoji">${w.emoji}</div>
@@ -3178,9 +3419,27 @@ function renderSheetWorkout() {
     </button>`).join('');
   document.getElementById('sheetContent').innerHTML = `
     <h3>💪 Spor & Egzersiz</h3>
-    <p style="font-size:12px;color:#a0a3b8;margin-bottom:12px">Bugün ${todayLogs.length} antrenman · ${totMin} dk hareket</p>
+    <div style="margin:8px 0 14px;padding:14px 16px;border-radius:18px;background:linear-gradient(135deg,#10b981,#059669);color:#fff">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:11px;opacity:.9;letter-spacing:.5px;text-transform:uppercase;font-weight:700">BUGÜN</div>
+          <div style="font-size:26px;font-weight:800;margin-top:2px;letter-spacing:-0.5px">${totMin}<span style="font-size:14px;opacity:.85;margin-left:4px">dk</span></div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:11px;opacity:.9">Bu hafta</div>
+          <div style="font-size:15px;font-weight:800">${weekMin} dk · ${weekDays} gün</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin:0 0 6px;font-size:12px;color:#a0a3b8;font-weight:700">Son 7 gün</div>
+    <div style="display:flex;gap:6px;margin-bottom:14px">${bars}</div>
+    <div style="margin:0 0 8px;font-size:12px;color:#a0a3b8;font-weight:700">Antrenman seç</div>
     <div class="wk-grid" style="margin:0 0 12px">${grid}</div>
-    <button class="sheet-btn" onclick="openSheet('workoutLog')">Manuel kayıt ekle</button>
+    <button class="sheet-btn" onclick="openSheet('workoutLog')">Manuel kayıt ekle (yürüyüş, yüzme...)</button>
+    ${todayLogs.length ? `<div style="margin-top:14px;font-size:12px;color:#a0a3b8;font-weight:700">Bugün yaptıkların</div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-top:6px">
+        ${todayLogs.map(l=>`<div style="padding:10px 12px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:12px;display:flex;justify-content:space-between;align-items:center"><span style="font-weight:700;font-size:13px">✓ ${esc(l.type)}</span><span style="color:#10b981;font-weight:800;font-size:13px">${l.duration} dk</span></div>`).join('')}
+      </div>` : ''}
   `;
 }
 function openWorkoutDetail(id) {

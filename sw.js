@@ -1,5 +1,5 @@
 // Yaşam.AI — Service Worker (network-first HTML, cache-first assets)
-const CACHE = 'yasamai-v44';
+const CACHE = 'yasamai-v45';
 const CORE = [
   './',
   './index.html',
