@@ -344,6 +344,52 @@
   body.light .d-filt{background:#fff;border-color:rgba(0,0,0,0.06)}
   .d-filt.on{background:linear-gradient(135deg,#8b5cf6,#6366f1);border-color:transparent;color:#fff}
 
+  /* ===== YAŞAM ARAÇLARI (Keşfet) ===== */
+  .life-tools{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 18px 18px}
+  .lt-card{display:flex;align-items:center;gap:10px;padding:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;text-align:left;min-width:0}
+  body.light .lt-card{background:#fff;border-color:rgba(0,0,0,0.06);box-shadow:0 2px 10px rgba(0,0,0,0.04)}
+  .lt-ic{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+  .lt-body{flex:1;min-width:0}
+  .lt-t{font-size:13px;font-weight:800;letter-spacing:-0.2px}
+  .lt-s{font-size:10.5px;color:#a0a3b8;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  body.light .lt-s{color:#6b7280}
+  .lt-arr{font-size:18px;color:#a0a3b8;flex-shrink:0}
+  /* Gebelik hero */
+  .pg-hero{margin:8px 18px 14px;padding:16px;border-radius:22px;background:linear-gradient(135deg,#fb7185 0%,#f472b6 50%,#a78bfa 110%);color:#fff;position:relative;overflow:hidden;box-shadow:0 12px 32px rgba(251,113,133,0.3)}
+  .pg-week{font-size:13px;font-weight:700;opacity:.9;letter-spacing:.5px;text-transform:uppercase}
+  .pg-main{font-size:28px;font-weight:800;letter-spacing:-1px;margin-top:4px;line-height:1}
+  .pg-tri{font-size:12px;font-weight:700;margin-top:3px;opacity:.95}
+  .pg-sub{font-size:12px;margin-top:8px;opacity:.92;line-height:1.4}
+  .pg-due{margin-top:10px;padding:8px 12px;background:rgba(255,255,255,0.22);border-radius:10px;font-size:12px;font-weight:700;display:inline-block}
+  .pg-tip{margin:0 18px 12px;padding:12px 14px;background:linear-gradient(135deg,rgba(168,85,247,0.15),rgba(244,114,182,0.12));border:1px solid rgba(168,85,247,0.25);border-radius:14px;font-size:12px;line-height:1.5;color:#e0e0f0}
+  body.light .pg-tip{background:#fff;border-color:#e5e7eb;color:#374151;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+  /* Su kartı */
+  .water-card{margin:8px 18px 14px;padding:16px;border-radius:22px;background:linear-gradient(135deg,#0ea5e9,#0369a1);color:#fff;position:relative;overflow:hidden;box-shadow:0 12px 32px rgba(14,165,233,0.3)}
+  .water-val{font-size:32px;font-weight:800;letter-spacing:-1px;line-height:1}
+  .water-goal{font-size:12px;opacity:.9;margin-top:4px}
+  .water-bar{margin-top:10px;height:8px;background:rgba(255,255,255,0.25);border-radius:999px;overflow:hidden}
+  .water-bar-f{height:100%;background:#fff;border-radius:999px;transition:width .3s}
+  .water-btns{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+  /* Plan günlük rutin */
+  .rt-list{display:flex;flex-direction:column;gap:8px;margin:0 18px 14px}
+  .rt-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px}
+  body.light .rt-item{background:#fff;border-color:rgba(0,0,0,0.06)}
+  .rt-item.now{border-color:#f59e0b;background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(245,158,11,0.04))}
+  .rt-ic{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+  body.light .rt-ic{background:#f3f4f6}
+  .rt-body{flex:1;min-width:0}
+  .rt-time{font-size:15px;font-weight:800;letter-spacing:-0.3px}
+  .rt-lbl{font-size:11.5px;color:#a0a3b8;margin-top:1px}
+  body.light .rt-lbl{color:#6b7280}
+  /* Spor egzersiz kartları */
+  .wk-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 18px 14px}
+  .wk-card{padding:14px 12px;border-radius:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);text-align:left;min-width:0}
+  body.light .wk-card{background:#fff;border-color:rgba(0,0,0,0.06)}
+  .wk-emoji{font-size:24px}
+  .wk-n{font-size:13px;font-weight:800;margin-top:6px}
+  .wk-d{font-size:10.5px;color:#a0a3b8;margin-top:2px;line-height:1.35}
+  body.light .wk-d{color:#6b7280}
+
   /* ===== DÖNGÜ (ADET) ===== */
   .cy-hero{margin:8px 18px 14px;padding:18px 16px;border-radius:22px;background:linear-gradient(135deg,#ec4899 0%,#a78bfa 60%,#6366f1 110%);color:#fff;display:flex;gap:14px;align-items:center;position:relative;overflow:hidden;box-shadow:0 12px 32px rgba(236,72,153,0.3);min-width:0}
   .cy-hero::before{content:"";position:absolute;right:-60px;top:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.22),transparent 70%);pointer-events:none}
@@ -901,6 +947,30 @@
 
         <div class="ex-featured" id="exFeatured"></div>
 
+        <div class="ex-section-h">Yaşam araçları</div>
+        <div class="life-tools">
+          <button class="lt-card" onclick="openSheet('routine')">
+            <div class="lt-ic" style="background:linear-gradient(135deg,#f59e0b,#d97706)">📅</div>
+            <div class="lt-body"><div class="lt-t">Günlük Plan</div><div class="lt-s" id="ltRoutineSub">Uyu · kalk · ye · hareket et</div></div>
+            <div class="lt-arr">›</div>
+          </button>
+          <button class="lt-card" onclick="openSheet('workout')">
+            <div class="lt-ic" style="background:linear-gradient(135deg,#10b981,#059669)">💪</div>
+            <div class="lt-body"><div class="lt-t">Spor & Egzersiz</div><div class="lt-s" id="ltWorkoutSub">Kısa antrenmanlar, esneme</div></div>
+            <div class="lt-arr">›</div>
+          </button>
+          <button class="lt-card" onclick="openSheet('water')">
+            <div class="lt-ic" style="background:linear-gradient(135deg,#0ea5e9,#0369a1)">💧</div>
+            <div class="lt-body"><div class="lt-t">Su Takibi</div><div class="lt-s" id="ltWaterSub">Günlük su hedefin</div></div>
+            <div class="lt-arr">›</div>
+          </button>
+          <button class="lt-card" onclick="openSheet('breathe')">
+            <div class="lt-ic" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9)">🫁</div>
+            <div class="lt-body"><div class="lt-t">Nefes Egzersizi</div><div class="lt-s">4-7-8 tekniği ile rahatla</div></div>
+            <div class="lt-arr">›</div>
+          </button>
+        </div>
+
         <div class="ex-section-h">Tüm konular</div>
         <div class="topics" id="topicsGrid"></div>
         <div style="height:40px"></div>
@@ -989,6 +1059,14 @@
           <button class="setting" onclick="cycleToggleReminder()">
             <div class="si" style="background:linear-gradient(135deg,#f59e0b,#d97706)"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
             <div class="sl">Yaklaşan regl uyarısı</div><div class="switch" id="cyRemSwitch"></div>
+          </button>
+          <button class="setting" onclick="openSheet('pregnancy')">
+            <div class="si" style="background:linear-gradient(135deg,#fb7185,#e11d48)"><svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5c0 2 1 3 1 5s-1 3-1 5a4 4 0 0 0 8 0c0-2-1-3-1-5s1-3 1-5a5 5 0 0 0-3-5z"/></svg></div>
+            <div class="sl">Gebelik modu</div><div class="sv" id="pgStatusVal">Kapalı</div><div class="arr">›</div>
+          </button>
+          <button class="setting" onclick="openSheet('pregMeds')" id="pgMedsBtn" style="display:none">
+            <div class="si" style="background:linear-gradient(135deg,#a78bfa,#7c3aed)"><svg viewBox="0 0 24 24"><path d="M10.5 20.5a4.95 4.95 0 0 1-7-7l10-10a4.95 4.95 0 0 1 7 7z"/><path d="M8.5 8.5l7 7"/></svg></div>
+            <div class="sl">Gebelik ilaç takibi</div><div class="sv" id="pgMedsVal">—</div><div class="arr">›</div>
           </button>
         </div>
 
@@ -1204,7 +1282,25 @@ const state = {
   cycleLen: LS.get('yasamai_cycleLen', 28),       // ortalama döngü uzunluğu (gün)
   periodLen: LS.get('yasamai_periodLen', 5),       // regl süresi (gün)
   cycleLogs: LS.get('yasamai_cycleLogs', []),      // [{ type:'period_start'|'period_end'|'symptom', date:'YYYY-MM-DD', ts, symptoms:[], note:'' }]
-  cycleRem: LS.get('yasamai_cycleRem', true)
+  cycleRem: LS.get('yasamai_cycleRem', true),
+  // Gebelik modu
+  pregnancy: LS.get('yasamai_pregnancy', { on:false, lmp:'', symptoms:[], meds:[] }),
+  // Su hatırlatma
+  water: LS.get('yasamai_water', { on:false, goal:2000, drank:0, day:'', interval:90 }), // ml, dk
+  // Günlük plan (rutin)
+  routine: LS.get('yasamai_routine', { on:false, items:[
+    { key:'wake',     time:'07:00', label:'Uyan',           icon:'☀️' },
+    { key:'breakfast',time:'08:00', label:'Kahvaltı',       icon:'🥣' },
+    { key:'move',     time:'10:00', label:'Kısa hareket',   icon:'🚶' },
+    { key:'lunch',    time:'13:00', label:'Öğle yemeği',    icon:'🍽️' },
+    { key:'focus',    time:'15:30', label:'Odaklanma',      icon:'🎯' },
+    { key:'workout',  time:'18:00', label:'Egzersiz',       icon:'💪' },
+    { key:'dinner',   time:'20:00', label:'Akşam yemeği',   icon:'🍲' },
+    { key:'wind',     time:'22:00', label:'Rahatla',        icon:'🌙' },
+    { key:'sleep',    time:'23:30', label:'Uyu',            icon:'😴' }
+  ]}),
+  // Egzersiz kayıtları
+  workouts: LS.get('yasamai_workouts', [])  // [{date, type, duration, ts}]
 };
 // Yazı boyutu başlangıçta uygula
 try {
@@ -1252,6 +1348,8 @@ window.addEventListener('load', () => {
   resetDailyIfNeeded();
   applyTheme();
   applyDark();
+  // Su + rutin hatırlatıcılarını kur (bildirim izni varsa)
+  try { waterResetIfNeeded(); scheduleWaterReminder(); scheduleRoutineReminders(); } catch(e){}
   // Bekleyen doğrulama varsa splash'ı ATLA — kullanıcı maile bakıp döndüğünde anında verify ekranı
   const hasPendingVerify = (() => {
     try {
@@ -2520,6 +2618,36 @@ function cycleCurrentDay() {
   return (diff % cl) + 1;
 }
 function renderCycle() {
+  // Gebelik modu aktifse onun ekranını üstte göster
+  const pg = state.pregnancy || {};
+  const pgBtn = document.getElementById('pgMedsBtn');
+  const pgVal = document.getElementById('pgStatusVal');
+  const calc = pregCalc();
+  if (pgBtn) pgBtn.style.display = pg.on ? '' : 'none';
+  if (pgVal) pgVal.textContent = pg.on ? (calc ? (calc.weeks + '. hafta') : 'Açık') : 'Kapalı';
+  const mVal = document.getElementById('pgMedsVal');
+  if (mVal) mVal.textContent = (pg.meds && pg.meds.length) ? (pg.meds.length + ' ilaç') : 'Henüz yok';
+  // Gebelik modu AÇIKSA hero'yu gebelik kartıyla değiştir
+  const hero = document.getElementById('cyHero');
+  if (pg.on && calc && hero) {
+    hero.style.display = 'none';
+    let pgCard = document.getElementById('cyPgHero');
+    if (!pgCard) {
+      pgCard = document.createElement('div');
+      pgCard.id = 'cyPgHero';
+      hero.parentNode.insertBefore(pgCard, hero);
+    }
+    pgCard.className = 'pg-hero';
+    pgCard.innerHTML = `
+      <div class="pg-week">${calc.weeks}. HAFTA · ${calc.tri}. TRIMESTER</div>
+      <div class="pg-main">${calc.weeks}<span style="font-size:14px;font-weight:700;margin-left:4px">hafta ${calc.extraDays} gün</span></div>
+      <div class="pg-sub">${pregTipForWeek(calc.weeks)}</div>
+      <div class="pg-due">🤱 ${calc.due.toLocaleDateString('tr-TR',{day:'numeric',month:'long'})} (${calc.remDays} gün kaldı)</div>`;
+    // Eski pg tip varsa da yenile
+  } else if (hero) {
+    hero.style.display = '';
+    const pgCard = document.getElementById('cyPgHero'); if (pgCard) pgCard.remove();
+  }
   // Otomatik öğrenme
   const auto = cycleAutoLen();
   if (auto && auto !== state.cycleLen) {
@@ -2767,6 +2895,371 @@ function cycleSetEnabled(on) {
     const cur = document.querySelector('.tab.active');
     if (cur && cur.id === 'tab-cycle') switchTab('home');
   }
+}
+
+/* ============ GEBELİK MODU ============ */
+function pregCalc() {
+  // LMP (son adet başlangıcı) → haftalar, trimester, tahmini doğum
+  const lmpStr = state.pregnancy?.lmp;
+  if (!lmpStr) return null;
+  const lmp = new Date(lmpStr + 'T12:00:00');
+  if (isNaN(lmp)) return null;
+  const now = new Date();
+  const days = Math.floor((now - lmp) / 86400000);
+  if (days < 0 || days > 300) return null;
+  const weeks = Math.floor(days / 7);
+  const extraDays = days % 7;
+  let tri = 1;
+  if (weeks >= 13 && weeks < 27) tri = 2;
+  else if (weeks >= 27) tri = 3;
+  const due = new Date(lmp.getTime() + 280 * 86400000);
+  const remDays = Math.max(0, Math.floor((due - now) / 86400000));
+  return { weeks, extraDays, tri, due, remDays, lmp };
+}
+function pregTipForWeek(w) {
+  if (w < 4)  return 'Folik asit 400-800 mcg/gün almaya başla. Alkol ve sigarayı tamamen bırak.';
+  if (w < 8)  return 'Bulantı normal — küçük porsiyonlarla sık ye. Bol su, dinlen. İlk doktor kontrolü şart.';
+  if (w < 13) return 'İlk trimester bitiyor. İlk tarama testleri (NT) 11-14. haftada yapılır.';
+  if (w < 20) return 'Enerji artıyor. Hafif yürüyüş, yoga iyi gelir. 16-20. hafta detaylı ultrason dönemi.';
+  if (w < 27) return 'Bebek hareketleri hissedilir. Demir ve kalsiyum önemli. Sırt ağrısına dikkat.';
+  if (w < 32) return '3. trimester başladı. Kontraksiyon farkındalığı, erken doğum belirtileri öğren.';
+  if (w < 37) return 'Doğum çantası hazırlanma vakti. Nefes egzersizleri ve emzirme bilgisi al.';
+  return 'Son haftalar. Her hafta doktor kontrolü. Kasılma başlarsa hastane yolu.';
+}
+function pregToggleOn(on) {
+  state.pregnancy = state.pregnancy || { on:false, lmp:'', symptoms:[], meds:[] };
+  state.pregnancy.on = !!on;
+  LS.set('yasamai_pregnancy', state.pregnancy);
+}
+function renderSheetPregnancy() {
+  const p = state.pregnancy || {};
+  const calc = pregCalc();
+  const infoHtml = calc ? `
+    <div class="pg-hero" style="margin:0 0 12px">
+      <div class="pg-week">${calc.weeks}. HAFTA</div>
+      <div class="pg-main">${calc.weeks}<span style="font-size:16px;font-weight:700;margin-left:4px">haftа ${calc.extraDays} gün</span></div>
+      <div class="pg-tri">${calc.tri}. Trimester</div>
+      <div class="pg-sub">${pregTipForWeek(calc.weeks)}</div>
+      <div class="pg-due">🤱 Tahmini doğum: ${calc.due.toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'})} (${calc.remDays} gün kaldı)</div>
+    </div>` : '';
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>Gebelik Modu</h3>
+    ${infoHtml}
+    <p style="font-size:12px;color:#a0a3b8;margin-bottom:12px">Gebelik modunu açtığında regl tahminleri yerine haftalık gebelik takibi, ilaç hatırlatma ve dönemsel tavsiyeler göreceksin.</p>
+    <label class="lbl">Durum</label>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <button class="sheet-btn ${!p.on?'primary':''}" style="flex:1" onclick="pregSet(false)">Kapalı</button>
+      <button class="sheet-btn ${p.on?'primary':''}" style="flex:1" onclick="pregSet(true)">Açık</button>
+    </div>
+    <label class="lbl">Son adet başlangıç tarihi (LMP)</label>
+    <input type="date" id="pgLmp" class="inp" value="${p.lmp||''}">
+    <button class="sheet-btn primary" style="margin-top:12px" onclick="savePregnancy()">Kaydet</button>
+    ${p.on ? '<a class="sheet-link" onclick="openSheet(\'pregMeds\')">💊 İlaç takibini aç</a>' : ''}
+  `;
+}
+function pregSet(on) {
+  state.pregnancy = state.pregnancy || {};
+  state.pregnancy.on = !!on;
+  LS.set('yasamai_pregnancy', state.pregnancy);
+  renderSheetPregnancy();
+}
+function savePregnancy() {
+  const lmp = document.getElementById('pgLmp').value;
+  state.pregnancy = state.pregnancy || {};
+  state.pregnancy.lmp = lmp;
+  LS.set('yasamai_pregnancy', state.pregnancy);
+  alert('Gebelik bilgisi kaydedildi.');
+  closeSheet();
+  renderCycle();
+}
+function renderSheetPregMeds() {
+  const meds = (state.pregnancy?.meds) || [];
+  const rows = meds.length ? meds.map((m,i)=>`
+    <div class="rt-item"><div class="rt-ic">💊</div><div class="rt-body"><div class="rt-time">${esc(m.name)}</div><div class="rt-lbl">${esc(m.dose||'')} · ${esc(m.time||'')}</div></div><button class="cy-log-del" onclick="pregDelMed(${i})">✕</button></div>`).join('') : '<p style="font-size:12px;color:#a0a3b8;text-align:center;padding:20px 0">Henüz ilaç eklenmedi</p>';
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>💊 Gebelik İlaçları</h3>
+    <p style="font-size:12px;color:#a0a3b8;margin-bottom:12px">Folik asit, demir, D vitamini gibi takviyelerin için hatırlatıcı ekle.</p>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">${rows}</div>
+    <label class="lbl">İlaç adı</label><input type="text" id="mdName" class="inp" placeholder="Folik asit">
+    <label class="lbl" style="margin-top:8px">Doz</label><input type="text" id="mdDose" class="inp" placeholder="400 mcg">
+    <label class="lbl" style="margin-top:8px">Saat</label><input type="time" id="mdTime" class="inp" value="09:00">
+    <button class="sheet-btn primary" style="margin-top:12px" onclick="pregAddMed()">İlaç ekle</button>
+  `;
+}
+function pregAddMed() {
+  const name = document.getElementById('mdName').value.trim();
+  const dose = document.getElementById('mdDose').value.trim();
+  const time = document.getElementById('mdTime').value;
+  if (!name) { alert('İlaç adı şart'); return; }
+  state.pregnancy = state.pregnancy || { on:true, lmp:'', symptoms:[], meds:[] };
+  state.pregnancy.meds = state.pregnancy.meds || [];
+  state.pregnancy.meds.push({ name, dose, time, ts: Date.now() });
+  LS.set('yasamai_pregnancy', state.pregnancy);
+  renderSheetPregMeds();
+}
+function pregDelMed(i) {
+  if (!confirm('Sil?')) return;
+  state.pregnancy.meds.splice(i,1);
+  LS.set('yasamai_pregnancy', state.pregnancy);
+  renderSheetPregMeds();
+}
+
+/* ============ SU TAKİBİ ============ */
+function waterToday() { return new Date().toISOString().slice(0,10); }
+function waterResetIfNeeded() {
+  const t = waterToday();
+  state.water = state.water || { on:false, goal:2000, drank:0, day:'', interval:90 };
+  if (state.water.day !== t) { state.water.drank = 0; state.water.day = t; LS.set('yasamai_water', state.water); }
+}
+function renderSheetWater() {
+  waterResetIfNeeded();
+  const w = state.water;
+  const pct = Math.min(100, Math.round((w.drank / w.goal) * 100));
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>💧 Su Takibi</h3>
+    <div class="water-card" style="margin:0 0 14px">
+      <div style="font-size:11px;opacity:.9;letter-spacing:.5px;text-transform:uppercase;font-weight:700">BUGÜN</div>
+      <div class="water-val">${w.drank} <span style="font-size:16px;opacity:.85">ml</span></div>
+      <div class="water-goal">Hedef: ${w.goal} ml · %${pct}</div>
+      <div class="water-bar"><div class="water-bar-f" style="width:${pct}%"></div></div>
+      <div class="water-btns">
+        <button class="cy-btn" onclick="waterAdd(200)">+200 ml</button>
+        <button class="cy-btn" onclick="waterAdd(300)">+300 ml bardak</button>
+        <button class="cy-btn" onclick="waterAdd(500)">+500 ml şişe</button>
+        <button class="cy-btn" onclick="waterReset()">Sıfırla</button>
+      </div>
+    </div>
+    <label class="lbl">Günlük hedef (ml)</label>
+    <input type="number" id="wGoal" class="inp" min="500" max="5000" step="100" value="${w.goal}">
+    <label class="lbl" style="margin-top:10px">Hatırlatma aralığı (dk) — 0 = kapalı</label>
+    <input type="number" id="wInt" class="inp" min="0" max="240" step="15" value="${w.interval||0}">
+    <label class="lbl" style="margin-top:10px;display:flex;align-items:center;gap:10px">
+      <input type="checkbox" id="wOn" ${w.on?'checked':''}> Bildirim hatırlatması aç
+    </label>
+    <button class="sheet-btn primary" style="margin-top:12px" onclick="waterSave()">Kaydet</button>
+  `;
+}
+function waterAdd(ml) {
+  waterResetIfNeeded();
+  state.water.drank = Math.min(9999, (state.water.drank||0) + ml);
+  LS.set('yasamai_water', state.water);
+  renderSheetWater();
+}
+function waterReset() {
+  state.water.drank = 0;
+  LS.set('yasamai_water', state.water);
+  renderSheetWater();
+}
+function waterSave() {
+  state.water.goal = parseInt(document.getElementById('wGoal').value,10) || 2000;
+  state.water.interval = parseInt(document.getElementById('wInt').value,10) || 0;
+  state.water.on = document.getElementById('wOn').checked;
+  LS.set('yasamai_water', state.water);
+  scheduleWaterReminder();
+  alert('Su hedefin kaydedildi. ' + (state.water.on ? 'Hatırlatmalar aktif.' : ''));
+  closeSheet();
+}
+let _waterTimer = null;
+function scheduleWaterReminder() {
+  if (_waterTimer) { clearInterval(_waterTimer); _waterTimer = null; }
+  const w = state.water;
+  if (!w || !w.on || !w.interval || w.interval < 10) return;
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  _waterTimer = setInterval(() => {
+    try {
+      waterResetIfNeeded();
+      if (state.water.drank >= state.water.goal) return;
+      new Notification('💧 Su içme vakti', { body: 'Bir bardak su iç, kendine iyi davran.', icon: './icon-192.png' });
+    } catch(e){}
+  }, w.interval * 60 * 1000);
+}
+
+/* ============ GÜNLÜK PLAN / RUTİN ============ */
+function renderSheetRoutine() {
+  const r = state.routine || { on:false, items:[] };
+  const now = new Date();
+  const curMin = now.getHours()*60 + now.getMinutes();
+  // Şu an hangi adım aktif?
+  let activeIdx = -1;
+  for (let i=0;i<r.items.length;i++){
+    const [hh,mm] = r.items[i].time.split(':').map(n=>parseInt(n,10));
+    const next = r.items[i+1];
+    const nmin = hh*60+mm;
+    const nextMin = next ? (parseInt(next.time.split(':')[0],10)*60 + parseInt(next.time.split(':')[1],10)) : 24*60;
+    if (curMin >= nmin && curMin < nextMin) { activeIdx = i; break; }
+  }
+  const rows = r.items.map((it,i)=>`
+    <div class="rt-item ${i===activeIdx?'now':''}">
+      <div class="rt-ic">${it.icon}</div>
+      <div class="rt-body">
+        <div class="rt-time">${it.time} · ${esc(it.label)}</div>
+        <div class="rt-lbl">${i===activeIdx?'Şu anki adım':'Planlı'}</div>
+      </div>
+      <input type="time" value="${it.time}" onchange="routineSetTime(${i}, this.value)" style="background:transparent;border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:4px 6px;color:inherit;font-size:12px">
+    </div>`).join('');
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>📅 Günlük Plan</h3>
+    <p style="font-size:12px;color:#a0a3b8;margin-bottom:12px">Günün düzeni ruh halini kurar. Kalk, ye, hareket et, rahatla — sistemli yaşa.</p>
+    <label class="lbl" style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <input type="checkbox" id="rtOn" ${r.on?'checked':''} onchange="routineToggle(this.checked)"> Her saat hatırlatması aç
+    </label>
+    <div style="display:flex;flex-direction:column;gap:8px">${rows}</div>
+    <button class="sheet-btn" style="margin-top:12px" onclick="routineReset()">Varsayılan saatlere dön</button>
+  `;
+}
+function routineSetTime(i, t) {
+  state.routine.items[i].time = t;
+  LS.set('yasamai_routine', state.routine);
+  scheduleRoutineReminders();
+}
+function routineToggle(on) {
+  state.routine.on = !!on;
+  LS.set('yasamai_routine', state.routine);
+  scheduleRoutineReminders();
+}
+function routineReset() {
+  if (!confirm('Varsayılan saatlere dönülsün mü?')) return;
+  LS.set('yasamai_routine', null);
+  state.routine = LS.get('yasamai_routine', null) || {
+    on:false, items:[
+      { key:'wake',time:'07:00',label:'Uyan',icon:'☀️' },
+      { key:'breakfast',time:'08:00',label:'Kahvaltı',icon:'🥣' },
+      { key:'move',time:'10:00',label:'Kısa hareket',icon:'🚶' },
+      { key:'lunch',time:'13:00',label:'Öğle yemeği',icon:'🍽️' },
+      { key:'focus',time:'15:30',label:'Odaklanma',icon:'🎯' },
+      { key:'workout',time:'18:00',label:'Egzersiz',icon:'💪' },
+      { key:'dinner',time:'20:00',label:'Akşam yemeği',icon:'🍲' },
+      { key:'wind',time:'22:00',label:'Rahatla',icon:'🌙' },
+      { key:'sleep',time:'23:30',label:'Uyu',icon:'😴' }
+    ]
+  };
+  LS.set('yasamai_routine', state.routine);
+  renderSheetRoutine();
+}
+const _routineTimers = [];
+function scheduleRoutineReminders() {
+  while(_routineTimers.length) clearTimeout(_routineTimers.pop());
+  const r = state.routine;
+  if (!r || !r.on) return;
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  const now = new Date();
+  r.items.forEach(it => {
+    const [hh,mm] = it.time.split(':').map(n=>parseInt(n,10));
+    const target = new Date(); target.setHours(hh, mm, 0, 0);
+    if (target <= now) return; // bugün geçmiş
+    const delay = target - now;
+    if (delay > 0 && delay < 24*60*60*1000) {
+      _routineTimers.push(setTimeout(() => {
+        try { new Notification(it.icon + ' ' + it.label, { body:'Plan saati geldi — ' + it.time, icon:'./icon-192.png' }); } catch(e){}
+      }, delay));
+    }
+  });
+}
+
+/* ============ SPOR & EGZERSİZ ============ */
+const WORKOUTS = [
+  { id:'stretch', emoji:'🧘', name:'Esneme',        dur:'5-10 dk', desc:'Sabah/akşam 8 hareket · vücudu aç', steps:['Boyun çevirme (30sn)','Omuz çevirme (30sn)','Sırt esnemesi (45sn)','Bel bükülme (45sn)','Kalça esnemesi (45sn)','Bacak arkası (45sn)','Kedi-deve (1 dk)','Derin nefes (1 dk)'] },
+  { id:'walk',    emoji:'🚶', name:'Yürüyüş',       dur:'20-30 dk', desc:'Orta tempo · kalp sağlığı', steps:['5 dk ısınma yürüyüşü','20 dk orta tempo','5 dk soğuma'] },
+  { id:'cardio',  emoji:'🏃', name:'Kardiyo',       dur:'15 dk', desc:'Yüksek tempo · enerji', steps:['2 dk jumping jacks','1 dk mola','2 dk yüksek diz','1 dk mola','2 dk burpee','1 dk mola','2 dk shadow box','1 dk mola','3 dk kapanış'] },
+  { id:'core',    emoji:'💪', name:'Karın & Core',  dur:'10-15 dk', desc:'Plank, crunch, rus çevirme', steps:['Plank 3×30sn','Crunch 3×15','Rus çevirme 3×20','Bisiklet 3×20','Dead bug 3×10','Leg raise 3×12'] },
+  { id:'yoga',    emoji:'🧘‍♀️', name:'Yoga',          dur:'15-20 dk', desc:'Güç + esneklik + farkındalık', steps:['Dağ pozu (1 dk)','Güneşe selam (3 tekrar)','Savaşçı 1-2 (2 dk)','Üçgen (1 dk)','Çocuk pozu (1 dk)','Köpek pozu (1 dk)','Shavasana (5 dk)'] },
+  { id:'hiit',    emoji:'🔥', name:'HIIT',          dur:'12 dk', desc:'40sn iş / 20sn mola × 12', steps:['Jumping jacks','Yüksek diz','Squat jump','Plank jack','Lunge','Burpee','Tırmanıcı','Sprint','Push-up','Sit-up','Glute bridge','Toparlanma'] },
+  { id:'upper',   emoji:'🏋️', name:'Üst vücut',     dur:'15 dk', desc:'Kol, göğüs, sırt', steps:['Şınav 3×10','Ters şınav 3×10','Diamond şınav 2×8','Süper adam 3×12','Plank-to-push 3×10'] },
+  { id:'lower',   emoji:'🦵', name:'Alt vücut',     dur:'15 dk', desc:'Bacak, kalça, core', steps:['Squat 3×15','Lunge 3×10/bacak','Köprü 3×15','Wall sit 3×45sn','Kalça kaldırma 3×12'] }
+];
+function renderSheetWorkout() {
+  const todayLogs = (state.workouts||[]).filter(w => w.date === new Date().toISOString().slice(0,10));
+  const totMin = todayLogs.reduce((s,w)=>s+(w.duration||0),0);
+  const grid = WORKOUTS.map(w => `
+    <button class="wk-card" onclick="openWorkoutDetail('${w.id}')">
+      <div class="wk-emoji">${w.emoji}</div>
+      <div class="wk-n">${w.name}</div>
+      <div class="wk-d">${w.dur} · ${w.desc}</div>
+    </button>`).join('');
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>💪 Spor & Egzersiz</h3>
+    <p style="font-size:12px;color:#a0a3b8;margin-bottom:12px">Bugün ${todayLogs.length} antrenman · ${totMin} dk hareket</p>
+    <div class="wk-grid" style="margin:0 0 12px">${grid}</div>
+    <button class="sheet-btn" onclick="openSheet('workoutLog')">Manuel kayıt ekle</button>
+  `;
+}
+function openWorkoutDetail(id) {
+  const w = WORKOUTS.find(x=>x.id===id); if (!w) return;
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>${w.emoji} ${w.name}</h3>
+    <p style="font-size:12px;color:#a0a3b8;margin-bottom:4px"><b>Süre:</b> ${w.dur}</p>
+    <p style="font-size:12px;color:#a0a3b8;margin-bottom:12px">${w.desc}</p>
+    <label class="lbl">Adımlar</label>
+    <ol style="padding-left:20px;margin:6px 0 14px;line-height:1.8;font-size:13px">${w.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
+    <label class="lbl">Yaptım, kaç dakika sürdü?</label>
+    <input type="number" id="wkMin" class="inp" min="1" max="240" value="${parseInt(w.dur,10)||15}">
+    <button class="sheet-btn primary" style="margin-top:12px" onclick="workoutDone('${w.id}','${esc(w.name)}')">✓ Tamamlandı olarak kaydet</button>
+    <a class="sheet-link" onclick="openSheet('workout')">Geri</a>
+  `;
+}
+function workoutDone(id, name) {
+  const min = parseInt(document.getElementById('wkMin').value,10) || 0;
+  if (min <= 0) { alert('Süre gir'); return; }
+  state.workouts = state.workouts || [];
+  state.workouts.push({ date: new Date().toISOString().slice(0,10), type: name, duration: min, ts: Date.now() });
+  LS.set('yasamai_workouts', state.workouts);
+  alert('Harika! ' + min + ' dk hareket kaydedildi 💪');
+  closeSheet();
+}
+function renderSheetWorkoutLog() {
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>Manuel kayıt</h3>
+    <label class="lbl">Tür</label>
+    <input type="text" id="mwType" class="inp" placeholder="Yürüyüş, bisiklet, yüzme...">
+    <label class="lbl" style="margin-top:8px">Süre (dk)</label>
+    <input type="number" id="mwMin" class="inp" min="1" max="240" value="30">
+    <button class="sheet-btn primary" style="margin-top:12px" onclick="saveManualWorkout()">Kaydet</button>
+  `;
+}
+function saveManualWorkout() {
+  const type = document.getElementById('mwType').value.trim() || 'Egzersiz';
+  const min = parseInt(document.getElementById('mwMin').value,10) || 0;
+  if (min <= 0) { alert('Süre gir'); return; }
+  state.workouts = state.workouts || [];
+  state.workouts.push({ date: new Date().toISOString().slice(0,10), type, duration: min, ts: Date.now() });
+  LS.set('yasamai_workouts', state.workouts);
+  alert('Kaydedildi.');
+  closeSheet();
+}
+
+/* ============ NEFES EGZERSİZİ ============ */
+function renderSheetBreathe() {
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>🫁 Nefes Egzersizi</h3>
+    <p style="font-size:12px;color:#a0a3b8;margin-bottom:12px">4-7-8 tekniği: 4 saniye nefes al, 7 saniye tut, 8 saniye ver. 4 tekrar.</p>
+    <div id="brCircle" style="width:180px;height:180px;border-radius:50%;background:linear-gradient(135deg,#8b5cf6,#6d28d9);margin:16px auto;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:800;transition:transform 4s ease">Başla</div>
+    <div id="brPhase" style="text-align:center;font-size:14px;color:#a0a3b8;margin-bottom:12px">Hazır</div>
+    <button class="sheet-btn primary" id="brBtn" onclick="breatheStart()">Başlat (4 tekrar)</button>
+  `;
+}
+let _brRunning = false;
+async function breatheStart() {
+  if (_brRunning) return;
+  _brRunning = true;
+  const c = document.getElementById('brCircle');
+  const p = document.getElementById('brPhase');
+  const b = document.getElementById('brBtn');
+  b.disabled = true; b.textContent = 'Devam ediyor...';
+  for (let i=1;i<=4;i++) {
+    p.textContent = i + '. tekrar · Nefes al (4s)';
+    c.textContent = 'Al'; c.style.transform = 'scale(1.25)'; c.style.transition='transform 4s ease';
+    await new Promise(r=>setTimeout(r,4000));
+    p.textContent = i + '. tekrar · Tut (7s)';
+    c.textContent = 'Tut';
+    await new Promise(r=>setTimeout(r,7000));
+    p.textContent = i + '. tekrar · Ver (8s)';
+    c.textContent = 'Ver'; c.style.transform = 'scale(1)'; c.style.transition='transform 8s ease';
+    await new Promise(r=>setTimeout(r,8000));
+  }
+  p.textContent = '✓ Tamamlandı — kendini nasıl hissediyorsun?';
+  c.textContent = 'Bitti';
+  b.disabled = false; b.textContent = 'Tekrar başlat';
+  _brRunning = false;
 }
 
 /* ============ GÜNLÜK ============ */
@@ -3050,6 +3543,19 @@ function renderTopics() {
   const totalNotes = Object.values(state.topicEntries || {}).reduce((s, a) => s + (a?.length || 0), 0);
   const exT = document.getElementById('exStatTopics'); if (exT) exT.textContent = topics.length;
   const exN = document.getElementById('exStatNotes'); if (exN) exN.textContent = totalNotes;
+  // Yaşam araçları alt yazılarını güncelle
+  try {
+    waterResetIfNeeded();
+    const w = state.water || {};
+    const ws = document.getElementById('ltWaterSub');
+    if (ws) ws.textContent = (w.drank||0) + '/' + (w.goal||2000) + ' ml bugün';
+    const rs = document.getElementById('ltRoutineSub');
+    if (rs) rs.textContent = (state.routine?.on ? 'Hatırlatıcılar açık · ' : '') + (state.routine?.items?.length||0) + ' adımlık plan';
+    const wk = document.getElementById('ltWorkoutSub');
+    const today = new Date().toISOString().slice(0,10);
+    const todayCount = (state.workouts||[]).filter(x=>x.date===today).length;
+    if (wk) wk.textContent = todayCount > 0 ? ('Bugün ' + todayCount + ' antrenman ✓') : 'Kısa antrenmanlar, esneme';
+  } catch(e){}
 
   // Öne çıkan: en çok not yazılan 2 konu + hiç yazılmamış 1 öneri
   const withCounts = topics.map(t => ({ ...t, count: (state.topicEntries[t.id] || []).length }));
@@ -3221,7 +3727,7 @@ function setTheme(n) {
 
 /* ============ SHEET ============ */
 function openSheet(type) {
-  const r = { theme:renderSheetTheme, reminder:renderSheetReminder, privacy:renderSheetPrivacy, premium:renderSheetPremium, signup:renderSheetSignup, login:renderSheetLogin, anon:renderSheetAnon, newDiary:renderSheetNewDiary, google:renderSheetGoogle, apple:renderSheetApple, verify:renderSheetVerify, payment:renderSheetPayment, gAge:renderSheetGAge, fontSize:renderSheetFontSize, aiTone:renderSheetAiTone, feedback:renderSheetFeedback, help:renderSheetHelp, about:renderSheetAbout, editProfile:renderSheetEditProfile, cycleLog:renderSheetCycleLog, cycleSymptom:renderSheetCycleSymptom, cycleSettings:renderSheetCycleSettings, cyclePeriodLen:renderSheetCyclePeriodLen };
+  const r = { theme:renderSheetTheme, reminder:renderSheetReminder, privacy:renderSheetPrivacy, premium:renderSheetPremium, signup:renderSheetSignup, login:renderSheetLogin, anon:renderSheetAnon, newDiary:renderSheetNewDiary, google:renderSheetGoogle, apple:renderSheetApple, verify:renderSheetVerify, payment:renderSheetPayment, gAge:renderSheetGAge, fontSize:renderSheetFontSize, aiTone:renderSheetAiTone, feedback:renderSheetFeedback, help:renderSheetHelp, about:renderSheetAbout, editProfile:renderSheetEditProfile, cycleLog:renderSheetCycleLog, cycleSymptom:renderSheetCycleSymptom, cycleSettings:renderSheetCycleSettings, cyclePeriodLen:renderSheetCyclePeriodLen, pregnancy:renderSheetPregnancy, pregMeds:renderSheetPregMeds, water:renderSheetWater, routine:renderSheetRoutine, workout:renderSheetWorkout, workoutLog:renderSheetWorkoutLog, breathe:renderSheetBreathe };
   if (r[type]) r[type]();
   openSheetRaw();
 }
