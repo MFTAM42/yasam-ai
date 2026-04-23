@@ -969,6 +969,21 @@
             <div class="lt-body"><div class="lt-t">Nefes Egzersizi</div><div class="lt-s">4-7-8 tekniği ile rahatla</div></div>
             <div class="lt-arr">›</div>
           </button>
+          <button class="lt-card" onclick="openSheet('sleep')">
+            <div class="lt-ic" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">😴</div>
+            <div class="lt-body"><div class="lt-t">Uyku Takibi</div><div class="lt-s" id="ltSleepSub">Saat · horlama · kalite</div></div>
+            <div class="lt-arr">›</div>
+          </button>
+          <button class="lt-card" onclick="openSheet('meds')">
+            <div class="lt-ic" style="background:linear-gradient(135deg,#ef4444,#f97316)">💊</div>
+            <div class="lt-body"><div class="lt-t">İlaç Takibi</div><div class="lt-s" id="ltMedsSub">Saat alarmı · stok uyarısı</div></div>
+            <div class="lt-arr">›</div>
+          </button>
+          <button class="lt-card" onclick="openSheet('body')">
+            <div class="lt-ic" style="background:linear-gradient(135deg,#ec4899,#be185d)">⚖️</div>
+            <div class="lt-body"><div class="lt-t">Kilo & VKİ</div><div class="lt-s" id="ltBodySub">Ölçüm geçmişi ve değişim</div></div>
+            <div class="lt-arr">›</div>
+          </button>
         </div>
 
         <div class="ex-section-h">Tüm konular</div>
@@ -1300,7 +1315,13 @@ const state = {
     { key:'sleep',    time:'23:30', label:'Uyu',            icon:'😴' }
   ]}),
   // Egzersiz kayıtları
-  workouts: LS.get('yasamai_workouts', [])  // [{date, type, duration, ts}]
+  workouts: LS.get('yasamai_workouts', []),  // [{date, type, duration, ts}]
+  // Uyku kayıtları: her gece için saat/dakika/horlama/kalite
+  sleep: LS.get('yasamai_sleep', { logs: [] }),  // logs: [{date,bedtime,waketime,hours,snoreMin,quality,notes,ts}]
+  // İlaç listesi + alarm
+  meds: LS.get('yasamai_meds', []),  // [{id,name,dose,times:[],pillCount,perDose,refillThreshold,lastTakenAt,createdAt}]
+  // Kilo & VKİ takibi
+  body: LS.get('yasamai_body', { height:0, logs:[] })  // logs: [{date,weight,ts}]
 };
 // Yazı boyutu başlangıçta uygula
 try {
@@ -1349,13 +1370,13 @@ window.addEventListener('load', () => {
   applyTheme();
   applyDark();
   // Su + rutin hatırlatıcılarını kur (bildirim izni varsa)
-  try { waterResetIfNeeded(); scheduleWaterReminder(); scheduleRoutineReminders(); } catch(e){}
+  try { waterResetIfNeeded(); scheduleWaterReminder(); scheduleRoutineReminders(); scheduleMedReminders(); } catch(e){}
   // Gece yarısı rutin yeniden planla (günlük)
   try {
     const now = new Date();
     const mid = new Date(now); mid.setHours(24,0,30,0);
     setTimeout(() => {
-      try { waterResetIfNeeded(); scheduleRoutineReminders(); } catch(e){}
+      try { waterResetIfNeeded(); scheduleRoutineReminders(); scheduleMedReminders(); } catch(e){}
       setInterval(() => { try { waterResetIfNeeded(); scheduleRoutineReminders(); } catch(e){} }, 24*60*60*1000);
     }, mid - now);
   } catch(e){}
@@ -1872,7 +1893,7 @@ async function showWelcomePerms() {
     LS.set('yasamai_permsAsked', true);
     closeSheet();
     // Hatırlatıcı timer'larını şimdi kur (izin verildiyse)
-    try { scheduleWaterReminder(); scheduleRoutineReminders(); } catch(e){}
+    try { scheduleWaterReminder(); scheduleRoutineReminders(); scheduleMedReminders(); } catch(e){}
     // Ardından tur
     if (!LS.get('yasamai_tourDone', false)) {
       setTimeout(() => showAppTour(), 500);
@@ -3521,6 +3542,405 @@ async function breatheStart() {
   _brRunning = false;
 }
 
+/* ============ UYKU TAKİBİ ============ */
+function sleepCalcHours(bed, wake) {
+  if (!bed || !wake) return 0;
+  const [bh,bm] = bed.split(':').map(n=>parseInt(n,10));
+  const [wh,wm] = wake.split(':').map(n=>parseInt(n,10));
+  let mins = (wh*60+wm) - (bh*60+bm);
+  if (mins <= 0) mins += 24*60;
+  return Math.round(mins/6)/10; // 0.1 saat hassasiyet
+}
+function renderSheetSleep() {
+  state.sleep = state.sleep || { logs: [] };
+  const logs = state.sleep.logs || [];
+  const today = new Date().toISOString().slice(0,10);
+  const last7 = [];
+  for (let i=6;i>=0;i--) {
+    const d = new Date(); d.setDate(d.getDate()-i);
+    const k = d.toISOString().slice(0,10);
+    const l = logs.find(x=>x.date===k);
+    last7.push({ key:k, day:['Pz','Pt','Sa','Ça','Pe','Cu','Ct'][d.getDay()], hours:l?l.hours:0, snore:l?l.snoreMin:0, quality:l?l.quality:0, today:k===today });
+  }
+  const totalHours = last7.reduce((s,x)=>s+(x.hours||0),0);
+  const doneDays = last7.filter(x=>x.hours>0).length;
+  const avg = doneDays ? (totalHours/doneDays).toFixed(1) : '0';
+  const todayLog = logs.find(x=>x.date===today);
+  // Son 7 gün bar grafiği
+  let bars = '';
+  for (const x of last7) {
+    const h = Math.min(100, Math.round((x.hours/10)*100));
+    bars += `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+      <div style="height:60px;width:100%;background:rgba(99,102,241,0.12);border-radius:6px;position:relative;overflow:hidden">
+        <div style="position:absolute;bottom:0;left:0;right:0;height:${h}%;background:linear-gradient(to top,#4f46e5,#a5b4fc);border-radius:6px"></div>
+      </div>
+      <div style="font-size:9px;color:${x.today?'#6366f1':'#a0a3b8'};font-weight:${x.today?'800':'600'}">${x.day}</div>
+      <div style="font-size:9px;color:#a0a3b8">${x.hours?x.hours+'s':''}</div>
+    </div>`;
+  }
+  // Önceki kayıtlar listesi (en yeni 5)
+  const recent = [...logs].sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,5);
+  const recentList = recent.length ? recent.map(l => `
+    <div style="padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+      <div>
+        <div style="font-weight:700;font-size:13px">${l.date}</div>
+        <div style="font-size:11px;color:#a0a3b8">${l.bedtime||'--'} → ${l.waketime||'--'} · ${l.snoreMin||0} dk horlama · ${'⭐'.repeat(l.quality||0)}</div>
+      </div>
+      <div style="color:#6366f1;font-weight:800;font-size:15px">${l.hours||0}s</div>
+    </div>`).join('') : '<div style="text-align:center;color:#a0a3b8;font-size:12px;padding:12px">Henüz kayıt yok</div>';
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>😴 Uyku Takibi</h3>
+    <div style="margin:8px 0 14px;padding:14px 16px;border-radius:18px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:11px;opacity:.9;letter-spacing:.5px;text-transform:uppercase;font-weight:700">HAFTALIK ORT.</div>
+          <div style="font-size:26px;font-weight:800;margin-top:2px;letter-spacing:-0.5px">${avg}<span style="font-size:14px;opacity:.85;margin-left:4px">saat</span></div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:11px;opacity:.9">Kayıtlı gün</div>
+          <div style="font-size:15px;font-weight:800">${doneDays}/7</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin:0 0 6px;font-size:12px;color:#a0a3b8;font-weight:700">Son 7 gün</div>
+    <div style="display:flex;gap:6px;margin-bottom:14px">${bars}</div>
+    <div style="padding:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;margin-bottom:14px">
+      <div style="font-size:12px;color:#a0a3b8;font-weight:700;margin-bottom:8px">Bu geceyi kaydet ${todayLog?'(bugün kaydedildi — üzerine yazılır)':''}</div>
+      <div style="display:flex;gap:8px">
+        <div style="flex:1"><label class="lbl">Yattım</label><input type="time" id="slBed" class="inp" value="${todayLog?.bedtime||'23:30'}"></div>
+        <div style="flex:1"><label class="lbl">Kalktım</label><input type="time" id="slWake" class="inp" value="${todayLog?.waketime||'07:00'}"></div>
+      </div>
+      <label class="lbl" style="margin-top:8px">Horlama (dk, opsiyonel)</label>
+      <input type="number" id="slSnore" class="inp" min="0" max="600" value="${todayLog?.snoreMin||0}">
+      <label class="lbl" style="margin-top:8px">Uyku kalitesi</label>
+      <div id="slQuality" style="display:flex;gap:6px;margin:4px 0 8px">
+        ${[1,2,3,4,5].map(n=>`<button type="button" onclick="sleepSetQuality(${n})" data-q="${n}" class="sl-q-btn" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);background:${(todayLog?.quality||0)>=n?'linear-gradient(135deg,#4f46e5,#7c3aed)':'rgba(255,255,255,0.04)'};color:${(todayLog?.quality||0)>=n?'#fff':'#a0a3b8'};font-size:16px">⭐</button>`).join('')}
+      </div>
+      <label class="lbl" style="margin-top:4px">Not (opsiyonel)</label>
+      <input type="text" id="slNote" class="inp" placeholder="Rüya, uyanma, kafein..." value="${esc(todayLog?.notes||'')}">
+      <button class="sheet-btn primary" style="margin-top:10px" onclick="sleepSave()">Kaydet</button>
+    </div>
+    <div style="margin:0 0 6px;font-size:12px;color:#a0a3b8;font-weight:700">Son kayıtlar</div>
+    ${recentList}
+  `;
+}
+let _slQuality = 0;
+function sleepSetQuality(n) {
+  _slQuality = n;
+  document.querySelectorAll('.sl-q-btn').forEach((b,i) => {
+    const on = (i+1) <= n;
+    b.style.background = on ? 'linear-gradient(135deg,#4f46e5,#7c3aed)' : 'rgba(255,255,255,0.04)';
+    b.style.color = on ? '#fff' : '#a0a3b8';
+  });
+}
+function sleepSave() {
+  const bed = document.getElementById('slBed').value;
+  const wake = document.getElementById('slWake').value;
+  if (!bed || !wake) { alert('Yatma ve kalkma saatini gir.'); return; }
+  const snore = parseInt(document.getElementById('slSnore').value,10) || 0;
+  const notes = document.getElementById('slNote').value.trim();
+  const today = new Date().toISOString().slice(0,10);
+  const existing = state.sleep.logs.find(x=>x.date===today);
+  const quality = _slQuality || existing?.quality || 3;
+  const hours = sleepCalcHours(bed, wake);
+  const entry = { date:today, bedtime:bed, waketime:wake, hours, snoreMin:snore, quality, notes, ts:Date.now() };
+  state.sleep.logs = state.sleep.logs.filter(x=>x.date!==today);
+  state.sleep.logs.push(entry);
+  LS.set('yasamai_sleep', state.sleep);
+  _slQuality = 0;
+  renderSheetSleep();
+}
+
+/* ============ İLAÇ TAKİBİ + ALARM ============ */
+function renderSheetMeds() {
+  state.meds = state.meds || [];
+  // Bugünkü doz durumu
+  const todayKey = new Date().toISOString().slice(0,10);
+  const takenMap = LS.get('yasamai_medsTaken_' + todayKey, {}); // { medId_time: ts }
+  const now = new Date();
+  const curMin = now.getHours()*60 + now.getMinutes();
+  const rows = state.meds.length ? state.meds.map(m => {
+    const low = (m.pillCount||0) <= (m.refillThreshold||3);
+    const schedule = (m.times||[]).map(t => {
+      const key = m.id + '_' + t;
+      const taken = !!takenMap[key];
+      const [h,mm] = t.split(':').map(n=>parseInt(n,10));
+      const tmin = h*60+mm;
+      const isPast = curMin > tmin && !taken;
+      return `<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:${taken?'rgba(16,185,129,0.1)':isPast?'rgba(239,68,68,0.08)':'rgba(255,255,255,0.04)'};border-radius:8px;margin-top:4px">
+        <span style="font-weight:700;font-size:13px;min-width:48px">${t}</span>
+        <span style="flex:1;font-size:11px;color:${taken?'#10b981':isPast?'#ef4444':'#a0a3b8'}">${taken?'✓ Alındı':isPast?'⚠ Kaçırıldı':'Planlı'}</span>
+        ${!taken?`<button onclick="medTake('${m.id}','${t}')" style="padding:5px 10px;border-radius:7px;border:none;background:#10b981;color:#fff;font-size:11px;font-weight:700">Aldım</button>`:`<button onclick="medUndoTake('${m.id}','${t}')" style="padding:5px 10px;border-radius:7px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:#a0a3b8;font-size:11px">Geri al</button>`}
+      </div>`;
+    }).join('');
+    return `
+    <div style="padding:12px;background:rgba(255,255,255,0.04);border:1px solid ${low?'rgba(239,68,68,0.35)':'rgba(255,255,255,0.08)'};border-radius:14px;margin-top:8px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div style="flex:1">
+          <div style="font-weight:800;font-size:14px">💊 ${esc(m.name)}</div>
+          <div style="font-size:11px;color:#a0a3b8;margin-top:2px">${esc(m.dose||'')} ${m.perDose?'· doz başına '+m.perDose+' adet':''}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:11px;color:${low?'#ef4444':'#a0a3b8'};font-weight:700">${low?'⚠ AZALDI':'Stok'}</div>
+          <div style="font-size:18px;font-weight:800;color:${low?'#ef4444':'inherit'}">${m.pillCount||0}</div>
+        </div>
+      </div>
+      ${schedule}
+      <div style="display:flex;gap:6px;margin-top:8px">
+        <button onclick="medRefill('${m.id}')" style="flex:1;padding:7px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:inherit;font-size:12px">+ Kutu ekle</button>
+        <button onclick="medEdit('${m.id}')" style="flex:1;padding:7px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:inherit;font-size:12px">Düzenle</button>
+        <button onclick="medDelete('${m.id}')" style="padding:7px 10px;border-radius:8px;border:1px solid rgba(239,68,68,0.3);background:rgba(239,68,68,0.1);color:#ef4444;font-size:12px">Sil</button>
+      </div>
+    </div>`;
+  }).join('') : '<div style="text-align:center;color:#a0a3b8;font-size:12px;padding:18px">Henüz ilaç eklenmedi</div>';
+  const lowCount = state.meds.filter(m => (m.pillCount||0) <= (m.refillThreshold||3)).length;
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>💊 İlaç Takibi</h3>
+    <div style="margin:8px 0 14px;padding:14px 16px;border-radius:18px;background:linear-gradient(135deg,#ef4444,#f97316);color:#fff">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:11px;opacity:.9;letter-spacing:.5px;text-transform:uppercase;font-weight:700">KAYITLI İLAÇ</div>
+          <div style="font-size:26px;font-weight:800;margin-top:2px">${state.meds.length}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:11px;opacity:.9">${lowCount?'⚠ Azaldı':'Stok durumu'}</div>
+          <div style="font-size:15px;font-weight:800">${lowCount?lowCount+' ilaç':'Tümü yeterli'}</div>
+        </div>
+      </div>
+    </div>
+    <button class="sheet-btn primary" onclick="openSheet('medAdd')">+ Yeni ilaç ekle</button>
+    <div style="margin-top:4px">${rows}</div>
+  `;
+}
+function renderSheetMedAdd(editId) {
+  const m = editId ? state.meds.find(x=>x.id===editId) : null;
+  const title = m ? 'İlaç düzenle' : 'Yeni ilaç ekle';
+  const times = m?.times || ['08:00'];
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>💊 ${title}</h3>
+    <label class="lbl">İlaç adı</label>
+    <input type="text" id="medName" class="inp" placeholder="Örn: Parol" value="${esc(m?.name||'')}">
+    <label class="lbl" style="margin-top:8px">Doz / açıklama</label>
+    <input type="text" id="medDose" class="inp" placeholder="500 mg · yemekten sonra" value="${esc(m?.dose||'')}">
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <div style="flex:1">
+        <label class="lbl">Stoktaki adet</label>
+        <input type="number" id="medCount" class="inp" min="0" max="9999" value="${m?.pillCount||30}">
+      </div>
+      <div style="flex:1">
+        <label class="lbl">Doz başına</label>
+        <input type="number" id="medPerDose" class="inp" min="1" max="20" value="${m?.perDose||1}">
+      </div>
+    </div>
+    <label class="lbl" style="margin-top:8px">Uyarı eşiği (bitmeye yakın)</label>
+    <input type="number" id="medThresh" class="inp" min="1" max="100" value="${m?.refillThreshold||3}">
+    <label class="lbl" style="margin-top:10px">Hatırlatma saatleri</label>
+    <div id="medTimes" style="display:flex;flex-direction:column;gap:6px;margin-top:4px">
+      ${times.map((t,i)=>`<div style="display:flex;gap:6px"><input type="time" class="inp med-t" value="${t}" style="flex:1"><button onclick="this.parentNode.remove()" style="padding:0 12px;border-radius:10px;border:1px solid rgba(239,68,68,0.3);background:rgba(239,68,68,0.1);color:#ef4444">×</button></div>`).join('')}
+    </div>
+    <button class="sheet-btn" style="margin-top:8px" onclick="medAddTimeRow()">+ Saat ekle</button>
+    <button class="sheet-btn primary" style="margin-top:12px" onclick="medSave('${editId||''}')">Kaydet</button>
+    <a class="sheet-link" onclick="openSheet('meds')">İptal</a>
+  `;
+}
+function medAddTimeRow() {
+  const wrap = document.getElementById('medTimes');
+  const row = document.createElement('div');
+  row.style.cssText = 'display:flex;gap:6px';
+  row.innerHTML = '<input type="time" class="inp med-t" value="20:00" style="flex:1"><button onclick="this.parentNode.remove()" style="padding:0 12px;border-radius:10px;border:1px solid rgba(239,68,68,0.3);background:rgba(239,68,68,0.1);color:#ef4444">×</button>';
+  wrap.appendChild(row);
+}
+function medSave(editId) {
+  const name = document.getElementById('medName').value.trim();
+  if (!name) { alert('İlaç adı gir.'); return; }
+  const dose = document.getElementById('medDose').value.trim();
+  const pillCount = parseInt(document.getElementById('medCount').value,10) || 0;
+  const perDose = parseInt(document.getElementById('medPerDose').value,10) || 1;
+  const refillThreshold = parseInt(document.getElementById('medThresh').value,10) || 3;
+  const times = Array.from(document.querySelectorAll('.med-t')).map(i=>i.value).filter(Boolean).sort();
+  if (!times.length) { alert('En az bir hatırlatma saati ekle.'); return; }
+  state.meds = state.meds || [];
+  if (editId) {
+    const m = state.meds.find(x=>x.id===editId);
+    if (m) Object.assign(m, { name, dose, pillCount, perDose, refillThreshold, times });
+  } else {
+    state.meds.push({ id:'med_'+Date.now(), name, dose, pillCount, perDose, refillThreshold, times, lastTakenAt:0, createdAt:Date.now() });
+  }
+  LS.set('yasamai_meds', state.meds);
+  scheduleMedReminders();
+  openSheet('meds');
+}
+function medTake(id, time) {
+  const m = state.meds.find(x=>x.id===id); if (!m) return;
+  const todayKey = new Date().toISOString().slice(0,10);
+  const key = 'yasamai_medsTaken_' + todayKey;
+  const taken = LS.get(key, {});
+  taken[id + '_' + time] = Date.now();
+  LS.set(key, taken);
+  m.pillCount = Math.max(0, (m.pillCount||0) - (m.perDose||1));
+  m.lastTakenAt = Date.now();
+  LS.set('yasamai_meds', state.meds);
+  // Stok uyarısı
+  if (m.pillCount <= (m.refillThreshold||3) && m.pillCount > 0) {
+    try { playAlarmSound(); } catch(e){}
+    showNotif('⚠ ' + m.name + ' azaldı', 'Sadece ' + m.pillCount + ' adet kaldı — yeni kutu almayı unutma.');
+  } else if (m.pillCount === 0) {
+    try { playAlarmSound(); } catch(e){}
+    showNotif('🚨 ' + m.name + ' bitti', 'Stokta hiç kalmadı. Hemen tedarik et.');
+  }
+  renderSheetMeds();
+}
+function medUndoTake(id, time) {
+  const m = state.meds.find(x=>x.id===id); if (!m) return;
+  const todayKey = new Date().toISOString().slice(0,10);
+  const key = 'yasamai_medsTaken_' + todayKey;
+  const taken = LS.get(key, {});
+  delete taken[id + '_' + time];
+  LS.set(key, taken);
+  m.pillCount = (m.pillCount||0) + (m.perDose||1);
+  LS.set('yasamai_meds', state.meds);
+  renderSheetMeds();
+}
+function medRefill(id) {
+  const m = state.meds.find(x=>x.id===id); if (!m) return;
+  const add = parseInt(prompt('Kaç adet eklensin?', '30'), 10);
+  if (!add || add <= 0) return;
+  m.pillCount = (m.pillCount||0) + add;
+  LS.set('yasamai_meds', state.meds);
+  renderSheetMeds();
+}
+function medEdit(id) { openSheetRaw(); renderSheetMedAdd(id); }
+function medDelete(id) {
+  if (!confirm('Bu ilaç silinsin mi?')) return;
+  state.meds = state.meds.filter(x=>x.id!==id);
+  LS.set('yasamai_meds', state.meds);
+  scheduleMedReminders();
+  renderSheetMeds();
+}
+const _medTimers = [];
+function scheduleMedReminders() {
+  while(_medTimers.length) clearTimeout(_medTimers.pop());
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  const now = new Date();
+  const todayKey = now.toISOString().slice(0,10);
+  const taken = LS.get('yasamai_medsTaken_' + todayKey, {});
+  (state.meds||[]).forEach(m => {
+    (m.times||[]).forEach(t => {
+      if (taken[m.id + '_' + t]) return;
+      const [hh,mm] = t.split(':').map(n=>parseInt(n,10));
+      const target = new Date(); target.setHours(hh, mm, 0, 0);
+      if (target <= now) return;
+      const delay = target - now;
+      if (delay > 0 && delay < 24*60*60*1000) {
+        _medTimers.push(setTimeout(() => {
+          try { playAlarmSound(); playAlarmVibration(); } catch(e){}
+          showNotif('💊 ' + m.name + ' zamanı', (m.dose||'İlacını al') + ' · ' + t);
+        }, delay));
+      }
+    });
+  });
+}
+
+/* ============ KİLO & VKİ TAKİBİ ============ */
+function bmiCalc(wKg, hCm) {
+  if (!wKg || !hCm) return 0;
+  const m = hCm/100;
+  return Math.round((wKg/(m*m))*10)/10;
+}
+function bmiCategory(bmi) {
+  if (!bmi) return { label:'—', color:'#a0a3b8' };
+  if (bmi < 18.5) return { label:'Zayıf', color:'#3b82f6' };
+  if (bmi < 25)   return { label:'Normal', color:'#10b981' };
+  if (bmi < 30)   return { label:'Fazla kilolu', color:'#f59e0b' };
+  return { label:'Obez', color:'#ef4444' };
+}
+function renderSheetBody() {
+  state.body = state.body || { height:0, logs:[] };
+  const logs = state.body.logs || [];
+  const sorted = [...logs].sort((a,b)=>(a.ts||0)-(b.ts||0));
+  const latest = sorted[sorted.length-1];
+  const first = sorted[0];
+  const change = (latest && first && latest.ts !== first.ts) ? (latest.weight - first.weight).toFixed(1) : null;
+  const bmi = latest && state.body.height ? bmiCalc(latest.weight, state.body.height) : 0;
+  const cat = bmiCategory(bmi);
+  // Son 30 gün çizgi/bar
+  const last30 = [];
+  for (let i=29;i>=0;i--) {
+    const d = new Date(); d.setDate(d.getDate()-i);
+    const k = d.toISOString().slice(0,10);
+    const l = logs.find(x=>x.date===k);
+    last30.push({ key:k, weight:l?l.weight:null });
+  }
+  // Son ölçüm için önceki değerleri taşı (boş günlerde son bilinen)
+  let lastW = sorted.find(x=> new Date(x.date) <= new Date(last30[0].key))?.weight || null;
+  const filled = last30.map(x => { if (x.weight != null) lastW = x.weight; return { ...x, weight: x.weight != null ? x.weight : lastW }; });
+  const vals = filled.map(x=>x.weight).filter(v=>v!=null);
+  const minV = vals.length ? Math.min(...vals) - 0.5 : 0;
+  const maxV = vals.length ? Math.max(...vals) + 0.5 : 1;
+  const range = Math.max(0.1, maxV - minV);
+  let bars = '';
+  filled.forEach((x,i) => {
+    const pct = x.weight != null ? Math.max(8, Math.round(((x.weight - minV)/range)*100)) : 0;
+    const show = (i % 5 === 0) || (i === filled.length-1);
+    bars += `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0">
+      <div style="height:70px;width:100%;background:rgba(236,72,153,0.1);border-radius:3px;position:relative;overflow:hidden">
+        ${x.weight != null ? `<div style="position:absolute;bottom:0;left:0;right:0;height:${pct}%;background:linear-gradient(to top,#ec4899,#f472b6);border-radius:3px"></div>` : ''}
+      </div>
+      ${show ? `<div style="font-size:8px;color:#a0a3b8">${x.key.slice(8)}</div>` : ''}
+    </div>`;
+  });
+  // Son kayıtlar
+  const recent = [...sorted].reverse().slice(0,5);
+  const recentList = recent.length ? recent.map(l => `
+    <div style="padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+      <div style="font-weight:700;font-size:13px">${l.date}</div>
+      <div style="color:#ec4899;font-weight:800;font-size:15px">${l.weight} kg</div>
+    </div>`).join('') : '<div style="text-align:center;color:#a0a3b8;font-size:12px;padding:12px">Henüz kayıt yok</div>';
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>⚖️ Kilo & VKİ Takibi</h3>
+    <div style="margin:8px 0 14px;padding:14px 16px;border-radius:18px;background:linear-gradient(135deg,#ec4899,#be185d);color:#fff">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:11px;opacity:.9;letter-spacing:.5px;text-transform:uppercase;font-weight:700">GÜNCEL</div>
+          <div style="font-size:26px;font-weight:800;margin-top:2px;letter-spacing:-0.5px">${latest?latest.weight:'—'}<span style="font-size:14px;opacity:.85;margin-left:4px">kg</span></div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:11px;opacity:.9">Değişim</div>
+          <div style="font-size:15px;font-weight:800">${change!==null?(change>0?'+':'')+change+' kg':'—'}</div>
+        </div>
+      </div>
+      ${bmi?`<div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.2);display:flex;justify-content:space-between;align-items:center">
+        <div><div style="font-size:11px;opacity:.9">VKİ</div><div style="font-size:18px;font-weight:800">${bmi}</div></div>
+        <div style="padding:4px 10px;border-radius:999px;background:rgba(255,255,255,0.25);font-size:12px;font-weight:700">${cat.label}</div>
+      </div>`:''}
+    </div>
+    ${vals.length?`<div style="margin:0 0 6px;font-size:12px;color:#a0a3b8;font-weight:700">Son 30 gün</div>
+      <div style="display:flex;gap:1px;margin-bottom:14px">${bars}</div>`:''}
+    <div style="padding:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;margin-bottom:14px">
+      <div style="font-size:12px;color:#a0a3b8;font-weight:700;margin-bottom:8px">Yeni kilo kaydı</div>
+      <div style="display:flex;gap:8px">
+        <div style="flex:1"><label class="lbl">Kilo (kg)</label><input type="number" id="bdWeight" class="inp" step="0.1" min="20" max="300" value="${latest?latest.weight:70}"></div>
+        <div style="flex:1"><label class="lbl">Boy (cm)</label><input type="number" id="bdHeight" class="inp" min="100" max="230" value="${state.body.height||170}"></div>
+      </div>
+      <button class="sheet-btn primary" style="margin-top:10px" onclick="bodySave()">Kaydet</button>
+    </div>
+    <div style="margin:0 0 6px;font-size:12px;color:#a0a3b8;font-weight:700">Son kayıtlar</div>
+    ${recentList}
+  `;
+}
+function bodySave() {
+  const w = parseFloat(document.getElementById('bdWeight').value) || 0;
+  const h = parseInt(document.getElementById('bdHeight').value,10) || 0;
+  if (w <= 0) { alert('Geçerli kilo gir.'); return; }
+  state.body = state.body || { height:0, logs:[] };
+  state.body.height = h;
+  const today = new Date().toISOString().slice(0,10);
+  state.body.logs = state.body.logs.filter(x=>x.date!==today);
+  state.body.logs.push({ date:today, weight:w, ts:Date.now() });
+  LS.set('yasamai_body', state.body);
+  renderSheetBody();
+}
+
 /* ============ GÜNLÜK ============ */
 // Günlükte görüntülenen ay (ve filtre). Kullanıcı gezinirken korunur.
 let _diaryView = { year: new Date().getFullYear(), month: new Date().getMonth() };
@@ -3986,7 +4406,7 @@ function setTheme(n) {
 
 /* ============ SHEET ============ */
 function openSheet(type) {
-  const r = { theme:renderSheetTheme, reminder:renderSheetReminder, privacy:renderSheetPrivacy, premium:renderSheetPremium, signup:renderSheetSignup, login:renderSheetLogin, anon:renderSheetAnon, newDiary:renderSheetNewDiary, google:renderSheetGoogle, apple:renderSheetApple, verify:renderSheetVerify, payment:renderSheetPayment, gAge:renderSheetGAge, fontSize:renderSheetFontSize, aiTone:renderSheetAiTone, feedback:renderSheetFeedback, help:renderSheetHelp, about:renderSheetAbout, editProfile:renderSheetEditProfile, cycleLog:renderSheetCycleLog, cycleSymptom:renderSheetCycleSymptom, cycleSettings:renderSheetCycleSettings, cyclePeriodLen:renderSheetCyclePeriodLen, pregnancy:renderSheetPregnancy, pregMeds:renderSheetPregMeds, water:renderSheetWater, routine:renderSheetRoutine, workout:renderSheetWorkout, workoutLog:renderSheetWorkoutLog, breathe:renderSheetBreathe };
+  const r = { theme:renderSheetTheme, reminder:renderSheetReminder, privacy:renderSheetPrivacy, premium:renderSheetPremium, signup:renderSheetSignup, login:renderSheetLogin, anon:renderSheetAnon, newDiary:renderSheetNewDiary, google:renderSheetGoogle, apple:renderSheetApple, verify:renderSheetVerify, payment:renderSheetPayment, gAge:renderSheetGAge, fontSize:renderSheetFontSize, aiTone:renderSheetAiTone, feedback:renderSheetFeedback, help:renderSheetHelp, about:renderSheetAbout, editProfile:renderSheetEditProfile, cycleLog:renderSheetCycleLog, cycleSymptom:renderSheetCycleSymptom, cycleSettings:renderSheetCycleSettings, cyclePeriodLen:renderSheetCyclePeriodLen, pregnancy:renderSheetPregnancy, pregMeds:renderSheetPregMeds, water:renderSheetWater, routine:renderSheetRoutine, workout:renderSheetWorkout, workoutLog:renderSheetWorkoutLog, breathe:renderSheetBreathe, sleep:renderSheetSleep, meds:renderSheetMeds, medAdd:renderSheetMedAdd, body:renderSheetBody };
   if (r[type]) r[type]();
   openSheetRaw();
 }
