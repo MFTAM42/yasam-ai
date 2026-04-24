@@ -3182,24 +3182,38 @@ function renderSheetWater() {
       <div class="water-goal">Hedef: ${w.goal} ml · %${pct} tamamlandı</div>
       <div class="water-bar"><div class="water-bar-f" style="width:${pct}%"></div></div>
     </div>
-    <div style="margin-bottom:10px;font-size:12px;color:#a0a3b8;font-weight:700">Bardaklar (dokun ekle/çıkar)</div>
+    <div style="font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#94a3b8;font-weight:700;margin-bottom:8px">🥛 Bardaklar (dokun)</div>
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;justify-content:center">${glasses}</div>
-    <div class="water-btns" style="margin-bottom:14px">
-      <button class="cy-btn" style="background:#0ea5e9;border-color:#0ea5e9" onclick="waterAdd(200)">+200 ml</button>
-      <button class="cy-btn" style="background:#0ea5e9;border-color:#0ea5e9" onclick="waterAdd(300)">+300 ml</button>
-      <button class="cy-btn" style="background:#0ea5e9;border-color:#0ea5e9" onclick="waterAdd(500)">+500 ml şişe</button>
-      <button class="cy-btn" onclick="waterReset()" style="background:rgba(239,68,68,0.15);border-color:rgba(239,68,68,0.3);color:#ef4444">Sıfırla</button>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px">
+      <button onclick="waterAdd(200)" style="padding:14px 4px;border-radius:14px;border:none;background:linear-gradient(135deg,#0ea5e9,#0369a1);color:#fff;font-weight:800;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px">
+        <span style="font-size:18px">🥛</span><span style="font-size:13px">+200 ml</span>
+      </button>
+      <button onclick="waterAdd(300)" style="padding:14px 4px;border-radius:14px;border:none;background:linear-gradient(135deg,#0ea5e9,#0369a1);color:#fff;font-weight:800;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px">
+        <span style="font-size:18px">🥤</span><span style="font-size:13px">+300 ml</span>
+      </button>
+      <button onclick="waterAdd(500)" style="padding:14px 4px;border-radius:14px;border:none;background:linear-gradient(135deg,#0ea5e9,#0369a1);color:#fff;font-weight:800;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px">
+        <span style="font-size:18px">🍶</span><span style="font-size:13px">+500 ml</span>
+      </button>
     </div>
-    <div style="margin-bottom:8px;font-size:12px;color:#a0a3b8;font-weight:700">Son 7 gün</div>
+    <button onclick="waterReset()" style="width:100%;padding:10px;border-radius:12px;border:1px solid rgba(239,68,68,0.25);background:rgba(239,68,68,0.08);color:#ef4444;font-weight:700;font-size:12.5px;cursor:pointer;margin-bottom:16px">Bugünü sıfırla</button>
+    <div style="font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#94a3b8;font-weight:700;margin-bottom:8px">📊 Son 7 Gün</div>
     <div style="display:flex;gap:6px;margin-bottom:16px">${hist}</div>
-    <label class="lbl">Günlük hedef (ml)</label>
-    <input type="number" id="wGoal" class="inp" min="500" max="5000" step="100" value="${w.goal}">
-    <label class="lbl" style="margin-top:10px">Hatırlatma aralığı (dk) — 0 = kapalı</label>
-    <input type="number" id="wInt" class="inp" min="0" max="240" step="15" value="${w.interval||0}">
-    <label class="lbl" style="margin-top:10px;display:flex;align-items:center;gap:10px;cursor:pointer">
-      <input type="checkbox" id="wOn" ${w.on?'checked':''}> Bildirim hatırlatması aç
-    </label>
-    <button class="sheet-btn primary" style="margin-top:12px" onclick="waterSave()">Ayarları kaydet</button>
+    <div style="padding:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;margin-bottom:12px">
+      <div style="font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#94a3b8;font-weight:700;margin-bottom:12px">⚙️ Ayarlar</div>
+      <label class="lbl" style="font-size:11.5px;color:#94a3b8;margin-bottom:4px;display:block">💧 Günlük hedef (ml)</label>
+      <input type="number" id="wGoal" class="inp" min="500" max="5000" step="100" value="${w.goal}" style="font-size:16px;font-weight:700;text-align:center;padding:13px">
+      <label class="lbl" style="font-size:11.5px;color:#94a3b8;margin:12px 0 4px;display:block">⏰ Hatırlatma aralığı (dakika)</label>
+      <input type="number" id="wInt" class="inp" min="0" max="240" step="15" value="${w.interval||0}" placeholder="0 = kapalı" style="font-size:16px;font-weight:700;text-align:center;padding:13px">
+      <div style="font-size:10.5px;color:#94a3b8;margin-top:4px;line-height:1.5">0 yazarsan bildirim gelmez. 90 dk önerilir.</div>
+      <label style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(14,165,233,0.08);border:1px solid rgba(14,165,233,0.2);border-radius:12px;margin-top:12px;cursor:pointer">
+        <input type="checkbox" id="wOn" ${w.on?'checked':''} style="width:20px;height:20px;accent-color:#0ea5e9">
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:13.5px">Bildirim hatırlatması</div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:1px">Saatte bir "su iç" bildirimi gelsin</div>
+        </div>
+      </label>
+    </div>
+    <button class="sheet-btn primary" style="padding:14px;font-size:15px;font-weight:800" onclick="waterSave()">✓ Ayarları kaydet</button>
   `;
 }
 function waterAdd(ml) {
@@ -3604,21 +3618,31 @@ function renderSheetSleep() {
     </div>
     <div style="margin:0 0 6px;font-size:12px;color:#a0a3b8;font-weight:700">Son 7 gün</div>
     <div style="display:flex;gap:6px;margin-bottom:14px">${bars}</div>
-    <div style="padding:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;margin-bottom:14px">
-      <div style="font-size:12px;color:#a0a3b8;font-weight:700;margin-bottom:8px">Bu geceyi kaydet ${todayLog?'(bugün kaydedildi — üzerine yazılır)':''}</div>
-      <div style="display:flex;gap:8px">
-        <div style="flex:1"><label class="lbl">Yattım</label><input type="time" id="slBed" class="inp" value="${todayLog?.bedtime||'23:30'}"></div>
-        <div style="flex:1"><label class="lbl">Kalktım</label><input type="time" id="slWake" class="inp" value="${todayLog?.waketime||'07:00'}"></div>
+    <div style="padding:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#94a3b8;font-weight:700">🌙 Bu Geceyi Kaydet</div>
+        ${todayLog?`<div style="font-size:10px;padding:3px 9px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);border-radius:999px;color:#a5b4fc;font-weight:700">BUGÜN KAYITLI</div>`:''}
       </div>
-      <label class="lbl" style="margin-top:8px">Horlama (dk, opsiyonel)</label>
-      <input type="number" id="slSnore" class="inp" min="0" max="600" value="${todayLog?.snoreMin||0}">
-      <label class="lbl" style="margin-top:8px">Uyku kalitesi</label>
-      <div id="slQuality" style="display:flex;gap:6px;margin:4px 0 8px">
-        ${[1,2,3,4,5].map(n=>`<button type="button" onclick="sleepSetQuality(${n})" data-q="${n}" class="sl-q-btn" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);background:${(todayLog?.quality||0)>=n?'linear-gradient(135deg,#4f46e5,#7c3aed)':'rgba(255,255,255,0.04)'};color:${(todayLog?.quality||0)>=n?'#fff':'#a0a3b8'};font-size:16px">⭐</button>`).join('')}
+      <div style="display:flex;gap:10px;margin-bottom:12px">
+        <div style="flex:1">
+          <label class="lbl" style="font-size:11.5px;color:#94a3b8;margin-bottom:4px;display:block">🌙 Yattım</label>
+          <input type="time" id="slBed" class="inp" value="${todayLog?.bedtime||'23:30'}" style="font-size:17px;font-weight:700;text-align:center;padding:13px">
+        </div>
+        <div style="flex:1">
+          <label class="lbl" style="font-size:11.5px;color:#94a3b8;margin-bottom:4px;display:block">☀️ Kalktım</label>
+          <input type="time" id="slWake" class="inp" value="${todayLog?.waketime||'07:00'}" style="font-size:17px;font-weight:700;text-align:center;padding:13px">
+        </div>
       </div>
-      <label class="lbl" style="margin-top:4px">Not (opsiyonel)</label>
-      <input type="text" id="slNote" class="inp" placeholder="Rüya, uyanma, kafein..." value="${esc(todayLog?.notes||'')}">
-      <button class="sheet-btn primary" style="margin-top:10px" onclick="sleepSave()">Kaydet</button>
+      <label class="lbl" style="font-size:11.5px;color:#94a3b8;margin-bottom:4px;display:block">😮‍💨 Horlama (dakika)</label>
+      <input type="number" id="slSnore" class="inp" min="0" max="600" value="${todayLog?.snoreMin||0}" placeholder="0 = hiç horlamadım" style="font-size:15px;font-weight:600;padding:12px 14px">
+      <label class="lbl" style="font-size:11.5px;color:#94a3b8;margin:12px 0 6px;display:block">⭐ Uyku Kalitesi</label>
+      <div id="slQuality" style="display:flex;gap:6px;margin-bottom:4px">
+        ${[1,2,3,4,5].map(n=>`<button type="button" onclick="sleepSetQuality(${n})" data-q="${n}" class="sl-q-btn" style="flex:1;padding:12px 0;border-radius:12px;border:1px solid ${(todayLog?.quality||0)>=n?'transparent':'rgba(255,255,255,0.12)'};background:${(todayLog?.quality||0)>=n?'linear-gradient(135deg,#4f46e5,#7c3aed)':'rgba(255,255,255,0.04)'};color:${(todayLog?.quality||0)>=n?'#fff':'#a0a3b8'};font-size:18px;font-weight:700;cursor:pointer">${(todayLog?.quality||0)>=n?'⭐':'☆'}</button>`).join('')}
+      </div>
+      <div style="font-size:10.5px;color:#94a3b8;text-align:center;margin-bottom:12px">Çok kötü · Kötü · Orta · İyi · Harika</div>
+      <label class="lbl" style="font-size:11.5px;color:#94a3b8;margin-bottom:4px;display:block">📝 Not (opsiyonel)</label>
+      <textarea id="slNote" rows="2" placeholder="Rüya, gece uyanma, kafein, stres, ağrı..." style="width:100%;padding:13px 14px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:inherit;font-size:14px;font-family:inherit;resize:vertical;line-height:1.5;box-sizing:border-box">${esc(todayLog?.notes||'')}</textarea>
+      <button class="sheet-btn primary" style="margin-top:14px;padding:14px;font-size:15px;font-weight:800" onclick="sleepSave()">✓ Bu geceyi kaydet</button>
     </div>
     <div style="margin:0 0 6px;font-size:12px;color:#a0a3b8;font-weight:700">Son kayıtlar</div>
     ${recentList}
@@ -3654,101 +3678,175 @@ function sleepSave() {
 /* ============ İLAÇ TAKİBİ + ALARM ============ */
 function renderSheetMeds() {
   state.meds = state.meds || [];
-  // Bugünkü doz durumu
   const todayKey = new Date().toISOString().slice(0,10);
-  const takenMap = LS.get('yasamai_medsTaken_' + todayKey, {}); // { medId_time: ts }
+  const takenMap = LS.get('yasamai_medsTaken_' + todayKey, {});
   const now = new Date();
   const curMin = now.getHours()*60 + now.getMinutes();
+  // Bugünkü toplam doz/alınan sayısı
+  let totalDoses = 0, takenDoses = 0;
+  state.meds.forEach(m => (m.times||[]).forEach(t => { totalDoses++; if (takenMap[m.id+'_'+t]) takenDoses++; }));
   const rows = state.meds.length ? state.meds.map(m => {
     const low = (m.pillCount||0) <= (m.refillThreshold||3);
+    const empty = (m.pillCount||0) === 0;
     const schedule = (m.times||[]).map(t => {
       const key = m.id + '_' + t;
       const taken = !!takenMap[key];
       const [h,mm] = t.split(':').map(n=>parseInt(n,10));
       const tmin = h*60+mm;
       const isPast = curMin > tmin && !taken;
-      return `<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:${taken?'rgba(16,185,129,0.1)':isPast?'rgba(239,68,68,0.08)':'rgba(255,255,255,0.04)'};border-radius:8px;margin-top:4px">
-        <span style="font-weight:700;font-size:13px;min-width:48px">${t}</span>
-        <span style="flex:1;font-size:11px;color:${taken?'#10b981':isPast?'#ef4444':'#a0a3b8'}">${taken?'✓ Alındı':isPast?'⚠ Kaçırıldı':'Planlı'}</span>
-        ${!taken?`<button onclick="medTake('${m.id}','${t}')" style="padding:5px 10px;border-radius:7px;border:none;background:#10b981;color:#fff;font-size:11px;font-weight:700">Aldım</button>`:`<button onclick="medUndoTake('${m.id}','${t}')" style="padding:5px 10px;border-radius:7px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:#a0a3b8;font-size:11px">Geri al</button>`}
+      const isNext = !taken && !isPast && tmin - curMin <= 60 && tmin >= curMin;
+      const statusColor = taken?'#10b981':isPast?'#ef4444':isNext?'#f59e0b':'#94a3b8';
+      const statusLabel = taken?'Alındı':isPast?'Kaçırıldı':isNext?'Yaklaşıyor':'Planlı';
+      return `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:${taken?'rgba(16,185,129,0.08)':isPast?'rgba(239,68,68,0.06)':'rgba(255,255,255,0.03)'};border:1px solid ${taken?'rgba(16,185,129,0.2)':isPast?'rgba(239,68,68,0.2)':'rgba(255,255,255,0.06)'};border-radius:10px;margin-top:6px">
+        <div style="width:44px;height:44px;border-radius:10px;background:${taken?'linear-gradient(135deg,#10b981,#059669)':'rgba(255,255,255,0.06)'};display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:${taken?'#fff':'inherit'}">${taken?'✓':t.split(':')[0]}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:700;font-size:14px">${t}</div>
+          <div style="font-size:11px;color:${statusColor};font-weight:600;margin-top:1px">${statusLabel}</div>
+        </div>
+        ${!taken?`<button onclick="medTake('${m.id}','${t}')" style="padding:8px 14px;border-radius:10px;border:none;background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-size:12px;font-weight:700;cursor:pointer">Aldım</button>`:`<button onclick="medUndoTake('${m.id}','${t}')" style="padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:#94a3b8;font-size:11px;cursor:pointer">Geri al</button>`}
       </div>`;
     }).join('');
+    const stockPct = Math.min(100, Math.round(((m.pillCount||0) / Math.max(1,(m.refillThreshold||3)*4)) * 100));
     return `
-    <div style="padding:12px;background:rgba(255,255,255,0.04);border:1px solid ${low?'rgba(239,68,68,0.35)':'rgba(255,255,255,0.08)'};border-radius:14px;margin-top:8px">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
-        <div style="flex:1">
-          <div style="font-weight:800;font-size:14px">💊 ${esc(m.name)}</div>
-          <div style="font-size:11px;color:#a0a3b8;margin-top:2px">${esc(m.dose||'')} ${m.perDose?'· doz başına '+m.perDose+' adet':''}</div>
+    <div style="padding:16px;background:rgba(255,255,255,0.04);border:1px solid ${empty?'rgba(239,68,68,0.5)':low?'rgba(239,68,68,0.3)':'rgba(255,255,255,0.08)'};border-radius:16px;margin-top:10px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px">
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:8px;font-weight:800;font-size:16px">💊 ${esc(m.name)}</div>
+          ${m.dose?`<div style="font-size:12px;color:#94a3b8;margin-top:3px;line-height:1.4">${esc(m.dose)}</div>`:''}
         </div>
-        <div style="text-align:right">
-          <div style="font-size:11px;color:${low?'#ef4444':'#a0a3b8'};font-weight:700">${low?'⚠ AZALDI':'Stok'}</div>
-          <div style="font-size:18px;font-weight:800;color:${low?'#ef4444':'inherit'}">${m.pillCount||0}</div>
+        <div style="text-align:right;min-width:80px">
+          <div style="font-size:10px;color:${empty||low?'#ef4444':'#94a3b8'};font-weight:700;letter-spacing:.5px;text-transform:uppercase">${empty?'Bitti':low?'Azaldı':'Stokta'}</div>
+          <div style="font-size:22px;font-weight:800;color:${empty||low?'#ef4444':'inherit'};line-height:1.1;margin-top:2px">${m.pillCount||0}</div>
+          <div style="font-size:10px;color:#94a3b8">adet</div>
         </div>
+      </div>
+      <div style="height:5px;background:rgba(255,255,255,0.06);border-radius:999px;margin-bottom:10px;overflow:hidden">
+        <div style="height:100%;width:${stockPct}%;background:${empty?'#ef4444':low?'#f97316':'linear-gradient(90deg,#10b981,#34d399)'};border-radius:999px;transition:width .3s"></div>
       </div>
       ${schedule}
-      <div style="display:flex;gap:6px;margin-top:8px">
-        <button onclick="medRefill('${m.id}')" style="flex:1;padding:7px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:inherit;font-size:12px">+ Kutu ekle</button>
-        <button onclick="medEdit('${m.id}')" style="flex:1;padding:7px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:inherit;font-size:12px">Düzenle</button>
-        <button onclick="medDelete('${m.id}')" style="padding:7px 10px;border-radius:8px;border:1px solid rgba(239,68,68,0.3);background:rgba(239,68,68,0.1);color:#ef4444;font-size:12px">Sil</button>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button onclick="medRefill('${m.id}')" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.03);color:inherit;font-size:12.5px;font-weight:600;cursor:pointer">📦 Kutu ekle</button>
+        <button onclick="medEdit('${m.id}')" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.03);color:inherit;font-size:12.5px;font-weight:600;cursor:pointer">✎ Düzenle</button>
+        <button onclick="medDelete('${m.id}')" style="padding:10px 12px;border-radius:10px;border:1px solid rgba(239,68,68,0.25);background:rgba(239,68,68,0.08);color:#ef4444;font-size:12.5px;font-weight:600;cursor:pointer">Sil</button>
       </div>
     </div>`;
-  }).join('') : '<div style="text-align:center;color:#a0a3b8;font-size:12px;padding:18px">Henüz ilaç eklenmedi</div>';
+  }).join('') : `
+    <div style="text-align:center;padding:28px 18px;background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.1);border-radius:16px;margin-top:10px">
+      <div style="font-size:42px;margin-bottom:8px">💊</div>
+      <div style="font-weight:700;font-size:14px;margin-bottom:4px">Henüz ilaç eklenmedi</div>
+      <div style="font-size:12px;color:#94a3b8;line-height:1.5">Aşağıdaki + butonundan ilaç ekle,<br>hatırlatma saatleri ayarla.</div>
+    </div>`;
   const lowCount = state.meds.filter(m => (m.pillCount||0) <= (m.refillThreshold||3)).length;
+  const notifOk = 'Notification' in window && Notification.permission === 'granted';
   document.getElementById('sheetContent').innerHTML = `
-    <h3>💊 İlaç Takibi</h3>
-    <div style="margin:8px 0 14px;padding:14px 16px;border-radius:18px;background:linear-gradient(135deg,#ef4444,#f97316);color:#fff">
-      <div style="display:flex;justify-content:space-between;align-items:center">
+    <h3 style="display:flex;align-items:center;gap:8px">💊 İlaç Takibi</h3>
+    <div style="margin:8px 0 14px;padding:16px 18px;border-radius:20px;background:linear-gradient(135deg,#ef4444,#f97316);color:#fff;box-shadow:0 10px 30px rgba(239,68,68,0.25)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
         <div>
-          <div style="font-size:11px;opacity:.9;letter-spacing:.5px;text-transform:uppercase;font-weight:700">KAYITLI İLAÇ</div>
-          <div style="font-size:26px;font-weight:800;margin-top:2px">${state.meds.length}</div>
+          <div style="font-size:10px;opacity:.9;letter-spacing:.8px;text-transform:uppercase;font-weight:700">BUGÜN</div>
+          <div style="font-size:30px;font-weight:800;margin-top:4px;letter-spacing:-0.5px;line-height:1">${takenDoses}<span style="font-size:18px;opacity:.75">/${totalDoses}</span></div>
+          <div style="font-size:11px;opacity:.95;margin-top:2px">doz alındı</div>
         </div>
         <div style="text-align:right">
-          <div style="font-size:11px;opacity:.9">${lowCount?'⚠ Azaldı':'Stok durumu'}</div>
-          <div style="font-size:15px;font-weight:800">${lowCount?lowCount+' ilaç':'Tümü yeterli'}</div>
+          <div style="font-size:10px;opacity:.9;letter-spacing:.5px;text-transform:uppercase;font-weight:700">İLAÇ</div>
+          <div style="font-size:24px;font-weight:800;margin-top:4px">${state.meds.length}</div>
+          ${lowCount?`<div style="font-size:10px;background:rgba(255,255,255,0.2);padding:3px 8px;border-radius:999px;margin-top:4px;display:inline-block;font-weight:700">⚠ ${lowCount} azaldı</div>`:''}
         </div>
       </div>
+      ${totalDoses?`<div style="height:6px;background:rgba(255,255,255,0.25);border-radius:999px;margin-top:12px;overflow:hidden"><div style="height:100%;background:#fff;width:${Math.round(takenDoses/totalDoses*100)}%;border-radius:999px"></div></div>`:''}
     </div>
-    <button class="sheet-btn primary" onclick="openSheet('medAdd')">+ Yeni ilaç ekle</button>
-    <div style="margin-top:4px">${rows}</div>
+    ${!notifOk?`<div style="padding:12px 14px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:12px;margin-bottom:10px;display:flex;gap:10px;align-items:flex-start">
+      <div style="font-size:20px">⚠</div>
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:13px;color:#f59e0b">Bildirim izni gerekli</div>
+        <div style="font-size:11.5px;color:#94a3b8;margin-top:2px;line-height:1.5">Alarmların çalması için bildirim izni lazım. Aşağıdaki butona bas.</div>
+        <button onclick="medRequestPerm()" style="margin-top:8px;padding:7px 14px;border-radius:8px;border:none;background:#f59e0b;color:#1a1625;font-weight:800;font-size:12px;cursor:pointer">İzin ver</button>
+      </div>
+    </div>`:''}
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <button class="sheet-btn primary" style="flex:1;margin:0" onclick="openSheet('medAdd')">+ Yeni ilaç ekle</button>
+      <button onclick="testMedAlarm()" style="padding:12px 16px;border-radius:14px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.03);color:inherit;font-weight:700;font-size:13px;cursor:pointer">🔔 Alarmı test et</button>
+    </div>
+    ${rows}
   `;
+}
+function medRequestPerm() {
+  if (!('Notification' in window)) { alert('Tarayıcın bildirimleri desteklemiyor.'); return; }
+  Notification.requestPermission().then(p => {
+    if (p === 'granted') { scheduleMedReminders(); renderSheetMeds(); }
+    else alert('İzin reddedildi. Telefon ayarlarından Yaşam.AI için bildirimleri aç.');
+  });
 }
 function renderSheetMedAdd(editId) {
   const m = editId ? state.meds.find(x=>x.id===editId) : null;
   const title = m ? 'İlaç düzenle' : 'Yeni ilaç ekle';
   const times = m?.times || ['08:00'];
+  const presets = [
+    { name:'Sabah', time:'08:00' },
+    { name:'Öğle', time:'13:00' },
+    { name:'Akşam', time:'19:00' },
+    { name:'Gece', time:'22:00' }
+  ];
   document.getElementById('sheetContent').innerHTML = `
     <h3>💊 ${title}</h3>
-    <label class="lbl">İlaç adı</label>
-    <input type="text" id="medName" class="inp" placeholder="Örn: Parol" value="${esc(m?.name||'')}">
-    <label class="lbl" style="margin-top:8px">Doz / açıklama</label>
-    <input type="text" id="medDose" class="inp" placeholder="500 mg · yemekten sonra" value="${esc(m?.dose||'')}">
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <div style="flex:1">
-        <label class="lbl">Stoktaki adet</label>
-        <input type="number" id="medCount" class="inp" min="0" max="9999" value="${m?.pillCount||30}">
+    <div style="padding:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;margin:10px 0">
+      <label class="lbl" style="font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#94a3b8;font-weight:700;margin-bottom:6px;display:block">İlaç Adı</label>
+      <input type="text" id="medName" class="inp" placeholder="Örn: Parol, Aspirin, B12" value="${esc(m?.name||'')}" style="font-size:15px;padding:13px 14px">
+      <label class="lbl" style="font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#94a3b8;font-weight:700;margin:12px 0 6px;display:block">Doz / Kullanım Notu</label>
+      <input type="text" id="medDose" class="inp" placeholder="Örn: 500 mg · yemekten sonra" value="${esc(m?.dose||'')}" style="font-size:14px;padding:13px 14px">
+    </div>
+    <div style="padding:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;margin-bottom:10px">
+      <div style="font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#94a3b8;font-weight:700;margin-bottom:10px">📦 Stok Bilgisi</div>
+      <div style="display:flex;gap:10px">
+        <div style="flex:1">
+          <label class="lbl" style="font-size:11.5px;color:#94a3b8;margin-bottom:4px;display:block">Stoktaki adet</label>
+          <input type="number" id="medCount" class="inp" min="0" max="9999" value="${m?.pillCount||30}" style="font-size:16px;font-weight:700;text-align:center;padding:12px">
+        </div>
+        <div style="flex:1">
+          <label class="lbl" style="font-size:11.5px;color:#94a3b8;margin-bottom:4px;display:block">Doz başına</label>
+          <input type="number" id="medPerDose" class="inp" min="1" max="20" value="${m?.perDose||1}" style="font-size:16px;font-weight:700;text-align:center;padding:12px">
+        </div>
+        <div style="flex:1">
+          <label class="lbl" style="font-size:11.5px;color:#94a3b8;margin-bottom:4px;display:block">Uyarı eşiği</label>
+          <input type="number" id="medThresh" class="inp" min="1" max="100" value="${m?.refillThreshold||3}" style="font-size:16px;font-weight:700;text-align:center;padding:12px">
+        </div>
       </div>
-      <div style="flex:1">
-        <label class="lbl">Doz başına</label>
-        <input type="number" id="medPerDose" class="inp" min="1" max="20" value="${m?.perDose||1}">
+      <div style="font-size:11px;color:#94a3b8;margin-top:8px;line-height:1.5">⓵ Stokta kaç adet ilaç kaldığı · ⓶ Her dozda kaç adet alındığı · ⓷ Bu sayıya inince uyarı alırsın</div>
+    </div>
+    <div style="padding:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#94a3b8;font-weight:700">⏰ Hatırlatma Saatleri</div>
+        <button onclick="medAddTimeRow()" style="padding:6px 12px;border-radius:8px;border:1px solid rgba(239,68,68,0.3);background:rgba(239,68,68,0.08);color:#ef4444;font-size:11.5px;font-weight:700;cursor:pointer">+ Saat ekle</button>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+        ${presets.map(p => `<button type="button" onclick="medSetPreset('${p.time}')" style="padding:7px 12px;border-radius:999px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:inherit;font-size:11.5px;font-weight:600;cursor:pointer">${p.name} · ${p.time}</button>`).join('')}
+      </div>
+      <div id="medTimes" style="display:flex;flex-direction:column;gap:8px">
+        ${times.map(t=>medTimeRowHtml(t)).join('')}
       </div>
     </div>
-    <label class="lbl" style="margin-top:8px">Uyarı eşiği (bitmeye yakın)</label>
-    <input type="number" id="medThresh" class="inp" min="1" max="100" value="${m?.refillThreshold||3}">
-    <label class="lbl" style="margin-top:10px">Hatırlatma saatleri</label>
-    <div id="medTimes" style="display:flex;flex-direction:column;gap:6px;margin-top:4px">
-      ${times.map((t,i)=>`<div style="display:flex;gap:6px"><input type="time" class="inp med-t" value="${t}" style="flex:1"><button onclick="this.parentNode.remove()" style="padding:0 12px;border-radius:10px;border:1px solid rgba(239,68,68,0.3);background:rgba(239,68,68,0.1);color:#ef4444">×</button></div>`).join('')}
-    </div>
-    <button class="sheet-btn" style="margin-top:8px" onclick="medAddTimeRow()">+ Saat ekle</button>
-    <button class="sheet-btn primary" style="margin-top:12px" onclick="medSave('${editId||''}')">Kaydet</button>
+    <button class="sheet-btn primary" style="margin-top:14px;padding:14px;font-size:15px;font-weight:800" onclick="medSave('${editId||''}')">✓ Kaydet ve alarmı kur</button>
     <a class="sheet-link" onclick="openSheet('meds')">İptal</a>
   `;
 }
-function medAddTimeRow() {
+function medTimeRowHtml(t) {
+  return `<div style="display:flex;gap:8px;align-items:center">
+    <div style="flex:0 0 48px;display:flex;align-items:center;justify-content:center;font-size:20px">⏰</div>
+    <input type="time" class="inp med-t" value="${t}" style="flex:1;font-size:16px;font-weight:700;text-align:center;padding:12px">
+    <button onclick="this.parentNode.remove()" style="width:44px;height:44px;border-radius:10px;border:1px solid rgba(239,68,68,0.3);background:rgba(239,68,68,0.08);color:#ef4444;font-size:20px;cursor:pointer">×</button>
+  </div>`;
+}
+function medAddTimeRow(defaultTime) {
   const wrap = document.getElementById('medTimes');
-  const row = document.createElement('div');
-  row.style.cssText = 'display:flex;gap:6px';
-  row.innerHTML = '<input type="time" class="inp med-t" value="20:00" style="flex:1"><button onclick="this.parentNode.remove()" style="padding:0 12px;border-radius:10px;border:1px solid rgba(239,68,68,0.3);background:rgba(239,68,68,0.1);color:#ef4444">×</button>';
-  wrap.appendChild(row);
+  const div = document.createElement('div');
+  div.innerHTML = medTimeRowHtml(defaultTime || '20:00');
+  wrap.appendChild(div.firstElementChild);
+}
+function medSetPreset(time) {
+  // Aynı saat zaten varsa ekleme
+  const existing = Array.from(document.querySelectorAll('.med-t')).map(i=>i.value);
+  if (existing.includes(time)) return;
+  medAddTimeRow(time);
 }
 function medSave(editId) {
   const name = document.getElementById('medName').value.trim();
@@ -3817,28 +3915,97 @@ function medDelete(id) {
   scheduleMedReminders();
   renderSheetMeds();
 }
-const _medTimers = [];
+/* Tick loop — her 30sn cihaz açıkken kontrol eder.
+   Arkaplan/throttle durumlarında bile 1 dk içinde yakalar.
+   LS'de lastFired tutarak aynı saat için tekrar tetiklemeyi engelleriz. */
+let _medTickTimer = null;
 function scheduleMedReminders() {
-  while(_medTimers.length) clearTimeout(_medTimers.pop());
-  if (!('Notification' in window) || Notification.permission !== 'granted') return;
-  const now = new Date();
-  const todayKey = now.toISOString().slice(0,10);
-  const taken = LS.get('yasamai_medsTaken_' + todayKey, {});
-  (state.meds||[]).forEach(m => {
-    (m.times||[]).forEach(t => {
-      if (taken[m.id + '_' + t]) return;
-      const [hh,mm] = t.split(':').map(n=>parseInt(n,10));
-      const target = new Date(); target.setHours(hh, mm, 0, 0);
-      if (target <= now) return;
-      const delay = target - now;
-      if (delay > 0 && delay < 24*60*60*1000) {
-        _medTimers.push(setTimeout(() => {
-          try { playAlarmSound(); playAlarmVibration(); } catch(e){}
-          showNotif('💊 ' + m.name + ' zamanı', (m.dose||'İlacını al') + ' · ' + t);
-        }, delay));
-      }
+  if (_medTickTimer) { clearInterval(_medTickTimer); _medTickTimer = null; }
+  _medTickTimer = setInterval(medTick, 30*1000);
+  medTick(); // anında bir kontrol daha
+}
+function medTick() {
+  try {
+    if (!state.meds || !state.meds.length) return;
+    const now = new Date();
+    const todayKey = now.toISOString().slice(0,10);
+    const taken = LS.get('yasamai_medsTaken_' + todayKey, {});
+    const fired = LS.get('yasamai_medsFired_' + todayKey, {}); // { id_time: ts }
+    const curMin = now.getHours()*60 + now.getMinutes();
+    state.meds.forEach(m => {
+      (m.times||[]).forEach(t => {
+        const key = m.id + '_' + t;
+        if (taken[key] || fired[key]) return;
+        const [hh,mm] = t.split(':').map(n=>parseInt(n,10));
+        const tMin = hh*60 + mm;
+        // Zamanı geldiyse veya geçen 2 dk içindeyse tetikle
+        if (curMin >= tMin && curMin <= tMin + 2) {
+          fired[key] = Date.now();
+          LS.set('yasamai_medsFired_' + todayKey, fired);
+          fireMedAlarm(m, t);
+        }
+      });
     });
-  });
+  } catch(e) { console.warn('medTick err', e); }
+}
+function fireMedAlarm(m, t) {
+  try { playAlarmSound(); } catch(e){}
+  try { playAlarmVibration(); } catch(e){}
+  const body = (m.dose ? m.dose + ' · ' : '') + 'Saat ' + t + ' · Stok: ' + (m.pillCount||0);
+  if ('Notification' in window && Notification.permission === 'granted') {
+    try {
+      if (navigator.serviceWorker?.ready) {
+        navigator.serviceWorker.ready.then(reg => {
+          reg.showNotification('💊 ' + m.name + ' zamanı', {
+            body, icon:'./icon-192.png', badge:'./icon-192.png',
+            vibrate:[200,100,200,100,200,100,500,100,200],
+            tag:'med-'+m.id+'-'+t, requireInteraction:true, silent:false
+          });
+        });
+      } else {
+        new Notification('💊 ' + m.name + ' zamanı', { body, icon:'./icon-192.png' });
+      }
+    } catch(e) {}
+  }
+  // Görsel uyarı (uygulama açıksa bir toast)
+  try { showMedAlarmOverlay(m, t); } catch(e){}
+}
+function showMedAlarmOverlay(m, t) {
+  const existing = document.getElementById('medAlarmOverlay'); if (existing) existing.remove();
+  const div = document.createElement('div');
+  div.id = 'medAlarmOverlay';
+  div.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:99999;display:flex;align-items:center;justify-content:center;padding:24px;animation:fadeIn .3s';
+  div.innerHTML = `
+    <div style="max-width:340px;width:100%;padding:24px;border-radius:22px;background:linear-gradient(135deg,#ef4444,#f97316);color:#fff;text-align:center;box-shadow:0 20px 60px rgba(239,68,68,0.5)">
+      <div style="font-size:52px;margin-bottom:8px">💊</div>
+      <div style="font-size:22px;font-weight:800;margin-bottom:4px">${esc(m.name)} zamanı</div>
+      <div style="font-size:13px;opacity:.95;margin-bottom:18px">${esc(m.dose||'İlacını al')} · ${t}</div>
+      <div style="display:flex;gap:8px">
+        <button onclick="document.getElementById('medAlarmOverlay').remove();medTake('${m.id}','${t}')" style="flex:1;padding:12px;border-radius:12px;border:none;background:#fff;color:#ef4444;font-weight:800;font-size:14px">✓ Aldım</button>
+        <button onclick="document.getElementById('medAlarmOverlay').remove()" style="padding:12px 16px;border-radius:12px;border:1px solid rgba(255,255,255,0.4);background:transparent;color:#fff;font-weight:700;font-size:14px">Daha sonra</button>
+      </div>
+    </div>`;
+  document.body.appendChild(div);
+}
+function testMedAlarm() {
+  try { playAlarmSound(); playAlarmVibration(); } catch(e){}
+  if ('Notification' in window && Notification.permission === 'granted') {
+    if (navigator.serviceWorker?.ready) {
+      navigator.serviceWorker.ready.then(reg => reg.showNotification('💊 Test alarmı', {
+        body:'İlaç alarmı bu şekilde çalar. Ses + titreşim + bildirim.',
+        icon:'./icon-192.png', badge:'./icon-192.png',
+        vibrate:[200,100,200,100,200,100,500],
+        tag:'med-test', requireInteraction:false, silent:false
+      }));
+    } else {
+      new Notification('💊 Test alarmı', { body:'İlaç alarmı bu şekilde çalar.', icon:'./icon-192.png' });
+    }
+  } else if ('Notification' in window) {
+    Notification.requestPermission().then(p => {
+      if (p === 'granted') alert('İzin verildi. Şimdi tekrar test et.');
+      else alert('Bildirim izni yok. Telefon ayarlarından Yaşam.AI için izin ver.');
+    });
+  }
 }
 
 /* ============ KİLO & VKİ TAKİBİ ============ */
@@ -3916,13 +4083,20 @@ function renderSheetBody() {
     </div>
     ${vals.length?`<div style="margin:0 0 6px;font-size:12px;color:#a0a3b8;font-weight:700">Son 30 gün</div>
       <div style="display:flex;gap:1px;margin-bottom:14px">${bars}</div>`:''}
-    <div style="padding:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;margin-bottom:14px">
-      <div style="font-size:12px;color:#a0a3b8;font-weight:700;margin-bottom:8px">Yeni kilo kaydı</div>
-      <div style="display:flex;gap:8px">
-        <div style="flex:1"><label class="lbl">Kilo (kg)</label><input type="number" id="bdWeight" class="inp" step="0.1" min="20" max="300" value="${latest?latest.weight:70}"></div>
-        <div style="flex:1"><label class="lbl">Boy (cm)</label><input type="number" id="bdHeight" class="inp" min="100" max="230" value="${state.body.height||170}"></div>
+    <div style="padding:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;margin-bottom:14px">
+      <div style="font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#94a3b8;font-weight:700;margin-bottom:12px">📝 Yeni Ölçüm</div>
+      <div style="display:flex;gap:10px;margin-bottom:12px">
+        <div style="flex:1">
+          <label class="lbl" style="font-size:11.5px;color:#94a3b8;margin-bottom:4px;display:block">⚖️ Kilo (kg)</label>
+          <input type="number" id="bdWeight" class="inp" step="0.1" min="20" max="300" value="${latest?latest.weight:70}" style="font-size:18px;font-weight:800;text-align:center;padding:13px">
+        </div>
+        <div style="flex:1">
+          <label class="lbl" style="font-size:11.5px;color:#94a3b8;margin-bottom:4px;display:block">📏 Boy (cm)</label>
+          <input type="number" id="bdHeight" class="inp" min="100" max="230" value="${state.body.height||170}" style="font-size:18px;font-weight:800;text-align:center;padding:13px">
+        </div>
       </div>
-      <button class="sheet-btn primary" style="margin-top:10px" onclick="bodySave()">Kaydet</button>
+      <div style="font-size:11px;color:#94a3b8;line-height:1.5">Boy bir kez girilir, her ölçümde otomatik kullanılır. VKİ hesabı için gerekli.</div>
+      <button class="sheet-btn primary" style="margin-top:12px;padding:14px;font-size:15px;font-weight:800" onclick="bodySave()">✓ Ölçümü kaydet</button>
     </div>
     <div style="margin:0 0 6px;font-size:12px;color:#a0a3b8;font-weight:700">Son kayıtlar</div>
     ${recentList}
@@ -4406,7 +4580,7 @@ function setTheme(n) {
 
 /* ============ SHEET ============ */
 function openSheet(type) {
-  const r = { theme:renderSheetTheme, reminder:renderSheetReminder, privacy:renderSheetPrivacy, premium:renderSheetPremium, signup:renderSheetSignup, login:renderSheetLogin, anon:renderSheetAnon, newDiary:renderSheetNewDiary, google:renderSheetGoogle, apple:renderSheetApple, verify:renderSheetVerify, payment:renderSheetPayment, gAge:renderSheetGAge, fontSize:renderSheetFontSize, aiTone:renderSheetAiTone, feedback:renderSheetFeedback, help:renderSheetHelp, about:renderSheetAbout, editProfile:renderSheetEditProfile, cycleLog:renderSheetCycleLog, cycleSymptom:renderSheetCycleSymptom, cycleSettings:renderSheetCycleSettings, cyclePeriodLen:renderSheetCyclePeriodLen, pregnancy:renderSheetPregnancy, pregMeds:renderSheetPregMeds, water:renderSheetWater, routine:renderSheetRoutine, workout:renderSheetWorkout, workoutLog:renderSheetWorkoutLog, breathe:renderSheetBreathe, sleep:renderSheetSleep, meds:renderSheetMeds, medAdd:renderSheetMedAdd, body:renderSheetBody };
+  const r = { theme:renderSheetTheme, reminder:renderSheetReminder, privacy:renderSheetPrivacy, premium:renderSheetPremium, signup:renderSheetSignup, login:renderSheetLogin, anon:renderSheetAnon, newDiary:renderSheetNewDiary, google:renderSheetGoogle, apple:renderSheetApple, verify:renderSheetVerify, payment:renderSheetPayment, gAge:renderSheetGAge, fontSize:renderSheetFontSize, aiTone:renderSheetAiTone, feedback:renderSheetFeedback, help:renderSheetHelp, about:renderSheetAbout, editProfile:renderSheetEditProfile, cycleLog:renderSheetCycleLog, cycleSymptom:renderSheetCycleSymptom, cycleSettings:renderSheetCycleSettings, cyclePeriodLen:renderSheetCyclePeriodLen, pregnancy:renderSheetPregnancy, pregMeds:renderSheetPregMeds, water:renderSheetWater, routine:renderSheetRoutine, workout:renderSheetWorkout, workoutLog:renderSheetWorkoutLog, breathe:renderSheetBreathe, sleep:renderSheetSleep, meds:renderSheetMeds, medAdd:()=>renderSheetMedAdd(), body:renderSheetBody };
   if (r[type]) r[type]();
   openSheetRaw();
 }
