@@ -538,11 +538,15 @@
 
   /* ===== PROFİL ===== */
   .profile-head{padding:10px 20px 18px;text-align:center;position:relative}
-  .avatar-wrap{width:100px;height:100px;margin:0 auto 14px;position:relative;border-radius:50%;background:conic-gradient(from 0deg,#f472b6,#a78bfa,#60a5fa,#5eead4,#fde68a,#f472b6);padding:3px;animation:spinRing 8s linear infinite}
+  .avatar-wrap{width:110px;height:110px;margin:0 auto 14px;position:relative;border-radius:50%}
+  .avatar-wrap::before{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,#f472b6,#a78bfa,#60a5fa,#5eead4,#fde68a,#f472b6);animation:spinRing 6s linear infinite;z-index:0}
+  .avatar-wrap::after{content:"";position:absolute;inset:3px;border-radius:50%;background:#1a1f3a;z-index:1}
+  body.light .avatar-wrap::after{background:#fff}
   @keyframes spinRing{to{transform:rotate(360deg)}}
-  .avatar{width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:800;color:#fff;overflow:hidden;animation:spinRing 8s linear infinite reverse;cursor:pointer}
+  .avatar{position:absolute;inset:6px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:800;color:#fff;overflow:hidden;cursor:pointer;z-index:2}
   .avatar img{width:100%;height:100%;object-fit:cover}
-  .avatar-edit{position:absolute;bottom:-2px;right:-2px;width:32px;height:32px;border-radius:50%;background:#8b5cf6;border:3px solid #1a1f3a;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:3;box-shadow:0 4px 12px rgba(139,92,246,0.45)}
+  .avatar-edit{position:absolute;bottom:0;right:0;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#8b5cf6,#6366f1);border:3px solid #1a1f3a;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;box-shadow:0 4px 14px rgba(139,92,246,0.55);transition:transform .15s}
+  .avatar-edit:active{transform:scale(0.9)}
   .rec-badge{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:90px;padding:10px 16px;background:#dc2626;color:#fff;border-radius:22px;font-size:12px;font-weight:600;z-index:50;cursor:pointer;box-shadow:0 8px 24px rgba(220,38,38,0.5)}
   .rec-badge.show{display:flex;align-items:center;gap:8px}
   .rec-dot{width:10px;height:10px;border-radius:50%;background:#fff;animation:pulse 1s infinite}
@@ -1187,7 +1191,7 @@
           </button>
           <button class="setting" onclick="exportData()">
             <div class="si" style="background:linear-gradient(135deg,#5eead4,#0d9488)"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></div>
-            <div class="sl">Verilerimi indir</div><div class="sv">JSON</div><div class="arr">›</div>
+            <div class="sl">Verilerimi indir</div><div class="sv">TXT</div><div class="arr">›</div>
           </button>
           <button class="setting" onclick="clearAllChats()">
             <div class="si" style="background:linear-gradient(135deg,#fb923c,#ea580c)"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></div>
@@ -1207,7 +1211,7 @@
           </button>
           <button class="setting" onclick="openSheet('about')">
             <div class="si" style="background:linear-gradient(135deg,#94a3b8,#64748b)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></div>
-            <div class="sl">Hakkında</div><div class="sv" id="aboutVer">v1.0</div><div class="arr">›</div>
+            <div class="sl">Hakkında</div><div class="sv" id="aboutVer">v51</div><div class="arr">›</div>
           </button>
         </div>
 
@@ -1344,6 +1348,11 @@ try {
   document.documentElement.style.setProperty('--app-fs', fs);
   document.addEventListener('DOMContentLoaded', () => { document.body.style.fontSize = fs; });
 } catch(e){}
+
+/* Sürüm — SW cache adıyla eşleşir, her deploy'da bump yapılır */
+const APP_VERSION = 'v51';
+const APP_VERSION_LABEL = 'Sürüm 1.0.0 · ' + APP_VERSION;
+try { console.log('%cYaşam.AI ' + APP_VERSION_LABEL, 'color:#a78bfa;font-weight:bold'); } catch(e){}
 
 const themes = {
   turkuaz:{ main:'#14b8a6', accent:'#5eead4', swatch:'linear-gradient(135deg,#14b8a6,#0d9488)' },
@@ -1593,6 +1602,10 @@ function refreshProfile() {
   const dw = document.getElementById('pDaysWith');
   if (dw) dw.textContent = Math.max(1, Math.floor((Date.now() - (state.joinedAt || Date.now())) / 86400000));
 
+  // Sürüm
+  const avr = document.getElementById('aboutVer');
+  if (avr) avr.textContent = APP_VERSION;
+
   // Rozetler
   renderAchievements({ streak, diaryCount: (state.diary || []).length, chatCount: chatMsgCount });
 }
@@ -1619,22 +1632,55 @@ function renderAchievements(stats) {
 }
 
 function exportData() {
-  const bundle = {
-    exportedAt: new Date().toISOString(),
-    user: state.user,
-    diary: state.diary,
-    topicEntries: state.topicEntries,
-    chats: {},
-    settings: { theme:state.theme, dark:state.dark, fontSize:state.fontSize, aiTone:state.aiTone, reminder:state.reminder, reminderDays:state.reminderDays, reminderOn:state.reminderOn, privacy:state.privacy }
-  };
+  const dateStr = new Date().toLocaleDateString('tr-TR', { day:'2-digit', month:'long', year:'numeric' });
+  const moodNames = { dokun:'İçimi Dök', karar:'Karar Ver', sakin:'Sakin Ol', motive:'Motive Et', kaygi:'Kaygı', yalnizlik:'Yalnızlık', oz:'Öz Güven', uyku:'Uyku', ofke:'Öfke', mutluluk:'Mutluluk' };
+  let txt = '';
+  txt += '╔════════════════════════════════════════╗\n';
+  txt += '║         YAŞAM.AI - VERİLERİM           ║\n';
+  txt += '╚════════════════════════════════════════╝\n\n';
+  txt += 'Dışa aktarma tarihi: ' + dateStr + '\n';
+  if (state.user) txt += 'Kullanıcı: ' + (state.user.name || '—') + '\n';
+  txt += '\n' + '═'.repeat(42) + '\n\n';
+  // Sohbetler
+  txt += '📱  SOHBETLER\n' + '─'.repeat(42) + '\n\n';
+  let hasAnyChat = false;
   ['dokun','karar','sakin','motive','kaygi','yalnizlik','oz','uyku','ofke','mutluluk'].forEach(m => {
-    bundle.chats[m] = LS.get('yasamai_chat_'+m, []);
+    const chat = LS.get('yasamai_chat_'+m, []);
+    if (!chat.length) return;
+    hasAnyChat = true;
+    txt += '▸ ' + (moodNames[m] || m).toUpperCase() + '  (' + chat.length + ' mesaj)\n\n';
+    chat.forEach(msg => {
+      const who = msg.role === 'user' ? '🙂 Sen' : '💜 Yaşam.AI';
+      const when = msg.ts ? '  [' + new Date(msg.ts).toLocaleString('tr-TR') + ']' : '';
+      txt += who + when + ':\n' + (msg.content || msg.text || '') + '\n\n';
+    });
+    txt += '─'.repeat(42) + '\n\n';
   });
-  const blob = new Blob([JSON.stringify(bundle, null, 2)], { type:'application/json' });
+  if (!hasAnyChat) txt += '(Henüz sohbet yok)\n\n';
+  // Günlük girdiler
+  txt += '\n📖  GÜNLÜK GİRDİLER\n' + '─'.repeat(42) + '\n\n';
+  if (state.diary && state.diary.length) {
+    state.diary.forEach(d => {
+      const when = d.ts ? new Date(d.ts).toLocaleDateString('tr-TR') : (d.date || '');
+      txt += '▸ ' + when + (d.mood ? '  —  ' + d.mood : '') + '\n';
+      if (d.title) txt += 'Başlık: ' + d.title + '\n';
+      txt += (d.text || d.content || '') + '\n\n';
+    });
+  } else txt += '(Henüz günlük girdisi yok)\n\n';
+  // Ayarlar
+  txt += '\n⚙️  AYARLAR\n' + '─'.repeat(42) + '\n';
+  txt += 'Tema: ' + (state.theme || '—') + '\n';
+  txt += 'Gece modu: ' + (state.dark ? 'Açık' : 'Kapalı') + '\n';
+  txt += 'Yazı boyutu: ' + (state.fontSize || '—') + '\n';
+  txt += 'AI tonu: ' + (state.aiTone || '—') + '\n';
+  txt += 'Hatırlatma saati: ' + (state.reminder || '—') + '\n';
+  txt += '\n' + '═'.repeat(42) + '\n';
+  txt += 'Yaşam.AI ' + APP_VERSION_LABEL + '\n';
+  const blob = new Blob([txt], { type:'text/plain;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'yasamai-verilerim-' + new Date().toISOString().slice(0,10) + '.json';
+  a.download = 'yasamai-sohbetlerim-' + new Date().toISOString().slice(0,10) + '.txt';
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
@@ -3666,14 +3712,14 @@ function renderSheetSleep() {
         <div style="font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#94a3b8;font-weight:700">🌙 Bu Geceyi Kaydet</div>
         ${todayLog?`<div style="font-size:10px;padding:3px 9px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);border-radius:999px;color:#a5b4fc;font-weight:700">BUGÜN KAYITLI</div>`:''}
       </div>
-      <div style="display:flex;gap:10px;margin-bottom:12px">
-        <div style="flex:1">
+      <div style="display:flex;gap:8px;margin-bottom:12px;min-width:0">
+        <div style="flex:1;min-width:0">
           <label class="lbl" style="font-size:11.5px;color:#94a3b8;margin-bottom:4px;display:block">🌙 Yattım</label>
-          <input type="time" id="slBed" class="inp" value="${todayLog?.bedtime||'23:30'}" style="font-size:17px;font-weight:700;text-align:center;padding:13px">
+          <input type="time" id="slBed" class="inp" value="${todayLog?.bedtime||'23:30'}" style="font-size:15px;font-weight:700;text-align:center;padding:11px 6px;width:100%;box-sizing:border-box;max-width:100%">
         </div>
-        <div style="flex:1">
+        <div style="flex:1;min-width:0">
           <label class="lbl" style="font-size:11.5px;color:#94a3b8;margin-bottom:4px;display:block">☀️ Kalktım</label>
-          <input type="time" id="slWake" class="inp" value="${todayLog?.waketime||'07:00'}" style="font-size:17px;font-weight:700;text-align:center;padding:13px">
+          <input type="time" id="slWake" class="inp" value="${todayLog?.waketime||'07:00'}" style="font-size:15px;font-weight:700;text-align:center;padding:11px 6px;width:100%;box-sizing:border-box;max-width:100%">
         </div>
       </div>
       <label class="lbl" style="font-size:11.5px;color:#94a3b8;margin-bottom:4px;display:block">😮‍💨 Horlama (dakika)</label>
@@ -4772,7 +4818,7 @@ async function sendFeedback() {
 function renderSheetHelp() {
   const qa = [
     { q:'Mesaj hakkım nasıl yenilenir?', a:'Her gün yenilenen 20 ücretsiz mesaj hakkın var. Gece 00:00 sonrası sıfırlanır. Sınırsız için Premium.' },
-    { q:'Verilerim güvende mi?', a:'Tüm verilerin cihazında saklanır. Hiçbir sohbet sunucularımızda tutulmaz. "Verilerimi indir" ile JSON olarak yedekleyebilirsin.' },
+    { q:'Verilerim güvende mi?', a:'Tüm verilerin cihazında saklanır. Hiçbir sohbet sunucularımızda tutulmaz. Profil > "Verilerimi indir" ile sohbetlerin ve günlük girdilerin notepad (.txt) olarak yedeklenir.' },
     { q:'Sesli not nasıl çalışır?', a:'+ menüsünden "Sesli not" seçip konuşursun. Bitince "Durdur"a basarsın. Türkçe konuşma tanıma kullanıyoruz.' },
     { q:'Bildirimler gelmiyor?', a:'Profil > Bildirimler > Günlük hatırlatma ayarını aç. İlk açılışta telefon izin soracak — "İzin ver" de.' },
     { q:'AI yanlış cevap verdi, ne yapayım?', a:'Yaşam.AI bir terapist değil, arkadaştır. Kriz anında Yaşam.AI\'ı ara. Geri bildirim gönderebilirsin.' }
@@ -4794,7 +4840,7 @@ function renderSheetAbout() {
       <div style="width:84px;height:84px;margin:0 auto 12px;border-radius:22px;background:linear-gradient(135deg,#7c5cef,#5b8def 55%,#22d3ee);display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:800;color:#fff;box-shadow:0 12px 30px rgba(124,92,239,0.4)">Y</div>
       <div style="font-size:20px;font-weight:800;letter-spacing:-0.3px">Yaşam.AI</div>
       <div style="font-size:12px;color:#a0a3b8;margin-top:3px">Yaşamın akıllı hali</div>
-      <div style="display:inline-block;margin-top:8px;padding:4px 10px;background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);border-radius:999px;font-size:10.5px;font-weight:700;color:#a78bfa">Sürüm 1.0.0 · Build 32</div>
+      <div id="aboutVersion" style="display:inline-block;margin-top:8px;padding:4px 10px;background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);border-radius:999px;font-size:10.5px;font-weight:700;color:#a78bfa">${APP_VERSION_LABEL}</div>
     </div>
 
     <div style="padding:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;margin-bottom:10px">
