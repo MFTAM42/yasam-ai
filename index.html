@@ -302,10 +302,9 @@
 
   /* ===== GÜNLÜK PREMIUM ===== */
   .d-hero{margin:8px 18px 14px;padding:18px;border-radius:22px;background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 55%,#ec4899 110%);color:#fff;position:relative;overflow:hidden;box-shadow:0 12px 32px rgba(99,102,241,0.3)}
-  .d-hero::before{content:"";position:absolute;right:-50px;top:-50px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.18),transparent 70%);pointer-events:none}
+  .d-hero::before{content:"";position:absolute;right:-50px;top:-50px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.22),transparent 70%);pointer-events:none}
   .d-hero::after{content:"";position:absolute;left:-40px;bottom:-50px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.12),transparent 70%);pointer-events:none}
   .d-hero > *{position:relative;z-index:1}
-  .d-hero::before{content:"";position:absolute;right:-50px;top:-50px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.22),transparent 70%)}
   .d-hero-ttl{font-size:11px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;opacity:.9}
   .d-hero-main{font-size:24px;font-weight:800;letter-spacing:-0.5px;margin-top:6px;line-height:1.2}
   .d-hero-sub{font-size:12.5px;line-height:1.5;margin-top:6px;opacity:.92}
@@ -599,7 +598,10 @@
   .bottom-nav{position:absolute;left:0;right:0;bottom:0;padding:8px 4px calc(10px + env(safe-area-inset-bottom));background:rgba(15,18,32,0.92);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-around;z-index:20;transition:transform .2s ease}
   body.light .bottom-nav{background:rgba(255,255,255,0.92);border-top-color:rgba(0,0,0,0.08)}
   body.kb-open .bottom-nav{transform:translateY(110%);pointer-events:none}
-  body.kb-open .tab-content{padding-bottom:0!important}
+  body.kb-open .tab-content{padding-bottom:74px!important}
+  /* Klavye açıkken yazı kutusu ekranın en altına sabitlensin */
+  body.kb-open #tab-chat.active .input-area{position:fixed;left:0;right:0;bottom:0;margin:0;border-radius:18px 18px 0 0;border-bottom:none;z-index:60;box-shadow:0 -4px 18px rgba(0,0,0,0.25)}
+  body.kb-open #tab-chat.active .chat-msgs{padding-bottom:74px}
   .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 1px;color:#7a7d92;font-size:9px;font-weight:600;min-width:0;text-align:center;overflow:hidden}
   .nav-item svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .nav-item .nav-label{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -1369,7 +1371,7 @@ try {
 } catch(e){}
 
 /* Sürüm — SW cache adıyla eşleşir, her deploy'da bump yapılır */
-const APP_VERSION = 'v56';
+const APP_VERSION = 'v57';
 const APP_VERSION_LABEL = 'Sürüm 1.0.0 · ' + APP_VERSION;
 try { console.log('%cYaşam.AI ' + APP_VERSION_LABEL, 'color:#a78bfa;font-weight:bold'); } catch(e){}
 
@@ -3899,6 +3901,7 @@ async function sleepMicToggle() {
     if ('wakeLock' in navigator) { try { _slWakeLock = await navigator.wakeLock.request('screen'); } catch(e){} }
     const ns = { active:true, startTs:Date.now(), endTs:null, events:[] };
     sleepMicSave(ns);
+    _slBaseline = 0; _slCalibCount = 0; _slLastEvTs = 0; _slLastSnoreTs = 0;
     sleepMicLoop();
     if (_slMicTimer) clearInterval(_slMicTimer);
     _slMicTimer = setInterval(() => { sleepMicLoop(); sleepMicRefreshUI(); }, 1500);
@@ -3907,7 +3910,7 @@ async function sleepMicToggle() {
     alert('Mikrofon izni reddedildi veya hata: ' + (err.message || err));
   }
 }
-let _slLastEvTs = 0, _slQuietStart = 0;
+let _slLastEvTs = 0, _slBaseline = 0, _slCalibCount = 0, _slLastSnoreTs = 0;
 function sleepMicLoop() {
   if (!_slMicAnalyser) return;
   const buf = new Uint8Array(_slMicAnalyser.fftSize);
@@ -3918,14 +3921,26 @@ function sleepMicLoop() {
   const now = Date.now();
   const s = sleepMicState();
   if (!s.active) return;
-  if (rms > 0.08) {
-    if (now - _slLastEvTs > 8000) {
-      const type = rms > 0.18 ? 'snore' : 'breath';
-      s.events.push({ ts:now, type, level:Number(rms.toFixed(3)) });
-      sleepMicSave(s);
-      _slLastEvTs = now;
-    }
+  // İlk 30 sn (≈20 örnek) ortam sessizliğini öğren — baseline
+  if (_slCalibCount < 20) {
+    _slBaseline = (_slBaseline * _slCalibCount + rms) / (_slCalibCount + 1);
+    _slCalibCount++;
+    return;
   }
+  // Yumuşak baseline güncellemesi (ortam değişirse uyum sağla)
+  _slBaseline = _slBaseline * 0.995 + rms * 0.005;
+  // Eşikler: ortamın 3 katı = nefes; 6 katı + mutlak >0.18 = horlama
+  const breathTh = Math.max(0.04, _slBaseline * 3);
+  const snoreTh  = Math.max(0.18, _slBaseline * 6);
+  if (rms < breathTh) return;
+  // Horlama daha seyrek olsun (15sn aralık), nefes 20sn aralık
+  const isSnore = rms >= snoreTh;
+  const minGap = isSnore ? 15000 : 20000;
+  const lastTs = isSnore ? _slLastSnoreTs : _slLastEvTs;
+  if (now - lastTs < minGap) return;
+  s.events.push({ ts:now, type: isSnore ? 'snore' : 'breath', level:Number(rms.toFixed(3)) });
+  sleepMicSave(s);
+  if (isSnore) _slLastSnoreTs = now; else _slLastEvTs = now;
 }
 function sleepMicStop() {
   const s = sleepMicState();
@@ -4219,8 +4234,8 @@ function medTick() {
   } catch(e) { console.warn('medTick err', e); }
 }
 function fireMedAlarm(m, t) {
-  try { playAlarmSound(); } catch(e){}
-  try { playAlarmVibration(); } catch(e){}
+  try { playAlarmSound(6); } catch(e){}
+  try { playAlarmVibration(6); } catch(e){}
   const body = (m.dose ? m.dose + ' · ' : '') + 'Saat ' + t + ' · Stok: ' + (m.pillCount||0);
   if ('Notification' in window && Notification.permission === 'granted') {
     try {
@@ -4251,14 +4266,14 @@ function showMedAlarmOverlay(m, t) {
       <div style="font-size:22px;font-weight:800;margin-bottom:4px">${esc(m.name)} zamanı</div>
       <div style="font-size:13px;opacity:.95;margin-bottom:18px">${esc(m.dose||'İlacını al')} · ${t}</div>
       <div style="display:flex;gap:8px">
-        <button onclick="document.getElementById('medAlarmOverlay').remove();medTake('${m.id}','${t}')" style="flex:1;padding:12px;border-radius:12px;border:none;background:#fff;color:#ef4444;font-weight:800;font-size:14px">✓ Aldım</button>
-        <button onclick="document.getElementById('medAlarmOverlay').remove()" style="padding:12px 16px;border-radius:12px;border:1px solid rgba(255,255,255,0.4);background:transparent;color:#fff;font-weight:700;font-size:14px">Daha sonra</button>
+        <button onclick="stopAlarmSound();document.getElementById('medAlarmOverlay').remove();medTake('${m.id}','${t}')" style="flex:1;padding:12px;border-radius:12px;border:none;background:#fff;color:#ef4444;font-weight:800;font-size:14px">✓ Aldım</button>
+        <button onclick="stopAlarmSound();document.getElementById('medAlarmOverlay').remove()" style="padding:12px 16px;border-radius:12px;border:1px solid rgba(255,255,255,0.4);background:transparent;color:#fff;font-weight:700;font-size:14px">Daha sonra</button>
       </div>
     </div>`;
   document.body.appendChild(div);
 }
 function testMedAlarm() {
-  try { playAlarmSound(); playAlarmVibration(); } catch(e){}
+  try { playAlarmSound(6); playAlarmVibration(6); } catch(e){}
   if ('Notification' in window && Notification.permission === 'granted') {
     if (navigator.serviceWorker?.ready) {
       navigator.serviceWorker.ready.then(reg => reg.showNotification('💊 Test alarmı', {
@@ -5435,38 +5450,52 @@ function cancelReminder() {
   if (reminderCheckInterval) { clearInterval(reminderCheckInterval); reminderCheckInterval = null; }
 }
 
-/* Kısa alarm sesi — Web Audio API (dosyaya gerek yok, üretilir) */
-function playAlarmSound() {
+/* Alarm sesi — Web Audio API (dosyaya gerek yok, üretilir).
+   loops: kaç kez tekrarlasın (default 1 = ~1.2sn). İlaç için 6 → ~10sn. */
+let _alarmCtx = null, _alarmStop = null;
+function playAlarmSound(loops) {
   try {
+    stopAlarmSound();
     const Ctx = window.AudioContext || window.webkitAudioContext;
     if (!Ctx) return;
     const ctx = new Ctx();
-    const now = ctx.currentTime;
-    // 3 kısa bip — alarm saati gibi (880Hz, 0.15s aralıklı)
+    _alarmCtx = ctx;
+    const cycle = 1.6; // her döngü 1.6 sn (5 bip + sessizlik)
     const beeps = [0, 0.22, 0.44, 0.80, 1.02];
-    beeps.forEach(offset => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.value = 880;
-      gain.gain.setValueAtTime(0, now + offset);
-      gain.gain.linearRampToValueAtTime(0.35, now + offset + 0.01);
-      gain.gain.linearRampToValueAtTime(0, now + offset + 0.18);
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.start(now + offset);
-      osc.stop(now + offset + 0.2);
-    });
-    // 1.5 saniye sonra kapat
-    setTimeout(() => { try { ctx.close(); } catch(e){} }, 1600);
+    const total = Math.max(1, loops || 1);
+    for (let k = 0; k < total; k++) {
+      const base = ctx.currentTime + k * cycle;
+      beeps.forEach(offset => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = 880;
+        gain.gain.setValueAtTime(0, base + offset);
+        gain.gain.linearRampToValueAtTime(0.4, base + offset + 0.01);
+        gain.gain.linearRampToValueAtTime(0, base + offset + 0.18);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(base + offset);
+        osc.stop(base + offset + 0.2);
+      });
+    }
+    _alarmStop = setTimeout(() => { try { ctx.close(); } catch(e){} _alarmCtx = null; }, total * cycle * 1000 + 200);
   } catch(e) {}
 }
+function stopAlarmSound() {
+  try { if (_alarmStop) { clearTimeout(_alarmStop); _alarmStop = null; } } catch(e){}
+  try { if (_alarmCtx) { _alarmCtx.close(); _alarmCtx = null; } } catch(e){}
+  try { if (navigator.vibrate) navigator.vibrate(0); } catch(e){}
+}
 
-/* Güçlü alarm vibrasyonu */
-function playAlarmVibration() {
-  if (navigator.vibrate) {
-    // 3 kısa-kısa-uzun vuruş — alarm hissi
-    navigator.vibrate([180, 90, 180, 90, 180, 90, 400]);
+/* Güçlü alarm vibrasyonu — loops kez tekrar (~her döngü 1.5sn) */
+function playAlarmVibration(loops) {
+  if (!navigator.vibrate) return;
+  const total = Math.max(1, loops || 1);
+  const pattern = [];
+  for (let k = 0; k < total; k++) {
+    pattern.push(180, 90, 180, 90, 180, 90, 400, 380); // 7 vuruş + bekleme
   }
+  navigator.vibrate(pattern);
 }
 
 function fireReminder() {
