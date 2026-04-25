@@ -413,6 +413,144 @@
   .wk-d{font-size:10.5px;color:#a0a3b8;margin-top:2px;line-height:1.35}
   body.light .wk-d{color:#6b7280}
 
+  /* ===== EGZERSİZ ANİMASYONLARI (CSS keyframes) ===== */
+  .wk-anim *{transform-box:fill-box;transform-origin:center}
+  .wk-anim-stretch .wk-head{animation:wkHeadTilt 2.4s ease-in-out infinite}
+  .wk-anim-stretch .wk-arm-l{animation:wkArmStretchL 2.4s ease-in-out infinite}
+  .wk-anim-stretch .wk-arm-r{animation:wkArmStretchR 2.4s ease-in-out infinite}
+  @keyframes wkHeadTilt{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+  @keyframes wkArmStretchL{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(-12deg)}}
+  @keyframes wkArmStretchR{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(12deg)}}
+
+  .wk-anim-walk .wk-leg-l{animation:wkLegL 0.7s ease-in-out infinite}
+  .wk-anim-walk .wk-leg-r{animation:wkLegR 0.7s ease-in-out infinite}
+  .wk-anim-walk .wk-arm-l{animation:wkArmWalkL 0.7s ease-in-out infinite}
+  .wk-anim-walk .wk-arm-r{animation:wkArmWalkR 0.7s ease-in-out infinite}
+  @keyframes wkLegL{0%,100%{transform:rotate(-15deg)}50%{transform:rotate(15deg)}}
+  @keyframes wkLegR{0%,100%{transform:rotate(15deg)}50%{transform:rotate(-15deg)}}
+  @keyframes wkArmWalkL{0%,100%{transform:rotate(15deg)}50%{transform:rotate(-15deg)}}
+  @keyframes wkArmWalkR{0%,100%{transform:rotate(-15deg)}50%{transform:rotate(15deg)}}
+
+  .wk-anim-cardio .wk-jump{animation:wkJump 0.6s ease-in-out infinite;transform-origin:50% 80%}
+  @keyframes wkJump{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+  .wk-anim-core .wk-crunch{animation:wkCrunch 1.6s ease-in-out infinite;transform-origin:22px 50px}
+  @keyframes wkCrunch{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-10deg)}}
+
+  .wk-anim-yoga .wk-breathe{animation:wkBreathe 3.5s ease-in-out infinite;transform-origin:50% 50%}
+  @keyframes wkBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+
+  .wk-anim-hiit .wk-jump{animation:wkHiit 0.45s ease-in-out infinite;transform-origin:50% 80%}
+  @keyframes wkHiit{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px) scale(1.02)}}
+
+  .wk-anim-upper .wk-pushup{animation:wkPushup 1.4s ease-in-out infinite;transform-origin:50% 78px}
+  @keyframes wkPushup{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+  .wk-anim-lower .wk-squat{animation:wkSquat 1.6s ease-in-out infinite;transform-origin:50% 78px}
+  @keyframes wkSquat{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(4px) scaleY(0.92)}}
+
+  /* Adım kartı küçük animasyonlu görseller */
+  .ex-row{display:flex;gap:12px;align-items:flex-start;padding:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;margin-bottom:8px}
+  body.light .ex-row{background:#fff;border-color:rgba(0,0,0,0.06)}
+  .ex-vis{width:64px;height:64px;flex-shrink:0;background:linear-gradient(135deg,rgba(16,185,129,0.14),rgba(5,150,105,0.06));border-radius:12px;display:flex;align-items:center;justify-content:center;padding:6px;overflow:hidden}
+  .ex-vis svg{width:100%;height:100%}
+  .ex-info{flex:1;min-width:0}
+  .ex-num{font-size:10px;font-weight:800;color:#10b981;letter-spacing:.5px;text-transform:uppercase}
+  .ex-name{font-size:13px;font-weight:800;margin-top:2px;line-height:1.3}
+  .ex-desc{font-size:11.5px;color:#a0a3b8;line-height:1.45;margin-top:4px}
+  body.light .ex-desc{color:#6b7280}
+
+  /* Mini SVG animasyonları (per-step) */
+  .ex-mini *{transform-box:fill-box;transform-origin:center}
+  .ex-neck .m-head{animation:wkHeadTilt 2.2s ease-in-out infinite}
+  .ex-shoulder .m-arm{animation:mArmCircle 2s linear infinite;transform-origin:50% 50%}
+  @keyframes mArmCircle{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  .ex-back .m-body{animation:mReach 2.4s ease-in-out infinite}
+  @keyframes mReach{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px) scaleY(1.05)}}
+  .ex-waist .m-body{animation:mTwist 2.2s ease-in-out infinite;transform-origin:50% 60%}
+  @keyframes mTwist{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
+  .ex-hip .m-leg{animation:mHipFold 2.4s ease-in-out infinite}
+  @keyframes mHipFold{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}}
+  .ex-hamstring .m-body{animation:mFold 2.4s ease-in-out infinite;transform-origin:50% 30%}
+  @keyframes mFold{0%,100%{transform:rotate(0deg)}50%{transform:rotate(35deg)}}
+  .ex-cat .m-body{animation:mCatCow 2.6s ease-in-out infinite;transform-origin:50% 50%}
+  @keyframes mCatCow{0%,100%{transform:translateY(-3px)}50%{transform:translateY(3px) scaleY(0.92)}}
+  .ex-breathe .m-circle{animation:mBreatheC 3.6s ease-in-out infinite;transform-origin:50% 50%}
+  @keyframes mBreatheC{0%,100%{transform:scale(0.85);opacity:0.5}50%{transform:scale(1.1);opacity:1}}
+  .ex-walk .m-leg-l{animation:wkLegL 0.7s ease-in-out infinite}
+  .ex-walk .m-leg-r{animation:wkLegR 0.7s ease-in-out infinite}
+  .ex-walkfast .m-leg-l{animation:wkLegL 0.45s ease-in-out infinite}
+  .ex-walkfast .m-leg-r{animation:wkLegR 0.45s ease-in-out infinite}
+  .ex-jumpjack .m-arm-l{animation:mJJArmL 0.5s ease-in-out infinite}
+  .ex-jumpjack .m-arm-r{animation:mJJArmR 0.5s ease-in-out infinite}
+  .ex-jumpjack .m-leg-l{animation:mJJLegL 0.5s ease-in-out infinite}
+  .ex-jumpjack .m-leg-r{animation:mJJLegR 0.5s ease-in-out infinite}
+  @keyframes mJJArmL{0%,100%{transform:rotate(60deg)}50%{transform:rotate(-60deg)}}
+  @keyframes mJJArmR{0%,100%{transform:rotate(-60deg)}50%{transform:rotate(60deg)}}
+  @keyframes mJJLegL{0%,100%{transform:rotate(-25deg)}50%{transform:rotate(0deg)}}
+  @keyframes mJJLegR{0%,100%{transform:rotate(25deg)}50%{transform:rotate(0deg)}}
+  .ex-highknee .m-leg-l{animation:mKneeL 0.4s ease-in-out infinite}
+  .ex-highknee .m-leg-r{animation:mKneeR 0.4s ease-in-out infinite}
+  @keyframes mKneeL{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-8px) rotate(40deg)}}
+  @keyframes mKneeR{0%,100%{transform:translateY(-8px) rotate(40deg)}50%{transform:translateY(0) rotate(0)}}
+  .ex-burpee .m-body{animation:mBurpee 1.6s ease-in-out infinite;transform-origin:50% 100%}
+  @keyframes mBurpee{0%,100%{transform:translateY(0) scaleY(1)}25%{transform:translateY(8px) scaleY(0.6)}50%{transform:translateY(0) scaleY(1)}75%{transform:translateY(-6px) scaleY(1.05)}}
+  .ex-box .m-arm-l{animation:mPunchL 0.5s ease-in-out infinite}
+  .ex-box .m-arm-r{animation:mPunchR 0.5s ease-in-out infinite}
+  @keyframes mPunchL{0%,100%{transform:translateX(0)}50%{transform:translateX(8px)}}
+  @keyframes mPunchR{0%,100%{transform:translateX(0)}50%{transform:translateX(-8px)}}
+  .ex-rest .m-circle{animation:mBreatheC 4s ease-in-out infinite;transform-origin:50% 50%}
+  .ex-plank .m-body{animation:mPlankWobble 2.5s ease-in-out infinite}
+  @keyframes mPlankWobble{0%,100%{transform:translateY(0)}50%{transform:translateY(2px)}}
+  .ex-crunch .m-body{animation:mCrunchUp 1.6s ease-in-out infinite;transform-origin:20% 80%}
+  @keyframes mCrunchUp{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-25deg)}}
+  .ex-twist .m-body{animation:mTwist 1.8s ease-in-out infinite}
+  .ex-bicycle .m-leg-l{animation:mPedalL 1s linear infinite;transform-origin:50% 50%}
+  .ex-bicycle .m-leg-r{animation:mPedalR 1s linear infinite;transform-origin:50% 50%}
+  @keyframes mPedalL{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  @keyframes mPedalR{from{transform:rotate(180deg)}to{transform:rotate(540deg)}}
+  .ex-deadbug .m-arm-l,.ex-deadbug .m-leg-r{animation:mDB1 2s ease-in-out infinite}
+  .ex-deadbug .m-arm-r,.ex-deadbug .m-leg-l{animation:mDB2 2s ease-in-out infinite}
+  @keyframes mDB1{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  @keyframes mDB2{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+  .ex-legraise .m-leg{animation:mLegRaise 2s ease-in-out infinite;transform-origin:0% 50%}
+  @keyframes mLegRaise{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-65deg)}}
+  .ex-mountain .m-body{animation:mBreatheC 3.6s ease-in-out infinite}
+  .ex-sunsalute .m-body{animation:mSun 3.2s ease-in-out infinite;transform-origin:50% 100%}
+  @keyframes mSun{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(0) scaleY(0.7)}}
+  .ex-warrior .m-body{animation:mWarrior 2.8s ease-in-out infinite}
+  @keyframes mWarrior{0%,100%{transform:translateX(0)}50%{transform:translateX(4px)}}
+  .ex-triangle .m-body{animation:mTriangle 2.6s ease-in-out infinite;transform-origin:50% 50%}
+  @keyframes mTriangle{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-15deg)}}
+  .ex-child .m-body{animation:mChild 3.2s ease-in-out infinite;transform-origin:50% 100%}
+  @keyframes mChild{0%,100%{transform:scaleY(1)}50%{transform:scaleY(0.85)}}
+  .ex-dog .m-body{animation:mDog 2.6s ease-in-out infinite;transform-origin:50% 100%}
+  @keyframes mDog{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+  .ex-squatjump .m-body{animation:wkJump 0.7s ease-in-out infinite;transform-origin:50% 100%}
+  .ex-plankjack .m-leg-l,.ex-plankjack .m-leg-r{animation:mPJ 0.5s ease-in-out infinite}
+  @keyframes mPJ{0%,100%{transform:translateX(0)}50%{transform:translateX(6px)}}
+  .ex-lunge .m-body{animation:mLunge 1.8s ease-in-out infinite;transform-origin:50% 100%}
+  @keyframes mLunge{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+  .ex-climber .m-leg-l{animation:mKneeL 0.4s ease-in-out infinite}
+  .ex-climber .m-leg-r{animation:mKneeR 0.4s ease-in-out infinite}
+  .ex-sprint .m-leg-l{animation:wkLegL 0.3s ease-in-out infinite}
+  .ex-sprint .m-leg-r{animation:wkLegR 0.3s ease-in-out infinite}
+  .ex-pushup .m-body{animation:wkPushup 1.4s ease-in-out infinite;transform-origin:50% 100%}
+  .ex-situp .m-body{animation:mCrunchUp 1.6s ease-in-out infinite}
+  .ex-bridge .m-body{animation:mBridge 2.2s ease-in-out infinite;transform-origin:50% 100%}
+  @keyframes mBridge{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  .ex-dip .m-body{animation:mDip 1.6s ease-in-out infinite;transform-origin:50% 0%}
+  @keyframes mDip{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(6px) scaleY(0.85)}}
+  .ex-diamond .m-body{animation:wkPushup 1.4s ease-in-out infinite;transform-origin:50% 100%}
+  .ex-superman .m-body{animation:mSuper 2.4s ease-in-out infinite}
+  @keyframes mSuper{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  .ex-p2p .m-body{animation:wkPushup 1.4s ease-in-out infinite;transform-origin:50% 100%}
+  .ex-squat .m-body{animation:wkSquat 1.5s ease-in-out infinite;transform-origin:50% 100%}
+  .ex-wallsit .m-body{animation:mWallsit 3s ease-in-out infinite}
+  @keyframes mWallsit{0%,100%{transform:translateY(0)}50%{transform:translateY(2px)}}
+  .ex-glutekick .m-leg{animation:mGluteKick 1.6s ease-in-out infinite;transform-origin:0% 50%}
+  @keyframes mGluteKick{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-30deg)}}
+
   /* ===== DÖNGÜ (ADET) ===== */
   .cy-hero{margin:8px 18px 14px;padding:18px 16px;border-radius:22px;background:linear-gradient(135deg,#ec4899 0%,#a78bfa 60%,#6366f1 110%);color:#fff;display:flex;gap:14px;align-items:center;position:relative;overflow:hidden;box-shadow:0 12px 32px rgba(236,72,153,0.3);min-width:0}
   .cy-hero::before{content:"";position:absolute;right:-60px;top:-50px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.18),transparent 70%);pointer-events:none}
@@ -1371,7 +1509,7 @@ try {
 } catch(e){}
 
 /* Sürüm — SW cache adıyla eşleşir, her deploy'da bump yapılır */
-const APP_VERSION = 'v59';
+const APP_VERSION = 'v60';
 const APP_VERSION_LABEL = 'Sürüm 1.0.0 · ' + APP_VERSION;
 try { console.log('%cYaşam.AI ' + APP_VERSION_LABEL, 'color:#a78bfa;font-weight:bold'); } catch(e){}
 
@@ -3543,39 +3681,169 @@ function routineReset() {
   renderSheetRoutine();
 }
 const _routineTimers = [];
+const ROUTINE_MSG = {
+  wake:      { title:'🌅 Günaydın sahip', body:'Yeni güne başla — yatağı topla, suyunu iç, esne.' },
+  breakfast: { title:'🥣 Kahvaltı saatin', body:'Sağlıklı bir kahvaltıyla güne enerji kat.' },
+  move:      { title:'🚶 Kısa hareket molası', body:'5 dk yürü, esne, ekrandan kalk. Vücut sana teşekkür edecek.' },
+  lunch:     { title:'🍽️ Öğle yemeği saatin', body:'Yemek molası — telefonu bırak, yavaş ye, çiğne.' },
+  focus:     { title:'🎯 Odaklanma zamanı', body:'25 dk derin odak. Bildirimleri kapat, tek bir işe ver kendini.' },
+  workout:   { title:'💪 Egzersiz saati', body:'Hareket etme zamanı — Spor sekmesinden bir antrenman seç.' },
+  dinner:    { title:'🍲 Akşam yemeği', body:'Günün son büyük öğünü. Hafif tut, geç saatte yeme.' },
+  wind:      { title:'🌙 Rahatlama vakti', body:'Ekranı azalt, ışıkları kıs. Kitap/müzik/derin nefes.' },
+  sleep:     { title:'😴 Uyku saati', body:'Telefonu bırak, ışığı kapat. Kaliteli uyku = kaliteli yarın.' }
+};
 function scheduleRoutineReminders() {
   while(_routineTimers.length) clearTimeout(_routineTimers.pop());
   const r = state.routine;
   if (!r || !r.on) return;
-  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  const hasNotif = ('Notification' in window) && Notification.permission === 'granted';
   const now = new Date();
   r.items.forEach(it => {
     const [hh,mm] = it.time.split(':').map(n=>parseInt(n,10));
     const target = new Date(); target.setHours(hh, mm, 0, 0);
-    if (target <= now) return; // bugün geçmiş
+    if (target <= now) return;
     const delay = target - now;
     if (delay > 0 && delay < 24*60*60*1000) {
       _routineTimers.push(setTimeout(() => {
-        try { playAlarmSound(); playAlarmVibration(); } catch(e){}
-        showNotif(it.icon + ' ' + it.label, 'Plan saati geldi — ' + it.time);
-        try { showGenericAlarm(it.icon, it.label, 'Plan saati geldi — ' + it.time, '#f59e0b','#d97706'); } catch(e){}
+        const msg = ROUTINE_MSG[it.key] || { title: it.icon+' '+it.label, body:'Plan saati geldi — ' + it.time };
+        try { playAlarmSound(6, (state.medRingtone||'klasik')); playAlarmVibration(6); } catch(e){}
+        if (hasNotif) showNotif(msg.title, msg.body + ' (' + it.time + ')');
+        try { showGenericAlarm(it.icon, msg.title, msg.body, '#f59e0b','#d97706'); } catch(e){}
       }, delay));
     }
   });
 }
 
 /* ============ SPOR & EGZERSİZ ============ */
-// Profesyonel SVG illüstrasyonları (figür silüetleri — soyut, prof görünüm)
+/* Animasyonlu SVG figürleri — gerçek hareket gösterir (CSS keyframes ile)
+   Her egzersiz için emoji + büyük animasyonlu vücut figürü */
 const WK_SVG = {
-  stretch: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#059669"/></linearGradient></defs><circle cx="50" cy="22" r="7" fill="url(#wg1)"/><path d="M50 30 L50 55 M50 38 L30 28 M50 38 L70 28 M50 55 L40 80 M50 55 L60 80" stroke="url(#wg1)" stroke-width="4.5" fill="none" stroke-linecap="round"/></svg>',
-  walk: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbbf24"/><stop offset="1" stop-color="#d97706"/></linearGradient></defs><circle cx="55" cy="20" r="7" fill="url(#wg2)"/><path d="M55 28 L55 55 M55 35 L40 45 M55 35 L72 30 M55 55 L40 78 M55 55 L70 80" stroke="url(#wg2)" stroke-width="4.5" fill="none" stroke-linecap="round"/></svg>',
-  cardio: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f87171"/><stop offset="1" stop-color="#dc2626"/></linearGradient></defs><circle cx="55" cy="18" r="7" fill="url(#wg3)"/><path d="M55 26 L52 50 M55 32 L72 22 M55 32 L38 38 M52 50 L35 70 M52 50 L72 75" stroke="url(#wg3)" stroke-width="4.5" fill="none" stroke-linecap="round"/><path d="M22 80 L30 75 M75 75 L82 80" stroke="url(#wg3)" stroke-width="3" fill="none" stroke-linecap="round" opacity=".6"/></svg>',
-  core: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wg4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs><circle cx="22" cy="50" r="6" fill="url(#wg4)"/><path d="M28 50 L75 50 M40 48 L40 62 M55 48 L55 65 M75 50 L82 65 M75 50 L82 35" stroke="url(#wg4)" stroke-width="4.5" fill="none" stroke-linecap="round"/><line x1="20" y1="72" x2="85" y2="72" stroke="url(#wg4)" stroke-width="3" opacity=".4" stroke-dasharray="3 3"/></svg>',
-  yoga: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wg5" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c4b5fd"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs><circle cx="50" cy="22" r="7" fill="url(#wg5)"/><path d="M50 30 Q50 50 50 60 M50 40 Q30 40 25 25 M50 40 Q70 40 75 25 M30 78 Q50 65 70 78" stroke="url(#wg5)" stroke-width="4.5" fill="none" stroke-linecap="round"/></svg>',
-  hiit: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wg6" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fb923c"/><stop offset="1" stop-color="#ea580c"/></linearGradient></defs><circle cx="50" cy="16" r="6" fill="url(#wg6)"/><path d="M50 22 L50 48 M50 28 L30 18 M50 28 L72 14 M50 48 L32 75 M50 48 L70 70" stroke="url(#wg6)" stroke-width="4.5" fill="none" stroke-linecap="round"/><path d="M15 40 L25 30 M85 30 L75 40" stroke="url(#wg6)" stroke-width="3" fill="none" stroke-linecap="round" opacity=".6"/></svg>',
-  upper: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wg7" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#60a5fa"/><stop offset="1" stop-color="#2563eb"/></linearGradient></defs><circle cx="20" cy="55" r="6" fill="url(#wg7)"/><path d="M26 55 L75 55 M30 55 L25 70 M50 55 L48 70 M70 55 L72 70 M75 55 L82 65 M75 55 L82 45" stroke="url(#wg7)" stroke-width="4.5" fill="none" stroke-linecap="round"/><line x1="20" y1="78" x2="85" y2="78" stroke="url(#wg7)" stroke-width="3" opacity=".4"/></svg>',
-  lower: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wg8" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f472b6"/><stop offset="1" stop-color="#be185d"/></linearGradient></defs><circle cx="50" cy="20" r="7" fill="url(#wg8)"/><path d="M50 28 L50 50 M50 35 L36 30 M50 35 L64 30 M50 50 L32 78 L26 78 M50 50 L68 78 L74 78" stroke="url(#wg8)" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+  stretch: `<svg viewBox="0 0 100 100" class="wk-anim wk-anim-stretch"><defs><linearGradient id="wg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#059669"/></linearGradient></defs><g class="wkfig" stroke="url(#wg1)" stroke-width="4.5" fill="none" stroke-linecap="round"><circle cx="50" cy="22" r="7" fill="url(#wg1)" class="wk-head"/><line x1="50" y1="29" x2="50" y2="60"/><line x1="50" y1="38" x2="30" y2="32" class="wk-arm-l"/><line x1="50" y1="38" x2="70" y2="32" class="wk-arm-r"/><line x1="50" y1="60" x2="40" y2="82"/><line x1="50" y1="60" x2="60" y2="82"/></g></svg>`,
+  walk: `<svg viewBox="0 0 100 100" class="wk-anim wk-anim-walk"><defs><linearGradient id="wg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbbf24"/><stop offset="1" stop-color="#d97706"/></linearGradient></defs><g stroke="url(#wg2)" stroke-width="4.5" fill="none" stroke-linecap="round"><circle cx="50" cy="22" r="7" fill="url(#wg2)"/><line x1="50" y1="29" x2="50" y2="58"/><line x1="50" y1="38" x2="36" y2="48" class="wk-arm-l"/><line x1="50" y1="38" x2="64" y2="32" class="wk-arm-r"/><line x1="50" y1="58" x2="40" y2="80" class="wk-leg-l"/><line x1="50" y1="58" x2="60" y2="80" class="wk-leg-r"/></g></svg>`,
+  cardio: `<svg viewBox="0 0 100 100" class="wk-anim wk-anim-cardio"><defs><linearGradient id="wg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f87171"/><stop offset="1" stop-color="#dc2626"/></linearGradient></defs><g stroke="url(#wg3)" stroke-width="4.5" fill="none" stroke-linecap="round" class="wk-jump"><circle cx="50" cy="22" r="7" fill="url(#wg3)"/><line x1="50" y1="29" x2="50" y2="55"/><line x1="50" y1="36" x2="30" y2="22" class="wk-arm-l"/><line x1="50" y1="36" x2="70" y2="22" class="wk-arm-r"/><line x1="50" y1="55" x2="36" y2="78" class="wk-leg-l"/><line x1="50" y1="55" x2="64" y2="78" class="wk-leg-r"/></g></svg>`,
+  core: `<svg viewBox="0 0 100 100" class="wk-anim wk-anim-core"><defs><linearGradient id="wg4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs><g stroke="url(#wg4)" stroke-width="4.5" fill="none" stroke-linecap="round" class="wk-crunch"><circle cx="22" cy="50" r="6" fill="url(#wg4)"/><line x1="28" y1="50" x2="75" y2="50"/><line x1="40" y1="50" x2="40" y2="62"/><line x1="55" y1="50" x2="55" y2="64"/><line x1="75" y1="50" x2="82" y2="64"/><line x1="75" y1="50" x2="82" y2="36"/></g><line x1="20" y1="72" x2="85" y2="72" stroke="url(#wg4)" stroke-width="3" opacity=".4" stroke-dasharray="3 3"/></svg>`,
+  yoga: `<svg viewBox="0 0 100 100" class="wk-anim wk-anim-yoga"><defs><linearGradient id="wg5" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c4b5fd"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs><g stroke="url(#wg5)" stroke-width="4.5" fill="none" stroke-linecap="round" class="wk-breathe"><circle cx="50" cy="22" r="7" fill="url(#wg5)"/><path d="M50 29 Q50 50 50 60"/><path d="M50 40 Q30 40 25 25" class="wk-arm-l"/><path d="M50 40 Q70 40 75 25" class="wk-arm-r"/><path d="M30 78 Q50 65 70 78"/></g></svg>`,
+  hiit: `<svg viewBox="0 0 100 100" class="wk-anim wk-anim-hiit"><defs><linearGradient id="wg6" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fb923c"/><stop offset="1" stop-color="#ea580c"/></linearGradient></defs><g stroke="url(#wg6)" stroke-width="4.5" fill="none" stroke-linecap="round" class="wk-jump"><circle cx="50" cy="16" r="6" fill="url(#wg6)"/><line x1="50" y1="22" x2="50" y2="48"/><line x1="50" y1="28" x2="30" y2="14" class="wk-arm-l"/><line x1="50" y1="28" x2="70" y2="14" class="wk-arm-r"/><line x1="50" y1="48" x2="34" y2="74" class="wk-leg-l"/><line x1="50" y1="48" x2="66" y2="74" class="wk-leg-r"/></g></svg>`,
+  upper: `<svg viewBox="0 0 100 100" class="wk-anim wk-anim-upper"><defs><linearGradient id="wg7" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#60a5fa"/><stop offset="1" stop-color="#2563eb"/></linearGradient></defs><g stroke="url(#wg7)" stroke-width="4.5" fill="none" stroke-linecap="round" class="wk-pushup"><circle cx="20" cy="55" r="6" fill="url(#wg7)"/><line x1="26" y1="55" x2="75" y2="55"/><line x1="30" y1="55" x2="25" y2="72"/><line x1="50" y1="55" x2="48" y2="72"/><line x1="70" y1="55" x2="72" y2="72"/><line x1="75" y1="55" x2="82" y2="62"/></g><line x1="18" y1="78" x2="85" y2="78" stroke="url(#wg7)" stroke-width="3" opacity=".4"/></svg>`,
+  lower: `<svg viewBox="0 0 100 100" class="wk-anim wk-anim-lower"><defs><linearGradient id="wg8" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f472b6"/><stop offset="1" stop-color="#be185d"/></linearGradient></defs><g stroke="url(#wg8)" stroke-width="4.5" fill="none" stroke-linecap="round" class="wk-squat"><circle cx="50" cy="22" r="7" fill="url(#wg8)"/><line x1="50" y1="29" x2="50" y2="50"/><line x1="50" y1="35" x2="36" y2="30"/><line x1="50" y1="35" x2="64" y2="30"/><line x1="50" y1="50" x2="34" y2="74"/><line x1="34" y1="74" x2="28" y2="76"/><line x1="50" y1="50" x2="66" y2="74"/><line x1="66" y1="74" x2="72" y2="76"/></g></svg>`
 };
+
+/* Egzersiz adım kütüphanesi — her adım için animasyonlu görsel + nasıl yapılır */
+const EX_LIB = {
+  /* ESNEMELER */
+  'boyun çevirme':   { emoji:'🙆', anim:'neck',     desc:'Yavaşça başını sağa çevir, 5sn tut. Sol tarafa çevir, 5sn tut. Yukarı-aşağı. Asla zorlama.' },
+  'omuz çevirme':    { emoji:'💪', anim:'shoulder', desc:'Kollarını yanda bırak. Omuzları geriye doğru büyük daireler çizerek çevir. 10 tekrar geriye, 10 tekrar öne.' },
+  'sırt esnemesi':   { emoji:'🧘', anim:'back',     desc:'Otur veya ayakta kal. Ellerini başının üstünde birleştir, yukarı uzan. Sağa-sola hafifçe eğil. 30sn.' },
+  'bel bükülme':     { emoji:'🤸', anim:'waist',    desc:'Ayaklar omuz açıklığında. Ellerini bele koy. Bel bölgesini sağa-sola yavaşça döndür. 10 tur.' },
+  'kalça esnemesi':  { emoji:'🦵', anim:'hip',      desc:'Sandalye veya yere otur. Bir ayak bileğini diğer dize koy. Hafifçe öne eğil. 30sn, sonra değiştir.' },
+  'bacak arkası':    { emoji:'🦵', anim:'hamstring',desc:'Ayakta dur. Bir ayak öne, parmak yukarı. Kalça menteşesinden öne eğil. 30sn, taraf değiştir.' },
+  'kedi-deve':       { emoji:'🐈', anim:'cat',      desc:'Eller-dizler yere. Nefes al → sırtını çukurlaştır (deve). Nefes ver → kambur yap (kedi). 10 tekrar.' },
+  'derin nefes':     { emoji:'🫁', anim:'breathe',  desc:'4 saniyede burundan nefes al → 4 sn tut → 4 sn ağızdan ver → 4 sn boş tut. 1 dk.' },
+  /* YÜRÜYÜŞ */
+  'ısınma yürüyüşü': { emoji:'🚶', anim:'walk',     desc:'Yavaş, doğal tempo. Vücudunu ısıt, kasları yumuşat. Düz duruş, dik bakış.' },
+  'orta tempo':      { emoji:'🏃', anim:'walk-fast',desc:'Konuşabileceğin ama şarkı söyleyemeyeceğin tempo. Kalp hızı 100-130. Düzenli nefes.' },
+  'soğuma':          { emoji:'🚶', anim:'walk',     desc:'Yavaş tempoya dön. Kalp atışını normale indir. Sonunda 5 dk esneme.' },
+  /* KARDİYO */
+  'jumping jacks':   { emoji:'⭐', anim:'jumpjack', desc:'Ayaklar bitişik, kollar aşağı. Aynı anda zıpla → bacak aç + kollar yukarı. Tekrar zıpla → kapat. Hızlı.' },
+  'yüksek diz':      { emoji:'🏃', anim:'highknee', desc:'Yerinde koş ama dizlerini kalçaya kadar kaldır. Kollar normal koşar gibi sallansın.' },
+  'burpee':          { emoji:'🔥', anim:'burpee',   desc:'Ayakta → çömel → ayakları geri at (plank) → şınav → öne çek → zıpla. 1 tekrar = bütün hareket.' },
+  'shadow box':      { emoji:'🥊', anim:'box',      desc:'Boks duruşu. Sağ-sol-sağ-sol direkt yumruk. Hayali bir hedefe vur. Hızlı, ritimli.' },
+  'mola':            { emoji:'⏸️', anim:'rest',     desc:'Yerinde dur, derin nefes al. Su iç. Kalp atışı normale dönsün. Sıradaki için hazırlan.' },
+  'kapanış':         { emoji:'✨', anim:'breathe',  desc:'Yavaş yürü, derin nefes. Sırt-bacak hafif esnet. Antrenman bitti, harika iş.' },
+  /* CORE */
+  'plank':           { emoji:'🟰', anim:'plank',    desc:'Dirsekler omuz altında, vücut düz çizgi. Karın sıkı, kalça düşmesin. Nefes al-ver, sayım say.' },
+  'crunch':          { emoji:'🔄', anim:'crunch',   desc:'Sırtüstü yat, dizler bükük. Eller şakaklarda. Omuzları yerden 10cm kaldır → indir. Karın çalışsın.' },
+  'rus çevirme':     { emoji:'↔️', anim:'twist',    desc:'Otur, ayaklar havada. Ellerini birleştir. Sağa-sola gövdeyi döndür. Karın yan kasları çalışır.' },
+  'bisiklet':        { emoji:'🚴', anim:'bicycle',  desc:'Sırtüstü. Eller başın altında. Sağ dirsek-sol diz, sol dirsek-sağ diz değişimli. Bisiklet pedalı gibi.' },
+  'dead bug':        { emoji:'🐞', anim:'deadbug',  desc:'Sırtüstü. Sağ kol yukarı + sol bacak ileri uzat → geri çek. Karşılıklı tarafla tekrar.' },
+  'leg raise':       { emoji:'⬆️', anim:'legraise', desc:'Sırtüstü, eller yanda. Bacakları düz tutarak yukarı kaldır → yavaşça indir, yere değdirme.' },
+  /* YOGA */
+  'dağ pozu':        { emoji:'⛰️', anim:'mountain', desc:'Ayaklar bitişik, dik dur. Eller yanda, avuç içi öne. Tepeden çekildiğini hayal et. Derin nefes.' },
+  'güneşe selam':    { emoji:'☀️', anim:'sunsalute',desc:'Ayakta → eller yukarı → öne eğil → plank → kobra → köpek → öne → ayakta. 1 tur.' },
+  'savaşçı 1-2':     { emoji:'⚔️', anim:'warrior',  desc:'Bir bacak öne, diz 90°. Arka bacak düz. Kollar yukarı (1) veya yana (2). 30sn, taraf değiştir.' },
+  'üçgen':           { emoji:'📐', anim:'triangle', desc:'Bacaklar geniş açık. Bir el yere/ayak bileğine, diğer el tavana. Yan esneme. 30sn taraf değiştir.' },
+  'çocuk pozu':      { emoji:'🧎', anim:'child',    desc:'Diz çök, kalçanı topuklara koy. Gövdeni öne uzat, alın yere. Kollar önde. Dinlen.' },
+  'köpek pozu':      { emoji:'🐕', anim:'dog',      desc:'Eller-ayaklar yere. Kalçayı tavana doğru kaldır, ters V şekli. Topukları yere bastır. 1 dk.' },
+  'shavasana':       { emoji:'😌', anim:'rest',     desc:'Sırtüstü yat. Eller yanda, avuç içi yukarı. Gözleri kapat. Tüm vücudu gevşet. 5 dk.' },
+  /* HIIT (mola dışında ekstra) */
+  'squat jump':      { emoji:'🦵', anim:'squatjump',desc:'Squat pozisyonuna in → patlayıcı şekilde yukarı zıpla → yumuşak iniş, tekrar squat. 40sn.' },
+  'plank jack':      { emoji:'🟰', anim:'plankjack',desc:'Plank pozisyonunda. Ayakları aynı anda aç-kapat (jumping jack gibi). Kalça düşmesin.' },
+  'lunge':           { emoji:'🚶', anim:'lunge',    desc:'Bir ayak öne büyük adım at, ön diz 90°, arka diz neredeyse yere değer. Geri kalk, taraf değiştir.' },
+  'tırmanıcı':       { emoji:'🧗', anim:'climber',  desc:'Plank pozisyonu. Sağ dizi göğse çek → geri at → sol dizi göğse → değiştir. Hızlı, ritimli.' },
+  'sprint':          { emoji:'💨', anim:'sprint',   desc:'Yerinde maksimum hızla koş. Dizler yüksek, kollar tam sallansın. 40sn maksimum efor.' },
+  'push-up':         { emoji:'💪', anim:'pushup',   desc:'Plank pozisyonu, eller omuz altında. Vücudu düz tutarak in → it. Diz üstü versiyon başlangıç için.' },
+  'sit-up':          { emoji:'🔄', anim:'situp',    desc:'Sırtüstü, dizler bükük. Tüm gövdeyi yukarı çek (otur) → yavaşça in. Ellerin göğüste veya başında.' },
+  'glute bridge':    { emoji:'🌉', anim:'bridge',   desc:'Sırtüstü, dizler bükük, ayaklar yere. Kalçayı yukarı kaldır, üst vücut+dizler düz çizgi. İndir, tekrar.' },
+  'toparlanma':      { emoji:'🌿', anim:'rest',     desc:'Yere otur, derin nefes al. Bacak-sırt esnet. Tebrikler — HIIT bitti.' },
+  /* ÜST VÜCUT */
+  'şınav':           { emoji:'💪', anim:'pushup',   desc:'Eller omuz açıklığında, vücut düz. İn → it. Zorlanırsan dizüstü versiyona geç.' },
+  'ters şınav':      { emoji:'🪑', anim:'dip',      desc:'Sandalye/sehpa kenarına otur. Ellerini kenara koy, ayakları öne ver. Kalçayı indir-kaldır. Triceps çalışır.' },
+  'diamond şınav':   { emoji:'♦️', anim:'diamond',  desc:'Ellerini göğüs altında elmas şekli yapacak şekilde birleştir. Şınav yap. Triceps yoğun.' },
+  'süper adam':      { emoji:'🦸', anim:'superman', desc:'Yüzüstü yat. Aynı anda kol+bacakları yukarı kaldır (uçuyormuş gibi). 2sn tut, indir.' },
+  'plank-to-push':   { emoji:'🔄', anim:'p2p',      desc:'Plank pozisyonundan sırayla iki kolu da düz aç (push-up pozisyonu) → tekrar dirsek üstü. Değiştir.' },
+  /* ALT VÜCUT */
+  'squat':           { emoji:'🦵', anim:'squat',    desc:'Ayaklar omuz açıklığında, parmaklar hafif dışa. Kalçayı geriye it, dizler bük. Sandalyeye oturur gibi in-kalk.' },
+  'köprü':           { emoji:'🌉', anim:'bridge',   desc:'Sırtüstü, dizler bükük. Kalçayı yukarı kaldır, kalça kaslarını sık. 2sn tut, indir.' },
+  'wall sit':        { emoji:'🧱', anim:'wallsit',  desc:'Sırt duvara, dizler 90° bükük. Sanki sandalyede oturuyormuş gibi. 45sn dayan, kalkma.' },
+  'kalça kaldırma':  { emoji:'🦵', anim:'glutekick',desc:'Eller-dizler yere. Bir bacağı dik tutarak arkaya-yukarı it. 12 tekrar, taraf değiştir.' }
+};
+function exLookup(stepText) {
+  const t = (stepText||'').toLowerCase();
+  for (const k of Object.keys(EX_LIB)) {
+    if (t.includes(k)) return EX_LIB[k];
+  }
+  return null;
+}
+/* Mini animasyonlu SVG'ler — her egzersize özel görsel */
+const EX_MINI = {
+  neck:      `<svg viewBox="0 0 100 100" class="ex-mini ex-neck"><circle class="m-head" cx="50" cy="35" r="14" fill="#34d399"/><line x1="50" y1="49" x2="50" y2="80" stroke="#059669" stroke-width="5" stroke-linecap="round"/></svg>`,
+  shoulder:  `<svg viewBox="0 0 100 100" class="ex-mini ex-shoulder"><circle cx="50" cy="28" r="9" fill="#fbbf24"/><line x1="50" y1="37" x2="50" y2="72" stroke="#d97706" stroke-width="5" stroke-linecap="round"/><circle class="m-arm" cx="50" cy="48" r="14" fill="none" stroke="#fbbf24" stroke-width="3" stroke-dasharray="4 3"/></svg>`,
+  back:      `<svg viewBox="0 0 100 100" class="ex-mini ex-back"><g class="m-body"><circle cx="50" cy="22" r="8" fill="#a78bfa"/><line x1="50" y1="30" x2="50" y2="70" stroke="#7c3aed" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="35" x2="35" y2="18" stroke="#a78bfa" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="35" x2="65" y2="18" stroke="#a78bfa" stroke-width="4" stroke-linecap="round"/></g></svg>`,
+  waist:     `<svg viewBox="0 0 100 100" class="ex-mini ex-waist"><g class="m-body"><circle cx="50" cy="22" r="8" fill="#f472b6"/><line x1="50" y1="30" x2="50" y2="60" stroke="#be185d" stroke-width="5" stroke-linecap="round"/><line x1="35" y1="50" x2="65" y2="50" stroke="#f472b6" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="60" x2="40" y2="80" stroke="#be185d" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="60" x2="60" y2="80" stroke="#be185d" stroke-width="4" stroke-linecap="round"/></g></svg>`,
+  hip:       `<svg viewBox="0 0 100 100" class="ex-mini ex-hip"><circle cx="35" cy="38" r="8" fill="#34d399"/><line x1="35" y1="46" x2="35" y2="68" stroke="#059669" stroke-width="5" stroke-linecap="round"/><line class="m-leg" x1="35" y1="68" x2="78" y2="62" stroke="#34d399" stroke-width="5" stroke-linecap="round"/></svg>`,
+  hamstring: `<svg viewBox="0 0 100 100" class="ex-mini ex-hamstring"><g class="m-body"><circle cx="50" cy="20" r="8" fill="#fbbf24"/><line x1="50" y1="28" x2="50" y2="55" stroke="#d97706" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="55" x2="50" y2="82" stroke="#d97706" stroke-width="5" stroke-linecap="round"/></g></svg>`,
+  cat:       `<svg viewBox="0 0 100 100" class="ex-mini ex-cat"><g class="m-body"><circle cx="22" cy="40" r="7" fill="#a78bfa"/><path d="M28 42 Q50 30 75 42 L75 65 Q50 70 28 65 Z" fill="none" stroke="#7c3aed" stroke-width="4"/><line x1="32" y1="65" x2="32" y2="80" stroke="#a78bfa" stroke-width="4"/><line x1="72" y1="65" x2="72" y2="80" stroke="#a78bfa" stroke-width="4"/></g></svg>`,
+  breathe:   `<svg viewBox="0 0 100 100" class="ex-mini ex-breathe"><circle class="m-circle" cx="50" cy="50" r="28" fill="none" stroke="#c4b5fd" stroke-width="4"/><circle class="m-circle" cx="50" cy="50" r="18" fill="#a78bfa" opacity="0.4"/></svg>`,
+  walk:      `<svg viewBox="0 0 100 100" class="ex-mini ex-walk"><circle cx="50" cy="22" r="7" fill="#fbbf24"/><line x1="50" y1="29" x2="50" y2="58" stroke="#d97706" stroke-width="5" stroke-linecap="round"/><line class="m-leg-l" x1="50" y1="58" x2="40" y2="82" stroke="#d97706" stroke-width="5" stroke-linecap="round"/><line class="m-leg-r" x1="50" y1="58" x2="60" y2="82" stroke="#d97706" stroke-width="5" stroke-linecap="round"/></svg>`,
+  'walk-fast': `<svg viewBox="0 0 100 100" class="ex-mini ex-walkfast"><circle cx="50" cy="22" r="7" fill="#f87171"/><line x1="50" y1="29" x2="50" y2="58" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/><line class="m-leg-l" x1="50" y1="58" x2="38" y2="82" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/><line class="m-leg-r" x1="50" y1="58" x2="62" y2="82" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/></svg>`,
+  jumpjack:  `<svg viewBox="0 0 100 100" class="ex-mini ex-jumpjack"><circle cx="50" cy="22" r="7" fill="#f87171"/><line x1="50" y1="29" x2="50" y2="55" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/><line class="m-arm-l" x1="50" y1="35" x2="30" y2="50" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/><line class="m-arm-r" x1="50" y1="35" x2="70" y2="50" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/><line class="m-leg-l" x1="50" y1="55" x2="35" y2="80" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/><line class="m-leg-r" x1="50" y1="55" x2="65" y2="80" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/></svg>`,
+  highknee:  `<svg viewBox="0 0 100 100" class="ex-mini ex-highknee"><circle cx="50" cy="20" r="7" fill="#fb923c"/><line x1="50" y1="27" x2="50" y2="55" stroke="#ea580c" stroke-width="5" stroke-linecap="round"/><line class="m-leg-l" x1="50" y1="55" x2="38" y2="78" stroke="#ea580c" stroke-width="5" stroke-linecap="round"/><line class="m-leg-r" x1="50" y1="55" x2="62" y2="78" stroke="#ea580c" stroke-width="5" stroke-linecap="round"/></svg>`,
+  burpee:    `<svg viewBox="0 0 100 100" class="ex-mini ex-burpee"><g class="m-body"><circle cx="50" cy="25" r="7" fill="#f87171"/><line x1="50" y1="32" x2="50" y2="60" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="60" x2="35" y2="82" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="60" x2="65" y2="82" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/></g></svg>`,
+  box:       `<svg viewBox="0 0 100 100" class="ex-mini ex-box"><circle cx="50" cy="22" r="7" fill="#fbbf24"/><line x1="50" y1="29" x2="50" y2="58" stroke="#d97706" stroke-width="5" stroke-linecap="round"/><line class="m-arm-l" x1="50" y1="36" x2="30" y2="40" stroke="#d97706" stroke-width="5" stroke-linecap="round"/><line class="m-arm-r" x1="50" y1="36" x2="70" y2="40" stroke="#d97706" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="58" x2="40" y2="80" stroke="#d97706" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="58" x2="60" y2="80" stroke="#d97706" stroke-width="5" stroke-linecap="round"/></svg>`,
+  rest:      `<svg viewBox="0 0 100 100" class="ex-mini ex-rest"><circle class="m-circle" cx="50" cy="50" r="22" fill="none" stroke="#94a3b8" stroke-width="3" stroke-dasharray="3 4"/><text x="50" y="58" text-anchor="middle" font-size="22" fill="#94a3b8">⏸</text></svg>`,
+  plank:     `<svg viewBox="0 0 100 100" class="ex-mini ex-plank"><g class="m-body"><circle cx="22" cy="48" r="7" fill="#a78bfa"/><line x1="29" y1="48" x2="78" y2="55" stroke="#7c3aed" stroke-width="5" stroke-linecap="round"/><line x1="35" y1="50" x2="32" y2="72" stroke="#a78bfa" stroke-width="4"/><line x1="74" y1="55" x2="80" y2="78" stroke="#a78bfa" stroke-width="4"/></g><line x1="20" y1="82" x2="85" y2="82" stroke="#7c3aed" stroke-width="2" opacity=".4" stroke-dasharray="3 3"/></svg>`,
+  crunch:    `<svg viewBox="0 0 100 100" class="ex-mini ex-crunch"><g class="m-body"><circle cx="20" cy="65" r="7" fill="#a78bfa"/><line x1="26" y1="65" x2="60" y2="70" stroke="#7c3aed" stroke-width="5" stroke-linecap="round"/><line x1="60" y1="70" x2="78" y2="55" stroke="#7c3aed" stroke-width="5" stroke-linecap="round"/></g></svg>`,
+  twist:     `<svg viewBox="0 0 100 100" class="ex-mini ex-twist"><g class="m-body"><circle cx="50" cy="35" r="8" fill="#a78bfa"/><line x1="50" y1="43" x2="50" y2="65" stroke="#7c3aed" stroke-width="5" stroke-linecap="round"/><line x1="35" y1="55" x2="65" y2="55" stroke="#a78bfa" stroke-width="4" stroke-linecap="round"/></g></svg>`,
+  bicycle:   `<svg viewBox="0 0 100 100" class="ex-mini ex-bicycle"><circle cx="50" cy="40" r="20" fill="none" stroke="#7c3aed" stroke-width="2" opacity=".3"/><line class="m-leg-l" x1="50" y1="40" x2="65" y2="50" stroke="#a78bfa" stroke-width="5" stroke-linecap="round"/><line class="m-leg-r" x1="50" y1="40" x2="35" y2="30" stroke="#a78bfa" stroke-width="5" stroke-linecap="round"/><circle cx="50" cy="40" r="4" fill="#7c3aed"/></svg>`,
+  deadbug:   `<svg viewBox="0 0 100 100" class="ex-mini ex-deadbug"><circle cx="50" cy="50" r="8" fill="#a78bfa"/><line class="m-arm-l" x1="50" y1="50" x2="22" y2="40" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/><line class="m-arm-r" x1="50" y1="50" x2="78" y2="40" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/><line class="m-leg-l" x1="50" y1="50" x2="25" y2="78" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/><line class="m-leg-r" x1="50" y1="50" x2="75" y2="78" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/></svg>`,
+  legraise:  `<svg viewBox="0 0 100 100" class="ex-mini ex-legraise"><circle cx="20" cy="65" r="7" fill="#a78bfa"/><line x1="26" y1="65" x2="60" y2="65" stroke="#7c3aed" stroke-width="5" stroke-linecap="round"/><line class="m-leg" x1="60" y1="65" x2="85" y2="40" stroke="#a78bfa" stroke-width="5" stroke-linecap="round"/></svg>`,
+  mountain:  `<svg viewBox="0 0 100 100" class="ex-mini ex-mountain"><g class="m-body"><circle cx="50" cy="22" r="7" fill="#c4b5fd"/><line x1="50" y1="29" x2="50" y2="70" stroke="#8b5cf6" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="36" x2="38" y2="60" stroke="#c4b5fd" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="36" x2="62" y2="60" stroke="#c4b5fd" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="70" x2="44" y2="85" stroke="#8b5cf6" stroke-width="4"/><line x1="50" y1="70" x2="56" y2="85" stroke="#8b5cf6" stroke-width="4"/></g></svg>`,
+  sunsalute: `<svg viewBox="0 0 100 100" class="ex-mini ex-sunsalute"><g class="m-body"><circle cx="50" cy="20" r="6" fill="#fbbf24"/><line x1="50" y1="26" x2="50" y2="55" stroke="#d97706" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="32" x2="35" y2="15" stroke="#fbbf24" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="32" x2="65" y2="15" stroke="#fbbf24" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="55" x2="40" y2="80" stroke="#d97706" stroke-width="4"/><line x1="50" y1="55" x2="60" y2="80" stroke="#d97706" stroke-width="4"/></g></svg>`,
+  warrior:   `<svg viewBox="0 0 100 100" class="ex-mini ex-warrior"><g class="m-body"><circle cx="45" cy="22" r="7" fill="#c4b5fd"/><line x1="45" y1="29" x2="48" y2="55" stroke="#8b5cf6" stroke-width="5" stroke-linecap="round"/><line x1="45" y1="35" x2="22" y2="38" stroke="#c4b5fd" stroke-width="4" stroke-linecap="round"/><line x1="45" y1="35" x2="78" y2="38" stroke="#c4b5fd" stroke-width="4" stroke-linecap="round"/><line x1="48" y1="55" x2="30" y2="80" stroke="#8b5cf6" stroke-width="4"/><line x1="48" y1="55" x2="68" y2="80" stroke="#8b5cf6" stroke-width="4"/></g></svg>`,
+  triangle:  `<svg viewBox="0 0 100 100" class="ex-mini ex-triangle"><g class="m-body"><circle cx="60" cy="28" r="7" fill="#c4b5fd"/><line x1="60" y1="35" x2="35" y2="65" stroke="#8b5cf6" stroke-width="5" stroke-linecap="round"/><line x1="60" y1="35" x2="78" y2="20" stroke="#c4b5fd" stroke-width="4"/><line x1="35" y1="65" x2="22" y2="80" stroke="#c4b5fd" stroke-width="4"/><line x1="35" y1="65" x2="20" y2="65" stroke="#8b5cf6" stroke-width="4"/><line x1="35" y1="65" x2="50" y2="82" stroke="#8b5cf6" stroke-width="4"/></g></svg>`,
+  child:     `<svg viewBox="0 0 100 100" class="ex-mini ex-child"><g class="m-body"><ellipse cx="50" cy="62" rx="32" ry="14" fill="none" stroke="#8b5cf6" stroke-width="4"/><circle cx="22" cy="55" r="6" fill="#c4b5fd"/></g></svg>`,
+  dog:       `<svg viewBox="0 0 100 100" class="ex-mini ex-dog"><g class="m-body"><line x1="20" y1="78" x2="50" y2="30" stroke="#8b5cf6" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="30" x2="80" y2="78" stroke="#8b5cf6" stroke-width="5" stroke-linecap="round"/><circle cx="22" cy="76" r="5" fill="#c4b5fd"/></g></svg>`,
+  squatjump: `<svg viewBox="0 0 100 100" class="ex-mini ex-squatjump"><g class="m-body"><circle cx="50" cy="22" r="7" fill="#fb923c"/><line x1="50" y1="29" x2="50" y2="55" stroke="#ea580c" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="36" x2="35" y2="22" stroke="#ea580c" stroke-width="4"/><line x1="50" y1="36" x2="65" y2="22" stroke="#ea580c" stroke-width="4"/><line x1="50" y1="55" x2="36" y2="78" stroke="#ea580c" stroke-width="4"/><line x1="50" y1="55" x2="64" y2="78" stroke="#ea580c" stroke-width="4"/></g></svg>`,
+  plankjack: `<svg viewBox="0 0 100 100" class="ex-mini ex-plankjack"><circle cx="22" cy="50" r="6" fill="#fb923c"/><line x1="28" y1="50" x2="75" y2="55" stroke="#ea580c" stroke-width="5" stroke-linecap="round"/><line x1="35" y1="55" x2="32" y2="75" stroke="#ea580c" stroke-width="4"/><line class="m-leg-l" x1="72" y1="55" x2="60" y2="78" stroke="#ea580c" stroke-width="4"/><line class="m-leg-r" x1="78" y1="55" x2="88" y2="78" stroke="#ea580c" stroke-width="4"/></svg>`,
+  lunge:     `<svg viewBox="0 0 100 100" class="ex-mini ex-lunge"><g class="m-body"><circle cx="50" cy="22" r="7" fill="#f472b6"/><line x1="50" y1="29" x2="50" y2="55" stroke="#be185d" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="55" x2="30" y2="78" stroke="#be185d" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="55" x2="72" y2="80" stroke="#be185d" stroke-width="5" stroke-linecap="round"/></g></svg>`,
+  climber:   `<svg viewBox="0 0 100 100" class="ex-mini ex-climber"><circle cx="22" cy="48" r="7" fill="#fb923c"/><line x1="28" y1="48" x2="78" y2="55" stroke="#ea580c" stroke-width="5" stroke-linecap="round"/><line class="m-leg-l" x1="60" y1="55" x2="55" y2="70" stroke="#ea580c" stroke-width="4"/><line class="m-leg-r" x1="78" y1="55" x2="85" y2="78" stroke="#ea580c" stroke-width="4"/></svg>`,
+  sprint:    `<svg viewBox="0 0 100 100" class="ex-mini ex-sprint"><circle cx="50" cy="20" r="7" fill="#dc2626"/><line x1="50" y1="27" x2="50" y2="55" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/><line class="m-leg-l" x1="50" y1="55" x2="32" y2="78" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/><line class="m-leg-r" x1="50" y1="55" x2="68" y2="78" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/></svg>`,
+  pushup:    `<svg viewBox="0 0 100 100" class="ex-mini ex-pushup"><g class="m-body"><circle cx="22" cy="50" r="6" fill="#60a5fa"/><line x1="28" y1="50" x2="75" y2="55" stroke="#2563eb" stroke-width="5" stroke-linecap="round"/><line x1="32" y1="50" x2="28" y2="72" stroke="#60a5fa" stroke-width="4"/><line x1="55" y1="55" x2="50" y2="74" stroke="#60a5fa" stroke-width="4"/><line x1="74" y1="55" x2="80" y2="74" stroke="#60a5fa" stroke-width="4"/></g></svg>`,
+  situp:     `<svg viewBox="0 0 100 100" class="ex-mini ex-situp"><g class="m-body"><circle cx="20" cy="60" r="7" fill="#a78bfa"/><line x1="26" y1="60" x2="55" y2="55" stroke="#7c3aed" stroke-width="5" stroke-linecap="round"/><line x1="55" y1="55" x2="78" y2="55" stroke="#7c3aed" stroke-width="5" stroke-linecap="round"/><line x1="55" y1="55" x2="55" y2="80" stroke="#7c3aed" stroke-width="4"/></g></svg>`,
+  bridge:    `<svg viewBox="0 0 100 100" class="ex-mini ex-bridge"><g class="m-body"><path d="M20 75 Q50 35 80 75" fill="none" stroke="#f472b6" stroke-width="6" stroke-linecap="round"/><circle cx="20" cy="75" r="5" fill="#be185d"/></g></svg>`,
+  dip:       `<svg viewBox="0 0 100 100" class="ex-mini ex-dip"><rect x="20" y="55" width="60" height="6" fill="#60a5fa" rx="2"/><g class="m-body"><circle cx="50" cy="32" r="7" fill="#60a5fa"/><line x1="50" y1="39" x2="50" y2="55" stroke="#2563eb" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="55" x2="32" y2="78" stroke="#2563eb" stroke-width="4"/><line x1="50" y1="55" x2="68" y2="78" stroke="#2563eb" stroke-width="4"/></g></svg>`,
+  diamond:   `<svg viewBox="0 0 100 100" class="ex-mini ex-diamond"><g class="m-body"><circle cx="22" cy="50" r="6" fill="#60a5fa"/><line x1="28" y1="50" x2="75" y2="55" stroke="#2563eb" stroke-width="5" stroke-linecap="round"/><polygon points="48,55 52,60 48,65 44,60" fill="#60a5fa"/><line x1="74" y1="55" x2="80" y2="74" stroke="#60a5fa" stroke-width="4"/></g></svg>`,
+  superman:  `<svg viewBox="0 0 100 100" class="ex-mini ex-superman"><g class="m-body"><circle cx="22" cy="55" r="6" fill="#60a5fa"/><line x1="28" y1="55" x2="78" y2="58" stroke="#2563eb" stroke-width="5" stroke-linecap="round"/><line x1="20" y1="50" x2="6" y2="42" stroke="#60a5fa" stroke-width="4" stroke-linecap="round"/><line x1="78" y1="58" x2="92" y2="50" stroke="#60a5fa" stroke-width="4" stroke-linecap="round"/></g></svg>`,
+  p2p:       `<svg viewBox="0 0 100 100" class="ex-mini ex-p2p"><g class="m-body"><circle cx="22" cy="48" r="6" fill="#60a5fa"/><line x1="28" y1="48" x2="75" y2="55" stroke="#2563eb" stroke-width="5" stroke-linecap="round"/><line x1="32" y1="48" x2="28" y2="72" stroke="#60a5fa" stroke-width="4"/><line x1="74" y1="55" x2="80" y2="78" stroke="#60a5fa" stroke-width="4"/></g></svg>`,
+  squat:     `<svg viewBox="0 0 100 100" class="ex-mini ex-squat"><g class="m-body"><circle cx="50" cy="22" r="7" fill="#f472b6"/><line x1="50" y1="29" x2="50" y2="50" stroke="#be185d" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="35" x2="36" y2="30" stroke="#be185d" stroke-width="4"/><line x1="50" y1="35" x2="64" y2="30" stroke="#be185d" stroke-width="4"/><line x1="50" y1="50" x2="34" y2="74" stroke="#be185d" stroke-width="5"/><line x1="50" y1="50" x2="66" y2="74" stroke="#be185d" stroke-width="5"/></g></svg>`,
+  wallsit:   `<svg viewBox="0 0 100 100" class="ex-mini ex-wallsit"><line x1="20" y1="15" x2="20" y2="85" stroke="#f472b6" stroke-width="3" opacity=".5"/><g class="m-body"><circle cx="32" cy="35" r="7" fill="#f472b6"/><line x1="32" y1="42" x2="32" y2="65" stroke="#be185d" stroke-width="5" stroke-linecap="round"/><line x1="32" y1="65" x2="78" y2="65" stroke="#be185d" stroke-width="5" stroke-linecap="round"/><line x1="78" y1="65" x2="78" y2="85" stroke="#be185d" stroke-width="5"/></g></svg>`,
+  glutekick: `<svg viewBox="0 0 100 100" class="ex-mini ex-glutekick"><circle cx="22" cy="50" r="6" fill="#f472b6"/><line x1="28" y1="50" x2="55" y2="55" stroke="#be185d" stroke-width="5" stroke-linecap="round"/><line x1="40" y1="55" x2="40" y2="78" stroke="#be185d" stroke-width="4"/><line x1="55" y1="55" x2="55" y2="78" stroke="#be185d" stroke-width="4"/><line class="m-leg" x1="55" y1="55" x2="85" y2="40" stroke="#f472b6" stroke-width="5" stroke-linecap="round"/></svg>`
+};
+function exVisual(stepText) {
+  const ex = exLookup(stepText);
+  if (ex && EX_MINI[ex.anim]) return EX_MINI[ex.anim];
+  return EX_MINI.rest;
+}
 const WORKOUTS = [
   { id:'stretch', emoji:'🧘', name:'Esneme',        dur:'5-10 dk', desc:'Sabah/akşam 8 hareket · vücudu aç', steps:['Boyun çevirme (30sn)','Omuz çevirme (30sn)','Sırt esnemesi (45sn)','Bel bükülme (45sn)','Kalça esnemesi (45sn)','Bacak arkası (45sn)','Kedi-deve (1 dk)','Derin nefes (1 dk)'] },
   { id:'walk',    emoji:'🚶', name:'Yürüyüş',       dur:'20-30 dk', desc:'Orta tempo · kalp sağlığı', steps:['5 dk ısınma yürüyüşü','20 dk orta tempo','5 dk soğuma'] },
@@ -3649,6 +3917,19 @@ function renderSheetWorkout() {
 }
 function openWorkoutDetail(id) {
   const w = WORKOUTS.find(x=>x.id===id); if (!w) return;
+  const stepsHtml = w.steps.map((s,i) => {
+    const ex = exLookup(s);
+    const desc = ex ? ex.desc : 'Hareketi rahat bir tempoda yap, nefes alıp vermeyi unutma.';
+    const vis = exVisual(s);
+    return `<div class="ex-row">
+      <div class="ex-vis">${vis}</div>
+      <div class="ex-info">
+        <div class="ex-num">Adım ${i+1}</div>
+        <div class="ex-name">${esc(s)}</div>
+        <div class="ex-desc">${esc(desc)}</div>
+      </div>
+    </div>`;
+  }).join('');
   document.getElementById('sheetContent').innerHTML = `
     <h3>${w.emoji} ${w.name}</h3>
     <div style="margin:8px 0 14px;padding:18px;border-radius:18px;background:linear-gradient(135deg,rgba(16,185,129,0.14),rgba(5,150,105,0.08));border:1px solid rgba(16,185,129,0.25);display:flex;align-items:center;gap:14px">
@@ -3658,8 +3939,8 @@ function openWorkoutDetail(id) {
         <div style="font-size:13px;line-height:1.5;color:#cbd5e1">${w.desc}</div>
       </div>
     </div>
-    <label class="lbl">Adımlar</label>
-    <ol style="padding-left:20px;margin:6px 0 14px;line-height:1.8;font-size:13px">${w.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
+    <label class="lbl">Adımlar — her hareketin nasıl yapıldığını gör</label>
+    <div style="margin:8px 0 14px">${stepsHtml}</div>
     <label class="lbl">Yaptım, kaç dakika sürdü?</label>
     <input type="number" id="wkMin" class="inp" min="1" max="240" value="${parseInt(w.dur,10)||15}">
     <button class="sheet-btn primary" style="margin-top:12px" onclick="workoutDone('${w.id}','${esc(w.name)}')">✓ Tamamlandı olarak kaydet</button>
