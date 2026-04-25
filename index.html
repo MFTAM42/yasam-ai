@@ -401,9 +401,12 @@
   body.light .rt-lbl{color:#6b7280}
   /* Spor egzersiz kartları */
   .wk-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 18px 14px}
-  .wk-card{padding:14px 12px;border-radius:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);text-align:left;min-width:0}
+  .wk-card{padding:14px 12px;border-radius:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);text-align:left;min-width:0;transition:transform .15s,box-shadow .15s}
+  .wk-card:active{transform:scale(0.97);box-shadow:0 6px 18px rgba(16,185,129,0.18)}
   body.light .wk-card{background:#fff;border-color:rgba(0,0,0,0.06)}
   .wk-emoji{font-size:24px}
+  .wk-illu{width:100%;aspect-ratio:1.5/1;background:linear-gradient(135deg,rgba(16,185,129,0.12),rgba(5,150,105,0.06));border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;padding:6px;overflow:hidden}
+  .wk-illu svg{width:100%;height:100%;max-height:62px}
   .wk-n{font-size:13px;font-weight:800;margin-top:6px}
   .wk-d{font-size:10.5px;color:#a0a3b8;margin-top:2px;line-height:1.35}
   body.light .wk-d{color:#6b7280}
@@ -1210,6 +1213,10 @@
 
         <div class="p-section">Destek</div>
         <div class="p-group">
+          <button class="setting" onclick="openSheet('rate')">
+            <div class="si" style="background:linear-gradient(135deg,#fde68a,#f59e0b)"><svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg></div>
+            <div class="sl">Uygulamayı puanla</div><div class="sv" id="rateVal">⭐</div><div class="arr">›</div>
+          </button>
           <button class="setting" onclick="openSheet('feedback')">
             <div class="si" style="background:linear-gradient(135deg,#f472b6,#ec4899)"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></svg></div>
             <div class="sl">Geri bildirim gönder</div><div class="arr">›</div>
@@ -1359,7 +1366,7 @@ try {
 } catch(e){}
 
 /* Sürüm — SW cache adıyla eşleşir, her deploy'da bump yapılır */
-const APP_VERSION = 'v52';
+const APP_VERSION = 'v53';
 const APP_VERSION_LABEL = 'Sürüm 1.0.0 · ' + APP_VERSION;
 try { console.log('%cYaşam.AI ' + APP_VERSION_LABEL, 'color:#a78bfa;font-weight:bold'); } catch(e){}
 
@@ -1615,6 +1622,13 @@ function refreshProfile() {
   const avr = document.getElementById('aboutVer');
   if (avr) avr.textContent = APP_VERSION;
 
+  // Yıldız puanı
+  const rv = document.getElementById('rateVal');
+  if (rv) {
+    const r = LS.get('yasamai_rating', null);
+    rv.textContent = r?.stars ? '★'.repeat(r.stars) : '⭐';
+  }
+
   // Rozetler
   renderAchievements({ streak, diaryCount: (state.diary || []).length, chatCount: chatMsgCount });
 }
@@ -1642,50 +1656,78 @@ function renderAchievements(stats) {
 
 function exportData() {
   const dateStr = new Date().toLocaleDateString('tr-TR', { day:'2-digit', month:'long', year:'numeric' });
+  const timeStr = new Date().toLocaleTimeString('tr-TR', { hour:'2-digit', minute:'2-digit' });
   const moodNames = { dokun:'İçimi Dök', karar:'Karar Ver', sakin:'Sakin Ol', motive:'Motive Et', kaygi:'Kaygı', yalnizlik:'Yalnızlık', oz:'Öz Güven', uyku:'Uyku', ofke:'Öfke', mutluluk:'Mutluluk' };
+  const NL = '\r\n'; // Windows Notepad uyumu
+  const sep = '========================================' + NL;
+  const dash = '----------------------------------------' + NL;
   let txt = '';
-  txt += '╔════════════════════════════════════════╗\n';
-  txt += '║         YAŞAM.AI - VERİLERİM           ║\n';
-  txt += '╚════════════════════════════════════════╝\n\n';
-  txt += 'Dışa aktarma tarihi: ' + dateStr + '\n';
-  if (state.user) txt += 'Kullanıcı: ' + (state.user.name || '—') + '\n';
-  txt += '\n' + '═'.repeat(42) + '\n\n';
+  txt += sep;
+  txt += '            YASAMAI - VERILERIM' + NL;
+  txt += '             (Yaşam.AI verilerim)' + NL;
+  txt += sep + NL;
+  txt += 'Dışa aktarma: ' + dateStr + ' · ' + timeStr + NL;
+  if (state.user) txt += 'Kullanıcı:    ' + (state.user.name || '-') + NL;
+  txt += 'Sürüm:        ' + APP_VERSION_LABEL + NL + NL;
+  txt += sep + NL;
   // Sohbetler
-  txt += '📱  SOHBETLER\n' + '─'.repeat(42) + '\n\n';
+  txt += '[1] SOHBETLER' + NL + dash;
   let hasAnyChat = false;
   ['dokun','karar','sakin','motive','kaygi','yalnizlik','oz','uyku','ofke','mutluluk'].forEach(m => {
     const chat = LS.get('yasamai_chat_'+m, []);
     if (!chat.length) return;
     hasAnyChat = true;
-    txt += '▸ ' + (moodNames[m] || m).toUpperCase() + '  (' + chat.length + ' mesaj)\n\n';
+    txt += NL + '>> ' + (moodNames[m] || m).toUpperCase() + '  (' + chat.length + ' mesaj)' + NL + NL;
     chat.forEach(msg => {
-      const who = msg.role === 'user' ? '🙂 Sen' : '💜 Yaşam.AI';
-      const when = msg.ts ? '  [' + new Date(msg.ts).toLocaleString('tr-TR') + ']' : '';
-      txt += who + when + ':\n' + (msg.content || msg.text || '') + '\n\n';
+      const who = msg.role === 'user' ? '[Sen]' : '[Yaşam.AI]';
+      const when = msg.ts ? '  ' + new Date(msg.ts).toLocaleString('tr-TR') : '';
+      txt += who + when + NL;
+      txt += (msg.content || msg.text || '') + NL + NL;
     });
-    txt += '─'.repeat(42) + '\n\n';
+    txt += dash;
   });
-  if (!hasAnyChat) txt += '(Henüz sohbet yok)\n\n';
+  if (!hasAnyChat) txt += NL + '(Henüz sohbet yok)' + NL;
+  txt += NL;
   // Günlük girdiler
-  txt += '\n📖  GÜNLÜK GİRDİLER\n' + '─'.repeat(42) + '\n\n';
+  txt += '[2] GÜNLÜK GİRDİLER' + NL + dash;
   if (state.diary && state.diary.length) {
     state.diary.forEach(d => {
       const when = d.ts ? new Date(d.ts).toLocaleDateString('tr-TR') : (d.date || '');
-      txt += '▸ ' + when + (d.mood ? '  —  ' + d.mood : '') + '\n';
-      if (d.title) txt += 'Başlık: ' + d.title + '\n';
-      txt += (d.text || d.content || '') + '\n\n';
+      txt += NL + '>> ' + when + (d.mood ? '  -  ' + d.mood : '') + NL;
+      if (d.title) txt += 'Başlık: ' + d.title + NL;
+      txt += (d.text || d.content || '') + NL;
     });
-  } else txt += '(Henüz günlük girdisi yok)\n\n';
+  } else txt += NL + '(Henüz günlük girdisi yok)' + NL;
+  txt += NL;
+  // Uyku
+  const sleepLogs = state.sleep?.logs || [];
+  if (sleepLogs.length) {
+    txt += '[3] UYKU KAYITLARI' + NL + dash + NL;
+    sleepLogs.slice(-30).forEach(l => {
+      txt += l.date + ' · Yat:' + (l.bedtime||'-') + ' Kalk:' + (l.waketime||'-') + ' · ' + (l.hours||0) + ' saat · Kalite ' + (l.quality||0) + '/5' + (l.snoreMin?(' · Horlama '+l.snoreMin+'dk'):'') + NL;
+    });
+    txt += NL;
+  }
+  // Kilo
+  const bodyLogs = state.body?.logs || [];
+  if (bodyLogs.length) {
+    txt += '[4] KİLO KAYITLARI' + NL + dash + NL;
+    bodyLogs.slice(-30).forEach(l => { txt += l.date + ' · ' + l.weight + ' kg' + NL; });
+    txt += NL;
+  }
   // Ayarlar
-  txt += '\n⚙️  AYARLAR\n' + '─'.repeat(42) + '\n';
-  txt += 'Tema: ' + (state.theme || '—') + '\n';
-  txt += 'Gece modu: ' + (state.dark ? 'Açık' : 'Kapalı') + '\n';
-  txt += 'Yazı boyutu: ' + (state.fontSize || '—') + '\n';
-  txt += 'AI tonu: ' + (state.aiTone || '—') + '\n';
-  txt += 'Hatırlatma saati: ' + (state.reminder || '—') + '\n';
-  txt += '\n' + '═'.repeat(42) + '\n';
-  txt += 'Yaşam.AI ' + APP_VERSION_LABEL + '\n';
-  const blob = new Blob([txt], { type:'text/plain;charset=utf-8' });
+  txt += '[5] AYARLAR' + NL + dash + NL;
+  txt += 'Tema:              ' + (state.theme || '-') + NL;
+  txt += 'Gece modu:         ' + (state.dark ? 'Açık' : 'Kapalı') + NL;
+  txt += 'Yazı boyutu:       ' + (state.fontSize || '-') + NL;
+  txt += 'AI tonu:           ' + (state.aiTone || '-') + NL;
+  txt += 'Hatırlatma saati:  ' + (state.reminder || '-') + NL + NL;
+  txt += sep;
+  txt += 'Yaşam.AI · ' + APP_VERSION_LABEL + NL;
+  txt += sep;
+  // UTF-8 BOM ekle — Notepad Türkçe karakterleri doğru göstersin
+  const BOM = '\uFEFF';
+  const blob = new Blob([BOM + txt], { type:'text/plain;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -3504,6 +3546,17 @@ function scheduleRoutineReminders() {
 }
 
 /* ============ SPOR & EGZERSİZ ============ */
+// Profesyonel SVG illüstrasyonları (figür silüetleri — soyut, prof görünüm)
+const WK_SVG = {
+  stretch: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#059669"/></linearGradient></defs><circle cx="50" cy="22" r="7" fill="url(#wg1)"/><path d="M50 30 L50 55 M50 38 L30 28 M50 38 L70 28 M50 55 L40 80 M50 55 L60 80" stroke="url(#wg1)" stroke-width="4.5" fill="none" stroke-linecap="round"/></svg>',
+  walk: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbbf24"/><stop offset="1" stop-color="#d97706"/></linearGradient></defs><circle cx="55" cy="20" r="7" fill="url(#wg2)"/><path d="M55 28 L55 55 M55 35 L40 45 M55 35 L72 30 M55 55 L40 78 M55 55 L70 80" stroke="url(#wg2)" stroke-width="4.5" fill="none" stroke-linecap="round"/></svg>',
+  cardio: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f87171"/><stop offset="1" stop-color="#dc2626"/></linearGradient></defs><circle cx="55" cy="18" r="7" fill="url(#wg3)"/><path d="M55 26 L52 50 M55 32 L72 22 M55 32 L38 38 M52 50 L35 70 M52 50 L72 75" stroke="url(#wg3)" stroke-width="4.5" fill="none" stroke-linecap="round"/><path d="M22 80 L30 75 M75 75 L82 80" stroke="url(#wg3)" stroke-width="3" fill="none" stroke-linecap="round" opacity=".6"/></svg>',
+  core: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wg4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs><circle cx="22" cy="50" r="6" fill="url(#wg4)"/><path d="M28 50 L75 50 M40 48 L40 62 M55 48 L55 65 M75 50 L82 65 M75 50 L82 35" stroke="url(#wg4)" stroke-width="4.5" fill="none" stroke-linecap="round"/><line x1="20" y1="72" x2="85" y2="72" stroke="url(#wg4)" stroke-width="3" opacity=".4" stroke-dasharray="3 3"/></svg>',
+  yoga: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wg5" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c4b5fd"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs><circle cx="50" cy="22" r="7" fill="url(#wg5)"/><path d="M50 30 Q50 50 50 60 M50 40 Q30 40 25 25 M50 40 Q70 40 75 25 M30 78 Q50 65 70 78" stroke="url(#wg5)" stroke-width="4.5" fill="none" stroke-linecap="round"/></svg>',
+  hiit: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wg6" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fb923c"/><stop offset="1" stop-color="#ea580c"/></linearGradient></defs><circle cx="50" cy="16" r="6" fill="url(#wg6)"/><path d="M50 22 L50 48 M50 28 L30 18 M50 28 L72 14 M50 48 L32 75 M50 48 L70 70" stroke="url(#wg6)" stroke-width="4.5" fill="none" stroke-linecap="round"/><path d="M15 40 L25 30 M85 30 L75 40" stroke="url(#wg6)" stroke-width="3" fill="none" stroke-linecap="round" opacity=".6"/></svg>',
+  upper: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wg7" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#60a5fa"/><stop offset="1" stop-color="#2563eb"/></linearGradient></defs><circle cx="20" cy="55" r="6" fill="url(#wg7)"/><path d="M26 55 L75 55 M30 55 L25 70 M50 55 L48 70 M70 55 L72 70 M75 55 L82 65 M75 55 L82 45" stroke="url(#wg7)" stroke-width="4.5" fill="none" stroke-linecap="round"/><line x1="20" y1="78" x2="85" y2="78" stroke="url(#wg7)" stroke-width="3" opacity=".4"/></svg>',
+  lower: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wg8" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f472b6"/><stop offset="1" stop-color="#be185d"/></linearGradient></defs><circle cx="50" cy="20" r="7" fill="url(#wg8)"/><path d="M50 28 L50 50 M50 35 L36 30 M50 35 L64 30 M50 50 L32 78 L26 78 M50 50 L68 78 L74 78" stroke="url(#wg8)" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+};
 const WORKOUTS = [
   { id:'stretch', emoji:'🧘', name:'Esneme',        dur:'5-10 dk', desc:'Sabah/akşam 8 hareket · vücudu aç', steps:['Boyun çevirme (30sn)','Omuz çevirme (30sn)','Sırt esnemesi (45sn)','Bel bükülme (45sn)','Kalça esnemesi (45sn)','Bacak arkası (45sn)','Kedi-deve (1 dk)','Derin nefes (1 dk)'] },
   { id:'walk',    emoji:'🚶', name:'Yürüyüş',       dur:'20-30 dk', desc:'Orta tempo · kalp sağlığı', steps:['5 dk ısınma yürüyüşü','20 dk orta tempo','5 dk soğuma'] },
@@ -3546,7 +3599,7 @@ function renderSheetWorkout() {
   }
   const grid = WORKOUTS.map(w => `
     <button class="wk-card" onclick="openWorkoutDetail('${w.id}')">
-      <div class="wk-emoji">${w.emoji}</div>
+      <div class="wk-illu">${WK_SVG[w.id] || ('<div class="wk-emoji">'+w.emoji+'</div>')}</div>
       <div class="wk-n">${w.name}</div>
       <div class="wk-d">${w.dur} · ${w.desc}</div>
     </button>`).join('');
@@ -3579,8 +3632,13 @@ function openWorkoutDetail(id) {
   const w = WORKOUTS.find(x=>x.id===id); if (!w) return;
   document.getElementById('sheetContent').innerHTML = `
     <h3>${w.emoji} ${w.name}</h3>
-    <p style="font-size:12px;color:#a0a3b8;margin-bottom:4px"><b>Süre:</b> ${w.dur}</p>
-    <p style="font-size:12px;color:#a0a3b8;margin-bottom:12px">${w.desc}</p>
+    <div style="margin:8px 0 14px;padding:18px;border-radius:18px;background:linear-gradient(135deg,rgba(16,185,129,0.14),rgba(5,150,105,0.08));border:1px solid rgba(16,185,129,0.25);display:flex;align-items:center;gap:14px">
+      <div style="width:88px;height:88px;flex-shrink:0;background:rgba(255,255,255,0.04);border-radius:16px;padding:8px;display:flex;align-items:center;justify-content:center">${WK_SVG[w.id] || ('<div style="font-size:42px">'+w.emoji+'</div>')}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#10b981;font-weight:800;margin-bottom:4px">⏱️ ${w.dur}</div>
+        <div style="font-size:13px;line-height:1.5;color:#cbd5e1">${w.desc}</div>
+      </div>
+    </div>
     <label class="lbl">Adımlar</label>
     <ol style="padding-left:20px;margin:6px 0 14px;line-height:1.8;font-size:13px">${w.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
     <label class="lbl">Yaptım, kaç dakika sürdü?</label>
@@ -4235,8 +4293,27 @@ function bmiCategory(bmi) {
   return { label:'Obez', color:'#ef4444' };
 }
 function renderSheetBody() {
-  state.body = state.body || { height:0, logs:[] };
+  state.body = state.body || { height:0, logs:[], goal:null, monthAdvice:null };
   const logs = state.body.logs || [];
+  // İlk kez giriliyor: kurulum ekranı
+  if (!logs.length || !state.body.height) {
+    document.getElementById('sheetContent').innerHTML = `
+      <h3>⚖️ Kilo & VKİ Takibi</h3>
+      <div style="margin:8px 0 14px;padding:18px;border-radius:18px;background:linear-gradient(135deg,#ec4899,#be185d);color:#fff">
+        <div style="font-size:12px;opacity:.95;line-height:1.55">Hoş geldin sahip 💜<br>İlk ölçümünü gir — sonra her sabah uygulama sana <b>"Bugün değişti mi?"</b> diye sorar. Sen "evet" dersen yeni değer girersin, "hayır" dersen aynı kalır.</div>
+      </div>
+      <div style="padding:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;margin-bottom:14px">
+        <div style="font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#94a3b8;font-weight:700;margin-bottom:12px">📝 İlk Ölçüm</div>
+        <div style="display:flex;gap:10px;margin-bottom:12px">
+          <div style="flex:1"><label class="lbl" style="font-size:11.5px;color:#94a3b8;margin-bottom:4px;display:block">⚖️ Kilo (kg)</label>
+            <input type="number" id="bdWeight" class="inp" step="0.1" min="20" max="300" value="70" style="font-size:18px;font-weight:800;text-align:center;padding:13px"></div>
+          <div style="flex:1"><label class="lbl" style="font-size:11.5px;color:#94a3b8;margin-bottom:4px;display:block">📏 Boy (cm)</label>
+            <input type="number" id="bdHeight" class="inp" min="100" max="230" value="170" style="font-size:18px;font-weight:800;text-align:center;padding:13px"></div>
+        </div>
+        <button class="sheet-btn primary" style="margin-top:6px;padding:14px;font-size:15px;font-weight:800" onclick="bodySave()">✓ Kaydet ve takibi başlat</button>
+      </div>`;
+    return;
+  }
   const sorted = [...logs].sort((a,b)=>(a.ts||0)-(b.ts||0));
   const latest = sorted[sorted.length-1];
   const first = sorted[0];
@@ -4276,8 +4353,26 @@ function renderSheetBody() {
       <div style="font-weight:700;font-size:13px">${l.date}</div>
       <div style="color:#ec4899;font-weight:800;font-size:15px">${l.weight} kg</div>
     </div>`).join('') : '<div style="text-align:center;color:#a0a3b8;font-size:12px;padding:12px">Henüz kayıt yok</div>';
+  // Bugün sorulmuş mu? (sorulduysa tekrar sorma)
+  const todayKey = new Date().toISOString().slice(0,10);
+  const askedToday = (state.body.lastAskDate === todayKey);
+  // Ay sonu önerisi (her ayın 28-31'inde tetikle)
+  const advice = bodyMonthAdvice();
   document.getElementById('sheetContent').innerHTML = `
     <h3>⚖️ Kilo & VKİ Takibi</h3>
+    ${advice ? `<div style="margin:8px 0 12px;padding:14px;border-radius:16px;background:linear-gradient(135deg,${advice.c1},${advice.c2});color:#fff;box-shadow:0 8px 22px ${advice.c1}55">
+      <div style="font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;font-weight:800;opacity:.95;margin-bottom:4px">📊 Ay Sonu Önerisi</div>
+      <div style="font-size:14px;font-weight:800;margin-bottom:4px">${advice.title}</div>
+      <div style="font-size:12px;line-height:1.5;opacity:.95">${advice.text}</div>
+    </div>` : ''}
+    ${!askedToday ? `<div style="margin:8px 0 12px;padding:14px;border-radius:16px;background:linear-gradient(135deg,rgba(99,102,241,0.18),rgba(139,92,246,0.12));border:1px solid rgba(139,92,246,0.3)">
+      <div style="font-size:13px;font-weight:800;margin-bottom:6px">🌅 Bugün değişti mi sahip?</div>
+      <div style="font-size:12px;color:#cbd5e1;line-height:1.5;margin-bottom:10px">Son ölçüm: <b>${latest.weight} kg</b> · Boy: <b>${state.body.height} cm</b></div>
+      <div style="display:flex;gap:8px">
+        <button class="sheet-btn primary" style="flex:1;padding:11px;font-size:13px;font-weight:800;background:linear-gradient(135deg,#10b981,#059669)" onclick="bodyAskYes()">✓ Evet, değişti</button>
+        <button class="sheet-btn" style="flex:1;padding:11px;font-size:13px;font-weight:800" onclick="bodyAskNo()">— Hayır, aynı</button>
+      </div>
+    </div>` : ''}
     <div style="margin:8px 0 14px;padding:14px 16px;border-radius:18px;background:linear-gradient(135deg,#ec4899,#be185d);color:#fff">
       <div style="display:flex;justify-content:space-between;align-items:center">
         <div>
@@ -4319,14 +4414,90 @@ function bodySave() {
   const w = parseFloat(document.getElementById('bdWeight').value) || 0;
   const h = parseInt(document.getElementById('bdHeight').value,10) || 0;
   if (w <= 0) { alert('Geçerli kilo gir.'); return; }
-  state.body = state.body || { height:0, logs:[] };
+  state.body = state.body || { height:0, logs:[], goal:null };
   state.body.height = h;
   const today = new Date().toISOString().slice(0,10);
   state.body.logs = state.body.logs.filter(x=>x.date!==today);
   state.body.logs.push({ date:today, weight:w, ts:Date.now() });
+  state.body.lastAskDate = today;
   LS.set('yasamai_body', state.body);
   renderSheetBody();
 }
+// "Bugün değişti mi?" → Evet
+function bodyAskYes() {
+  const sorted = [...(state.body.logs||[])].sort((a,b)=>(a.ts||0)-(b.ts||0));
+  const latest = sorted[sorted.length-1];
+  const newW = prompt('Yeni kilon (kg)?', latest ? latest.weight : 70);
+  if (!newW) return;
+  const w = parseFloat(newW); if (!w || w < 20 || w > 300) { alert('Geçerli değer gir.'); return; }
+  const today = new Date().toISOString().slice(0,10);
+  state.body.logs = state.body.logs.filter(x=>x.date!==today);
+  state.body.logs.push({ date:today, weight:w, ts:Date.now() });
+  state.body.lastAskDate = today;
+  LS.set('yasamai_body', state.body);
+  renderSheetBody();
+}
+// "Bugün değişti mi?" → Hayır (son değerle aynı)
+function bodyAskNo() {
+  const sorted = [...(state.body.logs||[])].sort((a,b)=>(a.ts||0)-(b.ts||0));
+  const latest = sorted[sorted.length-1]; if (!latest) return;
+  const today = new Date().toISOString().slice(0,10);
+  state.body.logs = state.body.logs.filter(x=>x.date!==today);
+  state.body.logs.push({ date:today, weight:latest.weight, ts:Date.now(), inferred:true });
+  state.body.lastAskDate = today;
+  LS.set('yasamai_body', state.body);
+  renderSheetBody();
+}
+// Ay sonu önerisi: ayın son 4 günü içindeyse hesapla; aynı ay içinde 1 kez göster
+function bodyMonthAdvice() {
+  const logs = state.body?.logs || []; if (logs.length < 5) return null;
+  const now = new Date();
+  const lastDay = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+  if (now.getDate() < lastDay - 3) return null;
+  const monthKey = now.getFullYear() + '-' + (now.getMonth()+1);
+  if (state.body.monthAdviceShown === monthKey) return null;
+  // Bu ayın kayıtları
+  const monthLogs = logs.filter(l => { const d = new Date(l.date); return d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth(); });
+  if (monthLogs.length < 3) return null;
+  const sorted = [...monthLogs].sort((a,b)=>(a.ts||0)-(b.ts||0));
+  const start = sorted[0].weight, end = sorted[sorted.length-1].weight;
+  const delta = end - start;
+  const bmi = state.body.height ? bmiCalc(end, state.body.height) : 0;
+  let title = '', text = '', c1 = '#6366f1', c2 = '#8b5cf6';
+  if (bmi >= 25) {
+    if (delta > 0) { title = 'Spor + beslenme zamanı 💪'; text = 'Bu ay ' + delta.toFixed(1) + ' kg arttın ve VKİ ' + bmi + '. Hareket + dengeli yemek dengeyi geri alır. Spor sekmesinden HIIT/Kardiyo dene.'; c1 = '#ef4444'; c2 = '#dc2626'; }
+    else if (delta < -0.5) { title = 'Harika gidiyorsun! 🌟'; text = 'Bu ay ' + Math.abs(delta).toFixed(1) + ' kg verdin. Tempoyu koru — spor + dengeli beslenme aynı şekilde devam.'; c1 = '#10b981'; c2 = '#059669'; }
+    else { title = 'Spor seni bekliyor 🔥'; text = 'Kilo aynı kaldı, VKİ ' + bmi + '. Haftada 3 gün 20 dk hareket başla — büyük fark yapar.'; c1 = '#f59e0b'; c2 = '#d97706'; }
+  } else if (bmi < 18.5 && bmi > 0) {
+    title = 'Beslenmeye odaklan 🍎'; text = 'VKİ ' + bmi + ' — biraz düşük. Protein, sağlıklı yağ, kompleks karbonhidrat artır. Spor + yemekle kas kazanımı düşün.'; c1 = '#3b82f6'; c2 = '#1d4ed8';
+  } else {
+    if (Math.abs(delta) < 0.5) { title = 'Olduğun gibi devam ✨'; text = 'Bu ay neredeyse hiç değişmedin. VKİ ' + (bmi||'—') + ' — sağlıklı aralıkta. Mevcut rutinini sürdür.'; c1 = '#10b981'; c2 = '#059669'; }
+    else if (delta > 0) { title = 'Hafif artış var 📈'; text = 'Bu ay +' + delta.toFixed(1) + ' kg. VKİ hâlâ sağlıklı ama spor dozunu hafif artır, dengeyi koru.'; c1 = '#a78bfa'; c2 = '#7c3aed'; }
+    else { title = 'Hafif düşüş var 📉'; text = 'Bu ay ' + delta.toFixed(1) + ' kg. VKİ sağlıklı — kasıtlı değilse beslenmeyi gözden geçir.'; c1 = '#22d3ee'; c2 = '#0891b2'; }
+  }
+  // Aynı ay içinde tekrar göstermemek için işaretle (sheet kapatınca)
+  state.body.monthAdviceShown = monthKey;
+  LS.set('yasamai_body', state.body);
+  return { title, text, c1, c2 };
+}
+// Günlük "değişti mi?" bildirimi (sabah 09:00)
+function bodyDailyTick() {
+  if (!state.body?.logs?.length || !state.body.height) return;
+  const now = new Date();
+  const today = now.toISOString().slice(0,10);
+  if (state.body.lastAskDate === today) return;
+  if (state.body.lastNotifiedDate === today) return;
+  if (now.getHours() < 9) return;
+  if (Notification && Notification.permission === 'granted' && navigator.serviceWorker?.ready) {
+    navigator.serviceWorker.ready.then(reg => {
+      reg.showNotification('⚖️ Kilo Takibi', { body:'Bugün kiloda/boyda değişiklik var mı sahip?', icon:'./icon-192.png', tag:'body-daily', requireInteraction:false });
+    }).catch(()=>{});
+  }
+  state.body.lastNotifiedDate = today;
+  LS.set('yasamai_body', state.body);
+}
+setInterval(bodyDailyTick, 60*60*1000);
+setTimeout(bodyDailyTick, 8000);
 
 /* ============ GÜNLÜK ============ */
 // Günlükte görüntülenen ay (ve filtre). Kullanıcı gezinirken korunur.
@@ -4793,7 +4964,7 @@ function setTheme(n) {
 
 /* ============ SHEET ============ */
 function openSheet(type) {
-  const r = { theme:renderSheetTheme, reminder:renderSheetReminder, privacy:renderSheetPrivacy, premium:renderSheetPremium, signup:renderSheetSignup, login:renderSheetLogin, anon:renderSheetAnon, newDiary:renderSheetNewDiary, google:renderSheetGoogle, apple:renderSheetApple, verify:renderSheetVerify, payment:renderSheetPayment, gAge:renderSheetGAge, fontSize:renderSheetFontSize, aiTone:renderSheetAiTone, feedback:renderSheetFeedback, help:renderSheetHelp, about:renderSheetAbout, editProfile:renderSheetEditProfile, cycleLog:renderSheetCycleLog, cycleSymptom:renderSheetCycleSymptom, cycleSettings:renderSheetCycleSettings, cyclePeriodLen:renderSheetCyclePeriodLen, pregnancy:renderSheetPregnancy, pregMeds:renderSheetPregMeds, water:renderSheetWater, routine:renderSheetRoutine, workout:renderSheetWorkout, workoutLog:renderSheetWorkoutLog, breathe:renderSheetBreathe, sleep:renderSheetSleep, meds:renderSheetMeds, medAdd:()=>renderSheetMedAdd(), body:renderSheetBody };
+  const r = { theme:renderSheetTheme, reminder:renderSheetReminder, privacy:renderSheetPrivacy, premium:renderSheetPremium, signup:renderSheetSignup, login:renderSheetLogin, anon:renderSheetAnon, newDiary:renderSheetNewDiary, google:renderSheetGoogle, apple:renderSheetApple, verify:renderSheetVerify, payment:renderSheetPayment, gAge:renderSheetGAge, fontSize:renderSheetFontSize, aiTone:renderSheetAiTone, feedback:renderSheetFeedback, help:renderSheetHelp, about:renderSheetAbout, rate:renderSheetRate, editProfile:renderSheetEditProfile, cycleLog:renderSheetCycleLog, cycleSymptom:renderSheetCycleSymptom, cycleSettings:renderSheetCycleSettings, cyclePeriodLen:renderSheetCyclePeriodLen, pregnancy:renderSheetPregnancy, pregMeds:renderSheetPregMeds, water:renderSheetWater, routine:renderSheetRoutine, workout:renderSheetWorkout, workoutLog:renderSheetWorkoutLog, breathe:renderSheetBreathe, sleep:renderSheetSleep, meds:renderSheetMeds, medAdd:()=>renderSheetMedAdd(), body:renderSheetBody };
   if (r[type]) r[type]();
   openSheetRaw();
 }
@@ -4901,6 +5072,63 @@ function setAiTone(id) {
   state.aiTone = id; LS.set('yasamai_aiTone', id); closeSheet(); refreshProfile();
 }
 
+/* ============ YILDIZ PUANLAMA ============ */
+let _rateStars = 0;
+function renderSheetRate() {
+  const prev = LS.get('yasamai_rating', null);
+  _rateStars = prev?.stars || 0;
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>⭐ Uygulamayı Puanla</h3>
+    <p style="font-size:12.5px;color:#a0a3b8;margin-bottom:16px;line-height:1.55">Yaşam.AI'yı sevdin mi? Bir-iki cümleyle deneyimini paylaş — geliştiriciye <b>e-posta olarak</b> ulaşır, daha iyi yapmamıza yardımcı olur.</p>
+    <div id="rateStars" style="display:flex;justify-content:center;gap:10px;margin-bottom:8px">
+      ${[1,2,3,4,5].map(n => `<button type="button" onclick="rateSetStars(${n})" data-s="${n}" style="background:transparent;border:none;cursor:pointer;font-size:42px;line-height:1;padding:4px;color:${_rateStars>=n?'#fbbf24':'rgba(255,255,255,0.18)'};transition:transform .1s">★</button>`).join('')}
+    </div>
+    <div id="rateLabel" style="text-align:center;font-size:12.5px;color:#a0a3b8;font-weight:700;min-height:18px;margin-bottom:14px">${rateLabel(_rateStars)}</div>
+    <label class="lbl" style="font-size:12px;margin-bottom:6px;display:block">Yorum (opsiyonel)</label>
+    <textarea id="rateComment" placeholder="Beğendiğin/eksik bulduğun yanları yaz..." style="width:100%;min-height:90px;padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:inherit;font-size:13.5px;resize:vertical;font-family:inherit;line-height:1.5">${esc(prev?.comment||'')}</textarea>
+    <button class="sheet-btn primary" id="rateSendBtn" onclick="sendRating()" style="margin-top:14px;padding:14px;font-size:15px;font-weight:800;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1a22">Gönder</button>
+    <a class="sheet-link" onclick="closeSheet()">Kapat</a>`;
+}
+function rateLabel(n) {
+  return ({0:'Yıldıza dokun', 1:'Çok kötü 😢', 2:'Kötü', 3:'Orta', 4:'Güzel 🌟', 5:'Harika! 🎉'})[n] || '';
+}
+function rateSetStars(n) {
+  _rateStars = n;
+  document.querySelectorAll('#rateStars button').forEach((b,i) => {
+    b.style.color = (i+1) <= n ? '#fbbf24' : 'rgba(255,255,255,0.18)';
+  });
+  const lbl = document.getElementById('rateLabel'); if (lbl) lbl.textContent = rateLabel(n);
+}
+async function sendRating() {
+  if (!_rateStars) { alert('Önce bir yıldız seç sahip 🌟'); return; }
+  const comment = document.getElementById('rateComment').value.trim();
+  const btn = document.getElementById('rateSendBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Gönderiliyor...'; }
+  const user = state.user?.email || 'anon';
+  const name = state.user?.name || 'Misafir';
+  // Yerel kayıt
+  LS.set('yasamai_rating', { stars:_rateStars, comment, at:Date.now() });
+  // Mail
+  try {
+    if (EMAILJS_PUBLIC_KEY && EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID && window.emailjs) {
+      emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email: 'tam.4238@gmail.com',
+        to_name: 'Yaşam.AI Geliştirici',
+        code: '[YILDIZ PUAN]\nKullanıcı: ' + name + ' (' + user + ')\nTarih: ' + new Date().toLocaleString('tr-TR') + '\nSürüm: ' + APP_VERSION_LABEL + '\n\nPuan: ' + '★'.repeat(_rateStars) + '☆'.repeat(5-_rateStars) + ' (' + _rateStars + '/5)\n\nYorum:\n' + (comment || '(Yorum yok)')
+      });
+      alert('Teşekkürler! ' + _rateStars + '/5 puanın bize ulaştı 💜');
+    } else {
+      alert('Teşekkürler! Puanın kaydedildi.');
+    }
+  } catch(e) {
+    alert('Teşekkürler! Puanın kaydedildi (mail gönderilemedi, sorun değil — yerel olarak saklandı).');
+  }
+  // Profil rozetini güncelle
+  const rv = document.getElementById('rateVal'); if (rv) rv.textContent = '★'.repeat(_rateStars);
+  closeSheet();
+}
+
 function renderSheetFeedback() {
   document.getElementById('sheetContent').innerHTML = `
     <h3>Geri bildirim</h3>
@@ -4941,18 +5169,36 @@ async function sendFeedback() {
 
 function renderSheetHelp() {
   const qa = [
-    { q:'Mesaj hakkım nasıl yenilenir?', a:'Her gün yenilenen 20 ücretsiz mesaj hakkın var. Gece 00:00 sonrası sıfırlanır. Sınırsız için Premium.' },
-    { q:'Verilerim güvende mi?', a:'Tüm verilerin cihazında saklanır. Hiçbir sohbet sunucularımızda tutulmaz. Profil > "Verilerimi indir" ile sohbetlerin ve günlük girdilerin notepad (.txt) olarak yedeklenir.' },
-    { q:'Sesli not nasıl çalışır?', a:'+ menüsünden "Sesli not" seçip konuşursun. Bitince "Durdur"a basarsın. Türkçe konuşma tanıma kullanıyoruz.' },
-    { q:'Bildirimler gelmiyor?', a:'Profil > Bildirimler > Günlük hatırlatma ayarını aç. İlk açılışta telefon izin soracak — "İzin ver" de.' },
-    { q:'AI yanlış cevap verdi, ne yapayım?', a:'Yaşam.AI bir terapist değil, arkadaştır. Kriz anında Yaşam.AI\'ı ara. Geri bildirim gönderebilirsin.' }
+    { q:'🤖 Yaşam.AI nedir, ne işe yarar?', a:'Yaşam.AI, ruh haline göre seninle konuşan, günlük tutma, uyku/su/ilaç/spor/kilo/regl takibi yapan bir kişisel yaşam asistanıdır. Terapist değil, samimi bir eşlikçi.' },
+    { q:'💬 Mesaj hakkım nasıl yenilenir?', a:'Her gün 20 ücretsiz mesaj hakkın var. Gece 00:00\'dan sonra sıfırlanır. Sınırsız mesaj için Profil > Premium.' },
+    { q:'🔒 Verilerim güvende mi?', a:'Tüm verilerin sadece senin cihazında (localStorage) saklanır. Sohbetler hiçbir sunucuda tutulmaz. Yedek için Profil > Verilerimi indir (TXT) kullan.' },
+    { q:'🎙️ Sesli not nasıl çalışır?', a:'Sohbet ekranında + menüsünden "Sesli not" seç, Türkçe konuş, bitince "Durdur"a bas. Cihaz mikrofon izni ister.' },
+    { q:'🌙 Gece mic modu nedir?', a:'Uyku sekmesinde "Gece Modunu Başlat" ile telefonu yastık yanına koyarsın. Mikrofon horlama ve derin nefes anlarını kaydeder, sabah rapor verir. Telefon kilitliyken çalışmaz — uygulamayı açık bırak ve şarja tak.' },
+    { q:'🔔 Bildirimler gelmiyor, ne yapayım?', a:'1) Profil > Bildirimler\'den hatırlatmayı aç. 2) Telefon ayarlarından "Yaşam.AI" için bildirim iznini kontrol et. 3) Pil tasarrufu/optimizasyonu uygulamayı kapatabilir — istisna olarak ekle.' },
+    { q:'⏰ İlaç alarmı çalmadı?', a:'İlaç sekmesinden saatleri ekledikten sonra "Test alarmı" ile dene. Telefonda "Rahatsız Etme" modu kapalı olmalı, bildirim izni verilmeli.' },
+    { q:'⚖️ Kilo takibi nasıl çalışır?', a:'İlk girişte kilo + boy girersin. Her sabah uygulama "Bugün değişti mi?" diye sorar. Evet/Hayır seçersin. Ay sonunda otomatik öneri verir (spor/yemek/devam).' },
+    { q:'📤 Verilerimi nasıl yedeklerim?', a:'Profil > Veri & Gizlilik > Verilerimi indir. TXT (notepad) dosyası olarak tüm sohbet, günlük, uyku, kilo verileri Türkçe karakterlerle inerek dışa aktarılır.' },
+    { q:'🌟 Uygulamayı nasıl puanlarım?', a:'Profil > Destek > "Uygulamayı puanla" ile yıldız puanı + yorumunu gönderebilirsin. Doğrudan geliştiriciye e-posta olarak ulaşır.' },
+    { q:'💜 AI yanlış / saçma cevap verdi?', a:'Yaşam.AI bir terapist değil. Hata yapabilir. Kriz anında bu sayfanın altındaki 112 numarasını ara. Profil > Geri bildirim gönderebilirsin.' }
   ];
   document.getElementById('sheetContent').innerHTML = `
     <h3>Yardım & SSS</h3>
-    ${qa.map(x => `<details style="padding:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;margin-bottom:8px">
-      <summary style="font-weight:700;cursor:pointer;font-size:13.5px">${x.q}</summary>
-      <div style="font-size:12.5px;line-height:1.5;color:#a0a3b8;margin-top:8px">${x.a}</div>
+    <p style="font-size:12.5px;color:#a0a3b8;margin-bottom:12px;line-height:1.5">Sıkça sorulan sorulara hızlı cevaplar. Daha fazlası için Geri bildirim gönder.</p>
+    ${qa.map(x => `<details style="padding:12px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;margin-bottom:8px">
+      <summary style="font-weight:700;cursor:pointer;font-size:13.5px;list-style:none">${x.q}</summary>
+      <div style="font-size:12.5px;line-height:1.6;color:#cbd5e1;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.06)">${x.a}</div>
     </details>`).join('')}
+    <div style="margin-top:16px;padding:16px;background:linear-gradient(135deg,rgba(239,68,68,0.18),rgba(185,28,28,0.1));border:1.5px solid rgba(239,68,68,0.45);border-radius:16px;box-shadow:0 8px 22px rgba(239,68,68,0.18)">
+      <div style="font-size:11.5px;font-weight:800;letter-spacing:1.4px;color:#fca5a5;text-transform:uppercase;margin-bottom:8px">⚠️ Kriz Anında</div>
+      <p style="font-size:13px;line-height:1.55;margin:0 0 12px;color:#fee2e2">Acil yardıma ihtiyacın varsa <b>vakit kaybetme</b> — hemen ara:</p>
+      <a href="tel:112" style="display:flex;align-items:center;gap:14px;padding:16px 18px;background:linear-gradient(135deg,#dc2626,#991b1b);border-radius:14px;text-decoration:none;color:#fff;box-shadow:0 8px 24px rgba(220,38,38,0.5)">
+        <div style="font-size:38px;line-height:1">📞</div>
+        <div style="flex:1">
+          <div style="font-size:32px;font-weight:900;letter-spacing:2px;line-height:1">112</div>
+          <div style="font-size:13px;font-weight:700;opacity:.95;margin-top:2px">Acil Servis · 7/24 ücretsiz</div>
+        </div>
+      </a>
+    </div>
     <a class="sheet-link" onclick="closeSheet()">Kapat</a>`;
 }
 
@@ -4984,11 +5230,16 @@ function renderSheetAbout() {
       </div>
     </div>
 
-    <div style="padding:14px;background:linear-gradient(135deg,rgba(239,68,68,0.12),rgba(185,28,28,0.06));border:1px solid rgba(239,68,68,0.28);border-radius:14px;margin-bottom:10px">
-      <div style="font-size:11px;font-weight:800;letter-spacing:1.2px;color:#fca5a5;text-transform:uppercase;margin-bottom:6px">Kriz anında</div>
-      <p style="font-size:13px;line-height:1.55;margin:0 0 8px">Kendine veya bir yakınına zarar verme düşüncesi varsa lütfen hemen destek al:</p>
-      <div style="font-size:14px;font-weight:800">📞 Yaşam.AI Destek Hattı</div>
-      <div style="font-size:11.5px;color:#a0a3b8;margin-top:2px">Numara yakında eklenecek</div>
+    <div style="padding:16px;background:linear-gradient(135deg,rgba(239,68,68,0.18),rgba(185,28,28,0.1));border:1.5px solid rgba(239,68,68,0.45);border-radius:16px;margin-bottom:10px;box-shadow:0 8px 22px rgba(239,68,68,0.18)">
+      <div style="font-size:11.5px;font-weight:800;letter-spacing:1.4px;color:#fca5a5;text-transform:uppercase;margin-bottom:8px">⚠️ Kriz Anında</div>
+      <p style="font-size:13px;line-height:1.55;margin:0 0 12px;color:#fee2e2">Kendine veya bir yakınına zarar verme düşüncesi varsa <b>vakit kaybetme</b> — hemen ara:</p>
+      <a href="tel:112" style="display:flex;align-items:center;gap:14px;padding:16px 18px;background:linear-gradient(135deg,#dc2626,#991b1b);border-radius:14px;text-decoration:none;color:#fff;box-shadow:0 8px 24px rgba(220,38,38,0.5);transition:transform .15s">
+        <div style="font-size:38px;line-height:1">📞</div>
+        <div style="flex:1">
+          <div style="font-size:32px;font-weight:900;letter-spacing:2px;line-height:1">112</div>
+          <div style="font-size:13px;font-weight:700;opacity:.95;margin-top:2px">Acil Servis · 7/24 ücretsiz</div>
+        </div>
+      </a>
     </div>
 
     <div style="padding:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;margin-bottom:14px">
