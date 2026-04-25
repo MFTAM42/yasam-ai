@@ -1371,7 +1371,7 @@ try {
 } catch(e){}
 
 /* Sürüm — SW cache adıyla eşleşir, her deploy'da bump yapılır */
-const APP_VERSION = 'v57';
+const APP_VERSION = 'v58';
 const APP_VERSION_LABEL = 'Sürüm 1.0.0 · ' + APP_VERSION;
 try { console.log('%cYaşam.AI ' + APP_VERSION_LABEL, 'color:#a78bfa;font-weight:bold'); } catch(e){}
 
@@ -4110,6 +4110,15 @@ function renderSheetMedAdd(editId) {
         ${times.map(t=>medTimeRowHtml(t)).join('')}
       </div>
     </div>
+    <div style="padding:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;margin-top:10px">
+      <div style="font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#94a3b8;font-weight:700;margin-bottom:10px">🔔 Zil Sesi</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <select id="medTone" class="inp" style="flex:1;font-size:14px;font-weight:600;padding:12px">
+          ${Object.entries(ALARM_TONES).map(([k,v])=>`<option value="${k}" ${(m?.tone||'klasik')===k?'selected':''}>${v.name}</option>`).join('')}
+        </select>
+        <button type="button" onclick="playAlarmSound(1, document.getElementById('medTone').value)" style="padding:12px 16px;border-radius:10px;border:1px solid rgba(167,139,250,0.3);background:rgba(167,139,250,0.1);color:#a78bfa;font-weight:700;font-size:13px;cursor:pointer">▶ Dinle</button>
+      </div>
+    </div>
     <button class="sheet-btn primary" style="margin-top:14px;padding:14px;font-size:15px;font-weight:800" onclick="medSave('${editId||''}')">✓ Kaydet ve alarmı kur</button>
     <a class="sheet-link" onclick="openSheet('meds')">İptal</a>
   `;
@@ -4142,12 +4151,13 @@ function medSave(editId) {
   const refillThreshold = parseInt(document.getElementById('medThresh').value,10) || 3;
   const times = Array.from(document.querySelectorAll('.med-t')).map(i=>i.value).filter(Boolean).sort();
   if (!times.length) { alert('En az bir hatırlatma saati ekle.'); return; }
+  const tone = document.getElementById('medTone')?.value || 'klasik';
   state.meds = state.meds || [];
   if (editId) {
     const m = state.meds.find(x=>x.id===editId);
-    if (m) Object.assign(m, { name, dose, pillCount, perDose, refillThreshold, times });
+    if (m) Object.assign(m, { name, dose, pillCount, perDose, refillThreshold, times, tone });
   } else {
-    state.meds.push({ id:'med_'+Date.now(), name, dose, pillCount, perDose, refillThreshold, times, lastTakenAt:0, createdAt:Date.now() });
+    state.meds.push({ id:'med_'+Date.now(), name, dose, pillCount, perDose, refillThreshold, times, tone, lastTakenAt:0, createdAt:Date.now() });
   }
   LS.set('yasamai_meds', state.meds);
   scheduleMedReminders();
@@ -4234,7 +4244,7 @@ function medTick() {
   } catch(e) { console.warn('medTick err', e); }
 }
 function fireMedAlarm(m, t) {
-  try { playAlarmSound(6); } catch(e){}
+  try { playAlarmSound(6, m.tone || 'klasik'); } catch(e){}
   try { playAlarmVibration(6); } catch(e){}
   const body = (m.dose ? m.dose + ' · ' : '') + 'Saat ' + t + ' · Stok: ' + (m.pillCount||0);
   if ('Notification' in window && Notification.permission === 'granted') {
@@ -5450,35 +5460,42 @@ function cancelReminder() {
   if (reminderCheckInterval) { clearInterval(reminderCheckInterval); reminderCheckInterval = null; }
 }
 
-/* Alarm sesi — Web Audio API (dosyaya gerek yok, üretilir).
-   loops: kaç kez tekrarlasın (default 1 = ~1.2sn). İlaç için 6 → ~10sn. */
+/* Alarm zil sesi tonları — her biri farklı pattern + frekans */
+const ALARM_TONES = {
+  klasik: { name:'Klasik bip', cycle:1.6, type:'sine',     pattern:[[0,880,0.18],[0.22,880,0.18],[0.44,880,0.18],[0.80,880,0.18],[1.02,880,0.18]] },
+  digital:{ name:'Dijital saat', cycle:1.4, type:'square', pattern:[[0,1000,0.12],[0.18,1000,0.12],[0.36,1000,0.12],[0.70,1200,0.12],[0.88,1200,0.12]] },
+  yumusak:{ name:'Yumuşak çan', cycle:1.8, type:'sine',    pattern:[[0,660,0.40],[0.50,880,0.40],[1.00,660,0.40]] },
+  acil:   { name:'Acil siren',  cycle:1.4, type:'sawtooth',pattern:[[0,500,0.30],[0.32,800,0.30],[0.64,500,0.30],[0.96,800,0.30]] },
+  kus:    { name:'Kuş cıvıltısı', cycle:1.6, type:'triangle', pattern:[[0,1500,0.10],[0.14,1800,0.10],[0.28,1500,0.10],[0.50,2000,0.08],[0.62,1700,0.08]] },
+  doga:   { name:'Doğal ton', cycle:2.0, type:'sine',      pattern:[[0,440,0.50],[0.60,587,0.50],[1.20,659,0.60]] }
+};
+/* Alarm sesi — Web Audio API. tone: ALARM_TONES anahtarı, loops: kaç kez tekrarlasın */
 let _alarmCtx = null, _alarmStop = null;
-function playAlarmSound(loops) {
+function playAlarmSound(loops, tone) {
   try {
     stopAlarmSound();
     const Ctx = window.AudioContext || window.webkitAudioContext;
     if (!Ctx) return;
     const ctx = new Ctx();
     _alarmCtx = ctx;
-    const cycle = 1.6; // her döngü 1.6 sn (5 bip + sessizlik)
-    const beeps = [0, 0.22, 0.44, 0.80, 1.02];
+    const t = ALARM_TONES[tone] || ALARM_TONES.klasik;
     const total = Math.max(1, loops || 1);
     for (let k = 0; k < total; k++) {
-      const base = ctx.currentTime + k * cycle;
-      beeps.forEach(offset => {
+      const base = ctx.currentTime + k * t.cycle;
+      t.pattern.forEach(([offset, freq, dur]) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.value = 880;
+        osc.type = t.type;
+        osc.frequency.value = freq;
         gain.gain.setValueAtTime(0, base + offset);
         gain.gain.linearRampToValueAtTime(0.4, base + offset + 0.01);
-        gain.gain.linearRampToValueAtTime(0, base + offset + 0.18);
+        gain.gain.linearRampToValueAtTime(0, base + offset + dur);
         osc.connect(gain); gain.connect(ctx.destination);
         osc.start(base + offset);
-        osc.stop(base + offset + 0.2);
+        osc.stop(base + offset + dur + 0.02);
       });
     }
-    _alarmStop = setTimeout(() => { try { ctx.close(); } catch(e){} _alarmCtx = null; }, total * cycle * 1000 + 200);
+    _alarmStop = setTimeout(() => { try { ctx.close(); } catch(e){} _alarmCtx = null; }, total * t.cycle * 1000 + 200);
   } catch(e) {}
 }
 function stopAlarmSound() {
@@ -6120,14 +6137,22 @@ function renderSheetNewDiary() {
     {id:'ofke',n:'Sinirli',c:'#f87171'},
     {id:'mutluluk',n:'Mutlu',c:'#fde047'}
   ];
+  const todayISO = new Date().toISOString().slice(0,10);
   document.getElementById('sheetContent').innerHTML = `
     <h3>Yeni günlük girdisi</h3>
     <div class="form-row"><label>Başlık</label><input type="text" id="dTitle" placeholder="Bugün ne yaşadın?" maxlength="60"></div>
+    <div class="form-row" style="margin-bottom:10px">
+      <label style="display:flex;justify-content:space-between;align-items:center">
+        <span>📅 Tarih</span>
+        <span style="font-size:10.5px;color:#94a3b8;font-weight:500">Geçmiş bir güne de yazabilirsin</span>
+      </label>
+      <input type="date" id="dDate" max="${todayISO}" value="${todayISO}" style="font-size:14px;font-weight:700;padding:12px;text-align:center">
+    </div>
     <label style="display:block;font-size:11px;color:#a0a3b8;margin-bottom:6px;font-weight:600">Ruh halin</label>
     <div class="row" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
       ${moods.map(m => `<button class="mood-chip" data-mid="${m.id}" data-mc="${m.c}" onclick="pickMoodChip(this)" style="--c:${m.c}">${m.n}</button>`).join('')}
     </div>
-    <div class="composer" style="padding:0"><textarea id="dText" placeholder="Bugün neler yaşadın, nasıl hissettin? Yaz, sonra geri dönüp okuyabilirsin..."></textarea></div>
+    <div class="composer" style="padding:0"><textarea id="dText" placeholder="O gün neler yaşadın, nasıl hissettin? Yaz, sonra geri dönüp okuyabilirsin..."></textarea></div>
     <button class="sheet-btn" onclick="saveDiary()">Kaydet</button>
     <a class="sheet-link" onclick="closeSheet()">İptal</a>
   `;
@@ -6147,12 +6172,19 @@ function saveDiary() {
   const picked = document.querySelector('.mood-chip.selected');
   const moodColor = picked ? picked.dataset.mc : '#8b5cf6';
   const moodId = picked ? picked.dataset.mid : null;
-  const today = new Date();
-  state.diary.push({ title, text, moodColor, mood: moodId, ts: Date.now(), date: today.toISOString().slice(0,10) });
+  const todayISO = new Date().toISOString().slice(0,10);
+  const dateInp = document.getElementById('dDate');
+  let entryDate = (dateInp?.value || todayISO);
+  if (entryDate > todayISO) entryDate = todayISO; // gelecek tarihi engelle
+  // Tarih seçilen güne ait timestamp (saat 12:00 — gün ortası, sıralamada anlamlı)
+  const dt = new Date(entryDate + 'T12:00:00');
+  const ts = isNaN(dt.getTime()) ? Date.now() : dt.getTime();
+  state.diary.push({ title, text, moodColor, mood: moodId, ts, date: entryDate });
   LS.set('yasamai_diary', state.diary);
-  // Yeni girdi sonrası takvimi bu aya getir
-  _diaryView.year = today.getFullYear();
-  _diaryView.month = today.getMonth();
+  // Takvimi yazdığın aya getir
+  const target = new Date(entryDate);
+  _diaryView.year = target.getFullYear();
+  _diaryView.month = target.getMonth();
   _diaryFilter = 'all';
   closeSheet(); renderDiary();
 }
