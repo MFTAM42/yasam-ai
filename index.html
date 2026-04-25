@@ -1766,7 +1766,7 @@ try {
 } catch(e){}
 
 /* Sürüm — SW cache adıyla eşleşir, her deploy'da bump yapılır */
-const APP_VERSION = 'v62';
+const APP_VERSION = 'v63';
 const APP_VERSION_LABEL = 'Sürüm 1.0.0 · ' + APP_VERSION;
 /* YEREL tarih helper — toISOString() UTC verdiği için TR'de gece yarısı civarı 1 gün geri gidiyordu (takvim bug'ı). Her yerde bunu kullan. */
 function localISO(d) {
@@ -4534,20 +4534,7 @@ const EX_MINI = {
     `<g class="pf-glute-kick" style="transform-origin: 60px 60px;">${PF.limb('',60,60,76,52,90,42,6)}</g>` +
     PF.dot(90,42,3) +
     PF.ground(96)
-  ),
-  lunge:      _exMini('🚶','#f472b6','#be185d','exp-bob'),
-  climber:    _exMini('🧗','#fb923c','#ea580c','exp-jump'),
-  sprint:     _exMini('💨','#dc2626','#991b1b','exp-bob-fast'),
-  pushup:     _exMini('💪','#60a5fa','#2563eb','exp-bob'),
-  situp:      _exMini('🔄','#a78bfa','#7c3aed','exp-bob'),
-  bridge:     _exMini('🌉','#f472b6','#be185d','exp-pulse'),
-  dip:        _exMini('🪑','#60a5fa','#2563eb','exp-bob'),
-  diamond:    _exMini('♦️','#60a5fa','#2563eb','exp-bob'),
-  superman:   _exMini('🦸','#60a5fa','#2563eb','exp-stretch'),
-  p2p:        _exMini('🔄','#60a5fa','#2563eb','exp-bob'),
-  squat:      _exMini('🦵','#f472b6','#be185d','exp-squat'),
-  wallsit:    _exMini('🧱','#f472b6','#be185d','exp-pulse'),
-  glutekick:  _exMini('🦵','#f472b6','#be185d','exp-tilt')
+  )
 };
 function exVisual(stepText) {
   const ex = exLookup(stepText);
