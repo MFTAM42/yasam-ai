@@ -1371,7 +1371,7 @@ try {
 } catch(e){}
 
 /* Sürüm — SW cache adıyla eşleşir, her deploy'da bump yapılır */
-const APP_VERSION = 'v58';
+const APP_VERSION = 'v59';
 const APP_VERSION_LABEL = 'Sürüm 1.0.0 · ' + APP_VERSION;
 try { console.log('%cYaşam.AI ' + APP_VERSION_LABEL, 'color:#a78bfa;font-weight:bold'); } catch(e){}
 
@@ -1505,14 +1505,21 @@ function enterApp() {
   refreshHome();
   // Geri tuşu yönetimi için başlangıç state'i
   try { history.replaceState({ app: true }, ''); } catch(e){}
-  // Bildirim izni daha önce istenmemişse, hatırlatıcı açıksa iste
-  if (state.reminderOn && 'Notification' in window && Notification.permission === 'default') {
+  // Bildirim izni daha önce istenmemişse, kullanıcıya sor — granted olursa
+  // tüm hatırlatıcıları (günlük + su) otomatik aktif et
+  if ('Notification' in window && Notification.permission === 'default') {
     setTimeout(async () => {
       const granted = await ensureNotifyPermission();
-      if (granted) scheduleReminder();
+      if (granted) {
+        state.reminderOn = true; LS.set('yasamai_ron', true);
+        if (state.water) { state.water.on = true; LS.set('yasamai_water', state.water); }
+        try { scheduleReminder(); scheduleWaterReminder(); scheduleMedReminders(); } catch(e){}
+        const rv = document.getElementById('reminderVal');
+        if (rv) rv.textContent = state.reminderOn ? state.reminder : 'Kapalı';
+      }
     }, 2000);
-  } else if (state.reminderOn && 'Notification' in window && Notification.permission === 'granted') {
-    setTimeout(scheduleReminder, 1000);
+  } else if ('Notification' in window && Notification.permission === 'granted') {
+    setTimeout(() => { try { scheduleReminder(); scheduleWaterReminder(); scheduleMedReminders(); } catch(e){} }, 1000);
   }
   // Mobil klavye açılınca input görünür kalsın (scrollIntoView'ı kaldırdık — pencere zıplamasın)
   const ci = document.getElementById('chatInput');
@@ -3322,11 +3329,12 @@ function renderSheetWater() {
         <input type="checkbox" id="wOn" ${w.on?'checked':''} style="width:20px;height:20px;accent-color:#0ea5e9">
         <div style="flex:1">
           <div style="font-weight:700;font-size:13.5px">Bildirim hatırlatması</div>
-          <div style="font-size:11px;color:#94a3b8;margin-top:1px">Saatte bir "su iç" bildirimi gelsin</div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:1px">"Su içme saatin" bildirimi belirlediğin sıklıkta gelir</div>
         </div>
       </label>
     </div>
     <button class="sheet-btn primary" style="padding:14px;font-size:15px;font-weight:800" onclick="waterSave()">✓ Ayarları kaydet</button>
+    <button class="sheet-btn" style="margin-top:8px;background:rgba(14,165,233,0.12);border:1px solid rgba(14,165,233,0.3);color:#38bdf8;font-weight:700" onclick="waterTestNotif()">🔔 Test bildirimi gönder</button>
   `;
 }
 function waterAdd(ml) {
@@ -3373,30 +3381,40 @@ function showNotif(title, body) {
     }
   } catch(e){}
 }
+/* Su tick — opts.silent: true → sadece sistem bildirimi (overlay yok, ses/titreşim yok).
+   Default (manuel test): overlay + ses + titreşim. Otomatik scheduler her zaman silent çağırır. */
+function _waterTickFire(opts) {
+  try {
+    waterResetIfNeeded();
+    if (state.water.drank >= state.water.goal) return;
+    const h = new Date().getHours();
+    if (h < 8 || h > 23) return;
+    const msgs = [
+      'Bir bardak su al, kendine iyi davran.',
+      'Küçük bir mola, büyük bir iyilik.',
+      'Vücudun sana teşekkür edecek. Bir yudum al.',
+      'Az içiyor olabilirsin — şimdi tam zamanı.'
+    ];
+    const msg = msgs[Math.floor(Math.random()*msgs.length)];
+    showNotif('💧 Su içme saatin', msg);
+    if (!opts || !opts.silent) {
+      try { playAlarmSound(); playAlarmVibration(); } catch(e){}
+      try { showGenericAlarm('💧','Su içme saatin', msg, '#0ea5e9','#0369a1', ()=>{ waterAdd(250); }, '🥛 250 ml ekle'); } catch(e){}
+    }
+  } catch(e){}
+}
 function scheduleWaterReminder() {
   if (_waterTimer) { clearInterval(_waterTimer); _waterTimer = null; }
   const w = state.water;
   if (!w || !w.on || !w.interval || w.interval < 10) return;
   if (!('Notification' in window) || Notification.permission !== 'granted') return;
-  _waterTimer = setInterval(() => {
-    try {
-      waterResetIfNeeded();
-      if (state.water.drank >= state.water.goal) return;
-      // Sadece uyanık saatlerde (08-23)
-      const h = new Date().getHours();
-      if (h < 8 || h > 23) return;
-      const msgs = [
-        'Bir bardak su al, kendine iyi davran.',
-        'Su vakti — küçük bir mola, büyük bir iyilik.',
-        'Vücudun sana teşekkür edecek. Bir yudum al.',
-        'Hatırlatayım: su. Az içiyor olabilirsin.'
-      ];
-      const msg = msgs[Math.floor(Math.random()*msgs.length)];
-      try { playAlarmSound(); playAlarmVibration(); } catch(e){}
-      showNotif('💧 Su içme vakti', msg);
-      try { showGenericAlarm('💧','Su içme vakti', msg, '#0ea5e9','#0369a1', ()=>{ waterAdd(250); }, '🥛 250 ml ekle'); } catch(e){}
-    } catch(e){}
-  }, w.interval * 60 * 1000);
+  // İlk bildirim aralık dolduğunda — uygulama açılır açılmaz pop etmesin
+  _waterTimer = setInterval(() => _waterTickFire({ silent:true }), w.interval * 60 * 1000);
+}
+async function waterTestNotif() {
+  const granted = await ensureNotifyPermission();
+  if (!granted) return;
+  _waterTickFire(); // overlay'lı test
 }
 
 /* Genel alarm overlay — su, rutin ve diğer hatırlatıcılar için */
@@ -4251,14 +4269,14 @@ function fireMedAlarm(m, t) {
     try {
       if (navigator.serviceWorker?.ready) {
         navigator.serviceWorker.ready.then(reg => {
-          reg.showNotification('💊 ' + m.name + ' zamanı', {
+          reg.showNotification('💊 İlaç saatin — ' + m.name, {
             body, icon:'./icon-192.png', badge:'./icon-192.png',
             vibrate:[200,100,200,100,200,100,500,100,200],
             tag:'med-'+m.id+'-'+t, requireInteraction:true, silent:false
           });
         });
       } else {
-        new Notification('💊 ' + m.name + ' zamanı', { body, icon:'./icon-192.png' });
+        new Notification('💊 İlaç saatin — ' + m.name, { body, icon:'./icon-192.png' });
       }
     } catch(e) {}
   }
@@ -4273,7 +4291,7 @@ function showMedAlarmOverlay(m, t) {
   div.innerHTML = `
     <div style="max-width:340px;width:100%;padding:24px;border-radius:22px;background:linear-gradient(135deg,#ef4444,#f97316);color:#fff;text-align:center;box-shadow:0 20px 60px rgba(239,68,68,0.5)">
       <div style="font-size:52px;margin-bottom:8px">💊</div>
-      <div style="font-size:22px;font-weight:800;margin-bottom:4px">${esc(m.name)} zamanı</div>
+      <div style="font-size:22px;font-weight:800;margin-bottom:4px">İlaç saatin — ${esc(m.name)}</div>
       <div style="font-size:13px;opacity:.95;margin-bottom:18px">${esc(m.dose||'İlacını al')} · ${t}</div>
       <div style="display:flex;gap:8px">
         <button onclick="stopAlarmSound();document.getElementById('medAlarmOverlay').remove();medTake('${m.id}','${t}')" style="flex:1;padding:12px;border-radius:12px;border:none;background:#fff;color:#ef4444;font-weight:800;font-size:14px">✓ Aldım</button>
