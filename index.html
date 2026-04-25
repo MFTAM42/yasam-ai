@@ -407,11 +407,53 @@
   .wk-card:active{transform:scale(0.97);box-shadow:0 6px 18px rgba(16,185,129,0.18)}
   body.light .wk-card{background:#fff;border-color:rgba(0,0,0,0.06)}
   .wk-emoji{font-size:24px}
-  .wk-illu{width:100%;aspect-ratio:1.5/1;background:linear-gradient(135deg,rgba(16,185,129,0.12),rgba(5,150,105,0.06));border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;padding:6px;overflow:hidden}
+  .wk-illu{width:100%;aspect-ratio:1.5/1;background:rgba(255,255,255,0.04);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;overflow:hidden}
   .wk-illu svg{width:100%;height:100%;max-height:62px}
+  .wk-illu .wk-pro{width:100%;height:100%}
   .wk-n{font-size:13px;font-weight:800;margin-top:6px}
   .wk-d{font-size:10.5px;color:#a0a3b8;margin-top:2px;line-height:1.35}
   body.light .wk-d{color:#6b7280}
+
+  /* ===== PROFESYONEL EGZERSİZ KARTLARI (büyük emoji + halka + parıltı) ===== */
+  .wk-pro{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;border-radius:12px;background:radial-gradient(circle at 30% 30%,color-mix(in srgb,var(--c1) 35%,transparent),color-mix(in srgb,var(--c2) 18%,transparent));overflow:hidden}
+  .wk-pro-glow{position:absolute;inset:-30%;background:radial-gradient(circle,color-mix(in srgb,var(--c1) 55%,transparent),transparent 60%);filter:blur(14px);animation:wkProGlow 3.5s ease-in-out infinite}
+  .wk-pro-ring{position:absolute;inset:18%;border-radius:50%;border:2.5px solid color-mix(in srgb,var(--c1) 60%,transparent);box-shadow:0 0 22px color-mix(in srgb,var(--c1) 50%,transparent);animation:wkProRing 2.6s ease-in-out infinite}
+  .wk-pro-emoji{position:relative;font-size:34px;line-height:1;filter:drop-shadow(0 3px 8px rgba(0,0,0,0.35));z-index:2}
+  @keyframes wkProGlow{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+  @keyframes wkProRing{0%,100%{transform:scale(1) rotate(0);opacity:.85}50%{transform:scale(1.1) rotate(180deg);opacity:1}}
+  .wkp-pulse .wk-pro-emoji{animation:wkpPulse 1.8s ease-in-out infinite}
+  @keyframes wkpPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+  .wkp-bob .wk-pro-emoji{animation:wkpBob 1.1s ease-in-out infinite}
+  @keyframes wkpBob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-5px) rotate(3deg)}}
+  .wkp-bob-fast .wk-pro-emoji{animation:wkpBob 0.55s ease-in-out infinite}
+  .wkp-breathe .wk-pro-emoji{animation:wkpBreathe 3.2s ease-in-out infinite}
+  @keyframes wkpBreathe{0%,100%{transform:scale(0.92);opacity:.85}50%{transform:scale(1.15);opacity:1}}
+
+  /* Adım kartı içinde profesyonel mini görsel — wk-pro ile aynı yapı */
+  .ex-pro{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;border-radius:12px;background:radial-gradient(circle at 30% 30%,color-mix(in srgb,var(--c1) 38%,transparent),color-mix(in srgb,var(--c2) 18%,transparent));overflow:hidden}
+  .exp-glow{position:absolute;inset:-25%;background:radial-gradient(circle,color-mix(in srgb,var(--c1) 60%,transparent),transparent 60%);filter:blur(10px);animation:wkProGlow 3s ease-in-out infinite}
+  .exp-ring{position:absolute;inset:14%;border-radius:50%;border:2px solid color-mix(in srgb,var(--c1) 65%,transparent);box-shadow:0 0 18px color-mix(in srgb,var(--c1) 50%,transparent);animation:wkProRing 2.4s ease-in-out infinite}
+  .exp-emoji{position:relative;font-size:32px;line-height:1;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.35));z-index:2}
+  .exp-pulse .exp-emoji{animation:wkpPulse 1.8s ease-in-out infinite}
+  .exp-bob .exp-emoji{animation:wkpBob 1.1s ease-in-out infinite}
+  .exp-bob-fast .exp-emoji{animation:wkpBob 0.5s ease-in-out infinite}
+  .exp-breathe .exp-emoji{animation:wkpBreathe 3.2s ease-in-out infinite}
+  .exp-tilt .exp-emoji{animation:expTilt 1.8s ease-in-out infinite}
+  @keyframes expTilt{0%,100%{transform:rotate(-15deg)}50%{transform:rotate(15deg)}}
+  .exp-spin .exp-emoji{animation:expSpin 2.2s linear infinite}
+  @keyframes expSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  .exp-twist .exp-emoji{animation:expTwist 1.4s ease-in-out infinite}
+  @keyframes expTwist{0%,100%{transform:rotate(-25deg) scale(1)}50%{transform:rotate(25deg) scale(1.05)}}
+  .exp-jump .exp-emoji{animation:expJump 0.6s ease-in-out infinite}
+  @keyframes expJump{0%,100%{transform:translateY(0)}40%{transform:translateY(-9px) scale(1.06)}}
+  .exp-fold .exp-emoji{animation:expFold 1.8s ease-in-out infinite}
+  @keyframes expFold{0%,100%{transform:rotate(0)}50%{transform:rotate(40deg)}}
+  .exp-stretch .exp-emoji{animation:expStretch 2s ease-in-out infinite}
+  @keyframes expStretch{0%,100%{transform:scale(1)}50%{transform:scaleY(1.18) translateY(-3px)}}
+  .exp-punch .exp-emoji{animation:expPunch 0.45s ease-in-out infinite}
+  @keyframes expPunch{0%,100%{transform:translateX(0)}50%{transform:translateX(6px) scale(1.05)}}
+  .exp-squat .exp-emoji{animation:expSquat 1.5s ease-in-out infinite}
+  @keyframes expSquat{0%,100%{transform:translateY(0)}50%{transform:translateY(5px) scaleY(0.88)}}
 
   /* ===== EGZERSİZ ANİMASYONLARI (CSS keyframes) ===== */
   .wk-anim *{transform-box:fill-box;transform-origin:center}
@@ -452,8 +494,9 @@
   /* Adım kartı küçük animasyonlu görseller */
   .ex-row{display:flex;gap:12px;align-items:flex-start;padding:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;margin-bottom:8px}
   body.light .ex-row{background:#fff;border-color:rgba(0,0,0,0.06)}
-  .ex-vis{width:64px;height:64px;flex-shrink:0;background:linear-gradient(135deg,rgba(16,185,129,0.14),rgba(5,150,105,0.06));border-radius:12px;display:flex;align-items:center;justify-content:center;padding:6px;overflow:hidden}
+  .ex-vis{width:72px;height:72px;flex-shrink:0;border-radius:14px;overflow:hidden}
   .ex-vis svg{width:100%;height:100%}
+  .ex-vis .ex-pro{width:100%;height:100%}
   .ex-info{flex:1;min-width:0}
   .ex-num{font-size:10px;font-weight:800;color:#10b981;letter-spacing:.5px;text-transform:uppercase}
   .ex-name{font-size:13px;font-weight:800;margin-top:2px;line-height:1.3}
@@ -1509,8 +1552,18 @@ try {
 } catch(e){}
 
 /* Sürüm — SW cache adıyla eşleşir, her deploy'da bump yapılır */
-const APP_VERSION = 'v60';
+const APP_VERSION = 'v61';
 const APP_VERSION_LABEL = 'Sürüm 1.0.0 · ' + APP_VERSION;
+/* YEREL tarih helper — toISOString() UTC verdiği için TR'de gece yarısı civarı 1 gün geri gidiyordu (takvim bug'ı). Her yerde bunu kullan. */
+function localISO(d) {
+  d = d || new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return y + '-' + m + '-' + day;
+}
+// Date.prototype.toISOString'i monkey-patch etmiyoruz (yan etki riski) —
+// bunun yerine eski .toISOString().slice(0,10) çağrılarını localISO ile değiştiriyoruz.
 try { console.log('%cYaşam.AI ' + APP_VERSION_LABEL, 'color:#a78bfa;font-weight:bold'); } catch(e){}
 
 const themes = {
@@ -1537,7 +1590,7 @@ const topics = [
 /* ============ AKIŞ ============ */
 function resetDailyIfNeeded() {
   // Günlük mesaj hakkı reset (her gün 10 mesaj, YYYY-MM-DD değişince sıfırla)
-  const today = new Date().toISOString().slice(0,10);
+  const today = localISO();
   if (state.msgCountDay !== today) {
     state.msgCount = 0;
     state.msgCountDay = today;
@@ -1727,14 +1780,14 @@ function refreshProfile() {
     const hist = LS.get('yasamai_chat_'+m, []);
     chatMsgCount += hist.filter(x => x.role === 'user').length;
     hist.forEach(msg => {
-      if (msg.ts) { const d = new Date(msg.ts); d.setHours(0,0,0,0); days.add(d.toISOString().slice(0,10)); }
+      if (msg.ts) { const d = new Date(msg.ts); d.setHours(0,0,0,0); days.add(localISO(d)); }
     });
   });
   const today = new Date(); today.setHours(0,0,0,0);
   let streak = 0;
   for (let i = 0; i < 365; i++) {
     const d = new Date(today); d.setDate(today.getDate() - i);
-    const k = d.toISOString().slice(0,10);
+    const k = localISO(d);
     if (days.has(k)) streak++; else if (i > 0) break;
   }
   const ps = document.getElementById('pStreak'); if (ps) ps.textContent = streak;
@@ -1877,7 +1930,7 @@ function exportData() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'yasamai-sohbetlerim-' + new Date().toISOString().slice(0,10) + '.txt';
+  a.download = 'yasamai-sohbetlerim-' + localISO() + '.txt';
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
@@ -2234,14 +2287,14 @@ function refreshHome() {
     hist.forEach(msg => {
       if (msg.ts) {
         const d = new Date(msg.ts); d.setHours(0,0,0,0);
-        days.add(d.toISOString().slice(0,10));
+        days.add(localISO(d));
       }
     });
   });
   let streak = 0;
   for (let i = 0; i < 365; i++) {
     const d = new Date(today); d.setDate(today.getDate() - i);
-    const k = d.toISOString().slice(0,10);
+    const k = localISO(d);
     if (days.has(k)) streak++;
     else if (i > 0) break;
   }
@@ -3197,7 +3250,7 @@ function cycleDeleteLog(idx) {
   renderCycle();
 }
 function renderSheetCycleLog() {
-  const def = _cyclePreDate || new Date().toISOString().slice(0,10);
+  const def = _cyclePreDate || localISO();
   _cyclePreDate = null;
   document.getElementById('sheetContent').innerHTML =
     '<h3 class="sheet-ttl">Regl kaydı</h3>' +
@@ -3219,7 +3272,7 @@ function saveCycleLog() {
   renderCycle();
 }
 function renderSheetCycleSymptom() {
-  const def = _cyclePreDate || new Date().toISOString().slice(0,10);
+  const def = _cyclePreDate || localISO();
   _cyclePreDate = null;
   const syms = ['Kramp','Baş ağrısı','Yorgunluk','Şişkinlik','Hassasiyet','Sivilce','Huysuzluk','İstek'];
   document.getElementById('sheetContent').innerHTML =
@@ -3394,7 +3447,7 @@ function pregDelMed(i) {
 }
 
 /* ============ SU TAKİBİ ============ */
-function waterToday() { return new Date().toISOString().slice(0,10); }
+function waterToday() { return localISO(); }
 function waterResetIfNeeded() {
   const t = waterToday();
   state.water = state.water || { on:false, goal:2000, drank:0, day:'', interval:90 };
@@ -3419,7 +3472,7 @@ function renderSheetWater() {
   let hist = '';
   for (let i=6;i>=0;i--) {
     const d = new Date(); d.setDate(d.getDate()-i);
-    const key = d.toISOString().slice(0,10);
+    const key = localISO(d);
     const val = (key === w.day) ? w.drank : (logs[key]||0);
     const h = Math.min(100, Math.round((val/(w.goal||2000))*100));
     hist += `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
@@ -3583,7 +3636,7 @@ function renderSheetRoutine() {
   const r = state.routine || { on:false, items:[] };
   const now = new Date();
   const curMin = now.getHours()*60 + now.getMinutes();
-  const today = new Date().toISOString().slice(0,10);
+  const today = localISO();
   const done = LS.get('yasamai_routineDone_' + today, {});
   // Şu an hangi adım aktif + sıradaki
   let activeIdx = -1, nextIdx = -1;
@@ -3644,7 +3697,7 @@ function renderSheetRoutine() {
   `;
 }
 function routineToggleDone(i) {
-  const today = new Date().toISOString().slice(0,10);
+  const today = localISO();
   const key = 'yasamai_routineDone_' + today;
   const done = LS.get(key, {});
   done[i] = !done[i];
@@ -3717,15 +3770,19 @@ function scheduleRoutineReminders() {
 /* ============ SPOR & EGZERSİZ ============ */
 /* Animasyonlu SVG figürleri — gerçek hareket gösterir (CSS keyframes ile)
    Her egzersiz için emoji + büyük animasyonlu vücut figürü */
+/* Profesyonel kart görselleri: büyük emoji + animasyonlu halka + parıltı */
+function _wkCard(emoji, c1, c2, animClass) {
+  return `<div class="wk-pro ${animClass||''}" style="--c1:${c1};--c2:${c2}"><span class="wk-pro-glow"></span><span class="wk-pro-ring"></span><span class="wk-pro-emoji">${emoji}</span></div>`;
+}
 const WK_SVG = {
-  stretch: `<svg viewBox="0 0 100 100" class="wk-anim wk-anim-stretch"><defs><linearGradient id="wg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#059669"/></linearGradient></defs><g class="wkfig" stroke="url(#wg1)" stroke-width="4.5" fill="none" stroke-linecap="round"><circle cx="50" cy="22" r="7" fill="url(#wg1)" class="wk-head"/><line x1="50" y1="29" x2="50" y2="60"/><line x1="50" y1="38" x2="30" y2="32" class="wk-arm-l"/><line x1="50" y1="38" x2="70" y2="32" class="wk-arm-r"/><line x1="50" y1="60" x2="40" y2="82"/><line x1="50" y1="60" x2="60" y2="82"/></g></svg>`,
-  walk: `<svg viewBox="0 0 100 100" class="wk-anim wk-anim-walk"><defs><linearGradient id="wg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbbf24"/><stop offset="1" stop-color="#d97706"/></linearGradient></defs><g stroke="url(#wg2)" stroke-width="4.5" fill="none" stroke-linecap="round"><circle cx="50" cy="22" r="7" fill="url(#wg2)"/><line x1="50" y1="29" x2="50" y2="58"/><line x1="50" y1="38" x2="36" y2="48" class="wk-arm-l"/><line x1="50" y1="38" x2="64" y2="32" class="wk-arm-r"/><line x1="50" y1="58" x2="40" y2="80" class="wk-leg-l"/><line x1="50" y1="58" x2="60" y2="80" class="wk-leg-r"/></g></svg>`,
-  cardio: `<svg viewBox="0 0 100 100" class="wk-anim wk-anim-cardio"><defs><linearGradient id="wg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f87171"/><stop offset="1" stop-color="#dc2626"/></linearGradient></defs><g stroke="url(#wg3)" stroke-width="4.5" fill="none" stroke-linecap="round" class="wk-jump"><circle cx="50" cy="22" r="7" fill="url(#wg3)"/><line x1="50" y1="29" x2="50" y2="55"/><line x1="50" y1="36" x2="30" y2="22" class="wk-arm-l"/><line x1="50" y1="36" x2="70" y2="22" class="wk-arm-r"/><line x1="50" y1="55" x2="36" y2="78" class="wk-leg-l"/><line x1="50" y1="55" x2="64" y2="78" class="wk-leg-r"/></g></svg>`,
-  core: `<svg viewBox="0 0 100 100" class="wk-anim wk-anim-core"><defs><linearGradient id="wg4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs><g stroke="url(#wg4)" stroke-width="4.5" fill="none" stroke-linecap="round" class="wk-crunch"><circle cx="22" cy="50" r="6" fill="url(#wg4)"/><line x1="28" y1="50" x2="75" y2="50"/><line x1="40" y1="50" x2="40" y2="62"/><line x1="55" y1="50" x2="55" y2="64"/><line x1="75" y1="50" x2="82" y2="64"/><line x1="75" y1="50" x2="82" y2="36"/></g><line x1="20" y1="72" x2="85" y2="72" stroke="url(#wg4)" stroke-width="3" opacity=".4" stroke-dasharray="3 3"/></svg>`,
-  yoga: `<svg viewBox="0 0 100 100" class="wk-anim wk-anim-yoga"><defs><linearGradient id="wg5" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c4b5fd"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs><g stroke="url(#wg5)" stroke-width="4.5" fill="none" stroke-linecap="round" class="wk-breathe"><circle cx="50" cy="22" r="7" fill="url(#wg5)"/><path d="M50 29 Q50 50 50 60"/><path d="M50 40 Q30 40 25 25" class="wk-arm-l"/><path d="M50 40 Q70 40 75 25" class="wk-arm-r"/><path d="M30 78 Q50 65 70 78"/></g></svg>`,
-  hiit: `<svg viewBox="0 0 100 100" class="wk-anim wk-anim-hiit"><defs><linearGradient id="wg6" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fb923c"/><stop offset="1" stop-color="#ea580c"/></linearGradient></defs><g stroke="url(#wg6)" stroke-width="4.5" fill="none" stroke-linecap="round" class="wk-jump"><circle cx="50" cy="16" r="6" fill="url(#wg6)"/><line x1="50" y1="22" x2="50" y2="48"/><line x1="50" y1="28" x2="30" y2="14" class="wk-arm-l"/><line x1="50" y1="28" x2="70" y2="14" class="wk-arm-r"/><line x1="50" y1="48" x2="34" y2="74" class="wk-leg-l"/><line x1="50" y1="48" x2="66" y2="74" class="wk-leg-r"/></g></svg>`,
-  upper: `<svg viewBox="0 0 100 100" class="wk-anim wk-anim-upper"><defs><linearGradient id="wg7" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#60a5fa"/><stop offset="1" stop-color="#2563eb"/></linearGradient></defs><g stroke="url(#wg7)" stroke-width="4.5" fill="none" stroke-linecap="round" class="wk-pushup"><circle cx="20" cy="55" r="6" fill="url(#wg7)"/><line x1="26" y1="55" x2="75" y2="55"/><line x1="30" y1="55" x2="25" y2="72"/><line x1="50" y1="55" x2="48" y2="72"/><line x1="70" y1="55" x2="72" y2="72"/><line x1="75" y1="55" x2="82" y2="62"/></g><line x1="18" y1="78" x2="85" y2="78" stroke="url(#wg7)" stroke-width="3" opacity=".4"/></svg>`,
-  lower: `<svg viewBox="0 0 100 100" class="wk-anim wk-anim-lower"><defs><linearGradient id="wg8" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f472b6"/><stop offset="1" stop-color="#be185d"/></linearGradient></defs><g stroke="url(#wg8)" stroke-width="4.5" fill="none" stroke-linecap="round" class="wk-squat"><circle cx="50" cy="22" r="7" fill="url(#wg8)"/><line x1="50" y1="29" x2="50" y2="50"/><line x1="50" y1="35" x2="36" y2="30"/><line x1="50" y1="35" x2="64" y2="30"/><line x1="50" y1="50" x2="34" y2="74"/><line x1="34" y1="74" x2="28" y2="76"/><line x1="50" y1="50" x2="66" y2="74"/><line x1="66" y1="74" x2="72" y2="76"/></g></svg>`
+  stretch: _wkCard('🧘‍♂️','#34d399','#059669','wkp-pulse'),
+  walk:    _wkCard('🚶','#fbbf24','#d97706','wkp-bob'),
+  cardio:  _wkCard('🏃','#f87171','#dc2626','wkp-bob-fast'),
+  core:    _wkCard('🤸','#a78bfa','#7c3aed','wkp-pulse'),
+  yoga:    _wkCard('🧘‍♀️','#c4b5fd','#8b5cf6','wkp-breathe'),
+  hiit:    _wkCard('🔥','#fb923c','#ea580c','wkp-bob-fast'),
+  upper:   _wkCard('🏋️','#60a5fa','#2563eb','wkp-pulse'),
+  lower:   _wkCard('🦵','#f472b6','#be185d','wkp-pulse')
 };
 
 /* Egzersiz adım kütüphanesi — her adım için animasyonlu görsel + nasıl yapılır */
@@ -3794,50 +3851,53 @@ function exLookup(stepText) {
   }
   return null;
 }
-/* Mini animasyonlu SVG'ler — her egzersize özel görsel */
+/* Profesyonel mini görseller: büyük emoji + animasyonlu halka + parıltı + harekete özel animasyon */
+function _exMini(emoji, c1, c2, anim) {
+  return `<div class="ex-pro ${anim||'exp-pulse'}" style="--c1:${c1};--c2:${c2}"><span class="exp-glow"></span><span class="exp-ring"></span><span class="exp-emoji">${emoji}</span></div>`;
+}
 const EX_MINI = {
-  neck:      `<svg viewBox="0 0 100 100" class="ex-mini ex-neck"><circle class="m-head" cx="50" cy="35" r="14" fill="#34d399"/><line x1="50" y1="49" x2="50" y2="80" stroke="#059669" stroke-width="5" stroke-linecap="round"/></svg>`,
-  shoulder:  `<svg viewBox="0 0 100 100" class="ex-mini ex-shoulder"><circle cx="50" cy="28" r="9" fill="#fbbf24"/><line x1="50" y1="37" x2="50" y2="72" stroke="#d97706" stroke-width="5" stroke-linecap="round"/><circle class="m-arm" cx="50" cy="48" r="14" fill="none" stroke="#fbbf24" stroke-width="3" stroke-dasharray="4 3"/></svg>`,
-  back:      `<svg viewBox="0 0 100 100" class="ex-mini ex-back"><g class="m-body"><circle cx="50" cy="22" r="8" fill="#a78bfa"/><line x1="50" y1="30" x2="50" y2="70" stroke="#7c3aed" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="35" x2="35" y2="18" stroke="#a78bfa" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="35" x2="65" y2="18" stroke="#a78bfa" stroke-width="4" stroke-linecap="round"/></g></svg>`,
-  waist:     `<svg viewBox="0 0 100 100" class="ex-mini ex-waist"><g class="m-body"><circle cx="50" cy="22" r="8" fill="#f472b6"/><line x1="50" y1="30" x2="50" y2="60" stroke="#be185d" stroke-width="5" stroke-linecap="round"/><line x1="35" y1="50" x2="65" y2="50" stroke="#f472b6" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="60" x2="40" y2="80" stroke="#be185d" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="60" x2="60" y2="80" stroke="#be185d" stroke-width="4" stroke-linecap="round"/></g></svg>`,
-  hip:       `<svg viewBox="0 0 100 100" class="ex-mini ex-hip"><circle cx="35" cy="38" r="8" fill="#34d399"/><line x1="35" y1="46" x2="35" y2="68" stroke="#059669" stroke-width="5" stroke-linecap="round"/><line class="m-leg" x1="35" y1="68" x2="78" y2="62" stroke="#34d399" stroke-width="5" stroke-linecap="round"/></svg>`,
-  hamstring: `<svg viewBox="0 0 100 100" class="ex-mini ex-hamstring"><g class="m-body"><circle cx="50" cy="20" r="8" fill="#fbbf24"/><line x1="50" y1="28" x2="50" y2="55" stroke="#d97706" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="55" x2="50" y2="82" stroke="#d97706" stroke-width="5" stroke-linecap="round"/></g></svg>`,
-  cat:       `<svg viewBox="0 0 100 100" class="ex-mini ex-cat"><g class="m-body"><circle cx="22" cy="40" r="7" fill="#a78bfa"/><path d="M28 42 Q50 30 75 42 L75 65 Q50 70 28 65 Z" fill="none" stroke="#7c3aed" stroke-width="4"/><line x1="32" y1="65" x2="32" y2="80" stroke="#a78bfa" stroke-width="4"/><line x1="72" y1="65" x2="72" y2="80" stroke="#a78bfa" stroke-width="4"/></g></svg>`,
-  breathe:   `<svg viewBox="0 0 100 100" class="ex-mini ex-breathe"><circle class="m-circle" cx="50" cy="50" r="28" fill="none" stroke="#c4b5fd" stroke-width="4"/><circle class="m-circle" cx="50" cy="50" r="18" fill="#a78bfa" opacity="0.4"/></svg>`,
-  walk:      `<svg viewBox="0 0 100 100" class="ex-mini ex-walk"><circle cx="50" cy="22" r="7" fill="#fbbf24"/><line x1="50" y1="29" x2="50" y2="58" stroke="#d97706" stroke-width="5" stroke-linecap="round"/><line class="m-leg-l" x1="50" y1="58" x2="40" y2="82" stroke="#d97706" stroke-width="5" stroke-linecap="round"/><line class="m-leg-r" x1="50" y1="58" x2="60" y2="82" stroke="#d97706" stroke-width="5" stroke-linecap="round"/></svg>`,
-  'walk-fast': `<svg viewBox="0 0 100 100" class="ex-mini ex-walkfast"><circle cx="50" cy="22" r="7" fill="#f87171"/><line x1="50" y1="29" x2="50" y2="58" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/><line class="m-leg-l" x1="50" y1="58" x2="38" y2="82" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/><line class="m-leg-r" x1="50" y1="58" x2="62" y2="82" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/></svg>`,
-  jumpjack:  `<svg viewBox="0 0 100 100" class="ex-mini ex-jumpjack"><circle cx="50" cy="22" r="7" fill="#f87171"/><line x1="50" y1="29" x2="50" y2="55" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/><line class="m-arm-l" x1="50" y1="35" x2="30" y2="50" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/><line class="m-arm-r" x1="50" y1="35" x2="70" y2="50" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/><line class="m-leg-l" x1="50" y1="55" x2="35" y2="80" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/><line class="m-leg-r" x1="50" y1="55" x2="65" y2="80" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/></svg>`,
-  highknee:  `<svg viewBox="0 0 100 100" class="ex-mini ex-highknee"><circle cx="50" cy="20" r="7" fill="#fb923c"/><line x1="50" y1="27" x2="50" y2="55" stroke="#ea580c" stroke-width="5" stroke-linecap="round"/><line class="m-leg-l" x1="50" y1="55" x2="38" y2="78" stroke="#ea580c" stroke-width="5" stroke-linecap="round"/><line class="m-leg-r" x1="50" y1="55" x2="62" y2="78" stroke="#ea580c" stroke-width="5" stroke-linecap="round"/></svg>`,
-  burpee:    `<svg viewBox="0 0 100 100" class="ex-mini ex-burpee"><g class="m-body"><circle cx="50" cy="25" r="7" fill="#f87171"/><line x1="50" y1="32" x2="50" y2="60" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="60" x2="35" y2="82" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="60" x2="65" y2="82" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/></g></svg>`,
-  box:       `<svg viewBox="0 0 100 100" class="ex-mini ex-box"><circle cx="50" cy="22" r="7" fill="#fbbf24"/><line x1="50" y1="29" x2="50" y2="58" stroke="#d97706" stroke-width="5" stroke-linecap="round"/><line class="m-arm-l" x1="50" y1="36" x2="30" y2="40" stroke="#d97706" stroke-width="5" stroke-linecap="round"/><line class="m-arm-r" x1="50" y1="36" x2="70" y2="40" stroke="#d97706" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="58" x2="40" y2="80" stroke="#d97706" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="58" x2="60" y2="80" stroke="#d97706" stroke-width="5" stroke-linecap="round"/></svg>`,
-  rest:      `<svg viewBox="0 0 100 100" class="ex-mini ex-rest"><circle class="m-circle" cx="50" cy="50" r="22" fill="none" stroke="#94a3b8" stroke-width="3" stroke-dasharray="3 4"/><text x="50" y="58" text-anchor="middle" font-size="22" fill="#94a3b8">⏸</text></svg>`,
-  plank:     `<svg viewBox="0 0 100 100" class="ex-mini ex-plank"><g class="m-body"><circle cx="22" cy="48" r="7" fill="#a78bfa"/><line x1="29" y1="48" x2="78" y2="55" stroke="#7c3aed" stroke-width="5" stroke-linecap="round"/><line x1="35" y1="50" x2="32" y2="72" stroke="#a78bfa" stroke-width="4"/><line x1="74" y1="55" x2="80" y2="78" stroke="#a78bfa" stroke-width="4"/></g><line x1="20" y1="82" x2="85" y2="82" stroke="#7c3aed" stroke-width="2" opacity=".4" stroke-dasharray="3 3"/></svg>`,
-  crunch:    `<svg viewBox="0 0 100 100" class="ex-mini ex-crunch"><g class="m-body"><circle cx="20" cy="65" r="7" fill="#a78bfa"/><line x1="26" y1="65" x2="60" y2="70" stroke="#7c3aed" stroke-width="5" stroke-linecap="round"/><line x1="60" y1="70" x2="78" y2="55" stroke="#7c3aed" stroke-width="5" stroke-linecap="round"/></g></svg>`,
-  twist:     `<svg viewBox="0 0 100 100" class="ex-mini ex-twist"><g class="m-body"><circle cx="50" cy="35" r="8" fill="#a78bfa"/><line x1="50" y1="43" x2="50" y2="65" stroke="#7c3aed" stroke-width="5" stroke-linecap="round"/><line x1="35" y1="55" x2="65" y2="55" stroke="#a78bfa" stroke-width="4" stroke-linecap="round"/></g></svg>`,
-  bicycle:   `<svg viewBox="0 0 100 100" class="ex-mini ex-bicycle"><circle cx="50" cy="40" r="20" fill="none" stroke="#7c3aed" stroke-width="2" opacity=".3"/><line class="m-leg-l" x1="50" y1="40" x2="65" y2="50" stroke="#a78bfa" stroke-width="5" stroke-linecap="round"/><line class="m-leg-r" x1="50" y1="40" x2="35" y2="30" stroke="#a78bfa" stroke-width="5" stroke-linecap="round"/><circle cx="50" cy="40" r="4" fill="#7c3aed"/></svg>`,
-  deadbug:   `<svg viewBox="0 0 100 100" class="ex-mini ex-deadbug"><circle cx="50" cy="50" r="8" fill="#a78bfa"/><line class="m-arm-l" x1="50" y1="50" x2="22" y2="40" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/><line class="m-arm-r" x1="50" y1="50" x2="78" y2="40" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/><line class="m-leg-l" x1="50" y1="50" x2="25" y2="78" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/><line class="m-leg-r" x1="50" y1="50" x2="75" y2="78" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/></svg>`,
-  legraise:  `<svg viewBox="0 0 100 100" class="ex-mini ex-legraise"><circle cx="20" cy="65" r="7" fill="#a78bfa"/><line x1="26" y1="65" x2="60" y2="65" stroke="#7c3aed" stroke-width="5" stroke-linecap="round"/><line class="m-leg" x1="60" y1="65" x2="85" y2="40" stroke="#a78bfa" stroke-width="5" stroke-linecap="round"/></svg>`,
-  mountain:  `<svg viewBox="0 0 100 100" class="ex-mini ex-mountain"><g class="m-body"><circle cx="50" cy="22" r="7" fill="#c4b5fd"/><line x1="50" y1="29" x2="50" y2="70" stroke="#8b5cf6" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="36" x2="38" y2="60" stroke="#c4b5fd" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="36" x2="62" y2="60" stroke="#c4b5fd" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="70" x2="44" y2="85" stroke="#8b5cf6" stroke-width="4"/><line x1="50" y1="70" x2="56" y2="85" stroke="#8b5cf6" stroke-width="4"/></g></svg>`,
-  sunsalute: `<svg viewBox="0 0 100 100" class="ex-mini ex-sunsalute"><g class="m-body"><circle cx="50" cy="20" r="6" fill="#fbbf24"/><line x1="50" y1="26" x2="50" y2="55" stroke="#d97706" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="32" x2="35" y2="15" stroke="#fbbf24" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="32" x2="65" y2="15" stroke="#fbbf24" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="55" x2="40" y2="80" stroke="#d97706" stroke-width="4"/><line x1="50" y1="55" x2="60" y2="80" stroke="#d97706" stroke-width="4"/></g></svg>`,
-  warrior:   `<svg viewBox="0 0 100 100" class="ex-mini ex-warrior"><g class="m-body"><circle cx="45" cy="22" r="7" fill="#c4b5fd"/><line x1="45" y1="29" x2="48" y2="55" stroke="#8b5cf6" stroke-width="5" stroke-linecap="round"/><line x1="45" y1="35" x2="22" y2="38" stroke="#c4b5fd" stroke-width="4" stroke-linecap="round"/><line x1="45" y1="35" x2="78" y2="38" stroke="#c4b5fd" stroke-width="4" stroke-linecap="round"/><line x1="48" y1="55" x2="30" y2="80" stroke="#8b5cf6" stroke-width="4"/><line x1="48" y1="55" x2="68" y2="80" stroke="#8b5cf6" stroke-width="4"/></g></svg>`,
-  triangle:  `<svg viewBox="0 0 100 100" class="ex-mini ex-triangle"><g class="m-body"><circle cx="60" cy="28" r="7" fill="#c4b5fd"/><line x1="60" y1="35" x2="35" y2="65" stroke="#8b5cf6" stroke-width="5" stroke-linecap="round"/><line x1="60" y1="35" x2="78" y2="20" stroke="#c4b5fd" stroke-width="4"/><line x1="35" y1="65" x2="22" y2="80" stroke="#c4b5fd" stroke-width="4"/><line x1="35" y1="65" x2="20" y2="65" stroke="#8b5cf6" stroke-width="4"/><line x1="35" y1="65" x2="50" y2="82" stroke="#8b5cf6" stroke-width="4"/></g></svg>`,
-  child:     `<svg viewBox="0 0 100 100" class="ex-mini ex-child"><g class="m-body"><ellipse cx="50" cy="62" rx="32" ry="14" fill="none" stroke="#8b5cf6" stroke-width="4"/><circle cx="22" cy="55" r="6" fill="#c4b5fd"/></g></svg>`,
-  dog:       `<svg viewBox="0 0 100 100" class="ex-mini ex-dog"><g class="m-body"><line x1="20" y1="78" x2="50" y2="30" stroke="#8b5cf6" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="30" x2="80" y2="78" stroke="#8b5cf6" stroke-width="5" stroke-linecap="round"/><circle cx="22" cy="76" r="5" fill="#c4b5fd"/></g></svg>`,
-  squatjump: `<svg viewBox="0 0 100 100" class="ex-mini ex-squatjump"><g class="m-body"><circle cx="50" cy="22" r="7" fill="#fb923c"/><line x1="50" y1="29" x2="50" y2="55" stroke="#ea580c" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="36" x2="35" y2="22" stroke="#ea580c" stroke-width="4"/><line x1="50" y1="36" x2="65" y2="22" stroke="#ea580c" stroke-width="4"/><line x1="50" y1="55" x2="36" y2="78" stroke="#ea580c" stroke-width="4"/><line x1="50" y1="55" x2="64" y2="78" stroke="#ea580c" stroke-width="4"/></g></svg>`,
-  plankjack: `<svg viewBox="0 0 100 100" class="ex-mini ex-plankjack"><circle cx="22" cy="50" r="6" fill="#fb923c"/><line x1="28" y1="50" x2="75" y2="55" stroke="#ea580c" stroke-width="5" stroke-linecap="round"/><line x1="35" y1="55" x2="32" y2="75" stroke="#ea580c" stroke-width="4"/><line class="m-leg-l" x1="72" y1="55" x2="60" y2="78" stroke="#ea580c" stroke-width="4"/><line class="m-leg-r" x1="78" y1="55" x2="88" y2="78" stroke="#ea580c" stroke-width="4"/></svg>`,
-  lunge:     `<svg viewBox="0 0 100 100" class="ex-mini ex-lunge"><g class="m-body"><circle cx="50" cy="22" r="7" fill="#f472b6"/><line x1="50" y1="29" x2="50" y2="55" stroke="#be185d" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="55" x2="30" y2="78" stroke="#be185d" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="55" x2="72" y2="80" stroke="#be185d" stroke-width="5" stroke-linecap="round"/></g></svg>`,
-  climber:   `<svg viewBox="0 0 100 100" class="ex-mini ex-climber"><circle cx="22" cy="48" r="7" fill="#fb923c"/><line x1="28" y1="48" x2="78" y2="55" stroke="#ea580c" stroke-width="5" stroke-linecap="round"/><line class="m-leg-l" x1="60" y1="55" x2="55" y2="70" stroke="#ea580c" stroke-width="4"/><line class="m-leg-r" x1="78" y1="55" x2="85" y2="78" stroke="#ea580c" stroke-width="4"/></svg>`,
-  sprint:    `<svg viewBox="0 0 100 100" class="ex-mini ex-sprint"><circle cx="50" cy="20" r="7" fill="#dc2626"/><line x1="50" y1="27" x2="50" y2="55" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/><line class="m-leg-l" x1="50" y1="55" x2="32" y2="78" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/><line class="m-leg-r" x1="50" y1="55" x2="68" y2="78" stroke="#dc2626" stroke-width="5" stroke-linecap="round"/></svg>`,
-  pushup:    `<svg viewBox="0 0 100 100" class="ex-mini ex-pushup"><g class="m-body"><circle cx="22" cy="50" r="6" fill="#60a5fa"/><line x1="28" y1="50" x2="75" y2="55" stroke="#2563eb" stroke-width="5" stroke-linecap="round"/><line x1="32" y1="50" x2="28" y2="72" stroke="#60a5fa" stroke-width="4"/><line x1="55" y1="55" x2="50" y2="74" stroke="#60a5fa" stroke-width="4"/><line x1="74" y1="55" x2="80" y2="74" stroke="#60a5fa" stroke-width="4"/></g></svg>`,
-  situp:     `<svg viewBox="0 0 100 100" class="ex-mini ex-situp"><g class="m-body"><circle cx="20" cy="60" r="7" fill="#a78bfa"/><line x1="26" y1="60" x2="55" y2="55" stroke="#7c3aed" stroke-width="5" stroke-linecap="round"/><line x1="55" y1="55" x2="78" y2="55" stroke="#7c3aed" stroke-width="5" stroke-linecap="round"/><line x1="55" y1="55" x2="55" y2="80" stroke="#7c3aed" stroke-width="4"/></g></svg>`,
-  bridge:    `<svg viewBox="0 0 100 100" class="ex-mini ex-bridge"><g class="m-body"><path d="M20 75 Q50 35 80 75" fill="none" stroke="#f472b6" stroke-width="6" stroke-linecap="round"/><circle cx="20" cy="75" r="5" fill="#be185d"/></g></svg>`,
-  dip:       `<svg viewBox="0 0 100 100" class="ex-mini ex-dip"><rect x="20" y="55" width="60" height="6" fill="#60a5fa" rx="2"/><g class="m-body"><circle cx="50" cy="32" r="7" fill="#60a5fa"/><line x1="50" y1="39" x2="50" y2="55" stroke="#2563eb" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="55" x2="32" y2="78" stroke="#2563eb" stroke-width="4"/><line x1="50" y1="55" x2="68" y2="78" stroke="#2563eb" stroke-width="4"/></g></svg>`,
-  diamond:   `<svg viewBox="0 0 100 100" class="ex-mini ex-diamond"><g class="m-body"><circle cx="22" cy="50" r="6" fill="#60a5fa"/><line x1="28" y1="50" x2="75" y2="55" stroke="#2563eb" stroke-width="5" stroke-linecap="round"/><polygon points="48,55 52,60 48,65 44,60" fill="#60a5fa"/><line x1="74" y1="55" x2="80" y2="74" stroke="#60a5fa" stroke-width="4"/></g></svg>`,
-  superman:  `<svg viewBox="0 0 100 100" class="ex-mini ex-superman"><g class="m-body"><circle cx="22" cy="55" r="6" fill="#60a5fa"/><line x1="28" y1="55" x2="78" y2="58" stroke="#2563eb" stroke-width="5" stroke-linecap="round"/><line x1="20" y1="50" x2="6" y2="42" stroke="#60a5fa" stroke-width="4" stroke-linecap="round"/><line x1="78" y1="58" x2="92" y2="50" stroke="#60a5fa" stroke-width="4" stroke-linecap="round"/></g></svg>`,
-  p2p:       `<svg viewBox="0 0 100 100" class="ex-mini ex-p2p"><g class="m-body"><circle cx="22" cy="48" r="6" fill="#60a5fa"/><line x1="28" y1="48" x2="75" y2="55" stroke="#2563eb" stroke-width="5" stroke-linecap="round"/><line x1="32" y1="48" x2="28" y2="72" stroke="#60a5fa" stroke-width="4"/><line x1="74" y1="55" x2="80" y2="78" stroke="#60a5fa" stroke-width="4"/></g></svg>`,
-  squat:     `<svg viewBox="0 0 100 100" class="ex-mini ex-squat"><g class="m-body"><circle cx="50" cy="22" r="7" fill="#f472b6"/><line x1="50" y1="29" x2="50" y2="50" stroke="#be185d" stroke-width="5" stroke-linecap="round"/><line x1="50" y1="35" x2="36" y2="30" stroke="#be185d" stroke-width="4"/><line x1="50" y1="35" x2="64" y2="30" stroke="#be185d" stroke-width="4"/><line x1="50" y1="50" x2="34" y2="74" stroke="#be185d" stroke-width="5"/><line x1="50" y1="50" x2="66" y2="74" stroke="#be185d" stroke-width="5"/></g></svg>`,
-  wallsit:   `<svg viewBox="0 0 100 100" class="ex-mini ex-wallsit"><line x1="20" y1="15" x2="20" y2="85" stroke="#f472b6" stroke-width="3" opacity=".5"/><g class="m-body"><circle cx="32" cy="35" r="7" fill="#f472b6"/><line x1="32" y1="42" x2="32" y2="65" stroke="#be185d" stroke-width="5" stroke-linecap="round"/><line x1="32" y1="65" x2="78" y2="65" stroke="#be185d" stroke-width="5" stroke-linecap="round"/><line x1="78" y1="65" x2="78" y2="85" stroke="#be185d" stroke-width="5"/></g></svg>`,
-  glutekick: `<svg viewBox="0 0 100 100" class="ex-mini ex-glutekick"><circle cx="22" cy="50" r="6" fill="#f472b6"/><line x1="28" y1="50" x2="55" y2="55" stroke="#be185d" stroke-width="5" stroke-linecap="round"/><line x1="40" y1="55" x2="40" y2="78" stroke="#be185d" stroke-width="4"/><line x1="55" y1="55" x2="55" y2="78" stroke="#be185d" stroke-width="4"/><line class="m-leg" x1="55" y1="55" x2="85" y2="40" stroke="#f472b6" stroke-width="5" stroke-linecap="round"/></svg>`
+  neck:       _exMini('🙆','#34d399','#059669','exp-tilt'),
+  shoulder:   _exMini('💪','#fbbf24','#d97706','exp-spin'),
+  back:       _exMini('🧘','#a78bfa','#7c3aed','exp-stretch'),
+  waist:      _exMini('🤸','#f472b6','#be185d','exp-twist'),
+  hip:        _exMini('🦵','#34d399','#059669','exp-tilt'),
+  hamstring:  _exMini('🦵','#fbbf24','#d97706','exp-fold'),
+  cat:        _exMini('🐈','#a78bfa','#7c3aed','exp-bob'),
+  breathe:    _exMini('🫁','#c4b5fd','#8b5cf6','exp-breathe'),
+  walk:       _exMini('🚶','#fbbf24','#d97706','exp-bob'),
+  'walk-fast':_exMini('🏃','#f87171','#dc2626','exp-bob-fast'),
+  jumpjack:   _exMini('⭐','#f87171','#dc2626','exp-jump'),
+  highknee:   _exMini('🏃‍♂️','#fb923c','#ea580c','exp-jump'),
+  burpee:     _exMini('🔥','#f87171','#dc2626','exp-jump'),
+  box:        _exMini('🥊','#fbbf24','#d97706','exp-punch'),
+  rest:       _exMini('⏸️','#94a3b8','#475569','exp-pulse'),
+  plank:      _exMini('🧱','#a78bfa','#7c3aed','exp-pulse'),
+  crunch:     _exMini('🔄','#a78bfa','#7c3aed','exp-bob'),
+  twist:      _exMini('↔️','#a78bfa','#7c3aed','exp-twist'),
+  bicycle:    _exMini('🚴','#a78bfa','#7c3aed','exp-spin'),
+  deadbug:    _exMini('🐞','#a78bfa','#7c3aed','exp-stretch'),
+  legraise:   _exMini('⬆️','#a78bfa','#7c3aed','exp-fold'),
+  mountain:   _exMini('⛰️','#c4b5fd','#8b5cf6','exp-breathe'),
+  sunsalute:  _exMini('☀️','#fbbf24','#d97706','exp-spin'),
+  warrior:    _exMini('⚔️','#c4b5fd','#8b5cf6','exp-pulse'),
+  triangle:   _exMini('📐','#c4b5fd','#8b5cf6','exp-tilt'),
+  child:      _exMini('🧎','#c4b5fd','#8b5cf6','exp-breathe'),
+  dog:        _exMini('🐕','#c4b5fd','#8b5cf6','exp-bob'),
+  squatjump:  _exMini('🦵','#fb923c','#ea580c','exp-jump'),
+  plankjack:  _exMini('🧱','#fb923c','#ea580c','exp-jump'),
+  lunge:      _exMini('🚶','#f472b6','#be185d','exp-bob'),
+  climber:    _exMini('🧗','#fb923c','#ea580c','exp-jump'),
+  sprint:     _exMini('💨','#dc2626','#991b1b','exp-bob-fast'),
+  pushup:     _exMini('💪','#60a5fa','#2563eb','exp-bob'),
+  situp:      _exMini('🔄','#a78bfa','#7c3aed','exp-bob'),
+  bridge:     _exMini('🌉','#f472b6','#be185d','exp-pulse'),
+  dip:        _exMini('🪑','#60a5fa','#2563eb','exp-bob'),
+  diamond:    _exMini('♦️','#60a5fa','#2563eb','exp-bob'),
+  superman:   _exMini('🦸','#60a5fa','#2563eb','exp-stretch'),
+  p2p:        _exMini('🔄','#60a5fa','#2563eb','exp-bob'),
+  squat:      _exMini('🦵','#f472b6','#be185d','exp-squat'),
+  wallsit:    _exMini('🧱','#f472b6','#be185d','exp-pulse'),
+  glutekick:  _exMini('🦵','#f472b6','#be185d','exp-tilt')
 };
 function exVisual(stepText) {
   const ex = exLookup(stepText);
@@ -3855,7 +3915,7 @@ const WORKOUTS = [
   { id:'lower',   emoji:'🦵', name:'Alt vücut',     dur:'15 dk', desc:'Bacak, kalça, core', steps:['Squat 3×15','Lunge 3×10/bacak','Köprü 3×15','Wall sit 3×45sn','Kalça kaldırma 3×12'] }
 ];
 function renderSheetWorkout() {
-  const today = new Date().toISOString().slice(0,10);
+  const today = localISO();
   const all = state.workouts || [];
   const todayLogs = all.filter(w => w.date === today);
   const totMin = todayLogs.reduce((s,w)=>s+(w.duration||0),0);
@@ -3864,7 +3924,7 @@ function renderSheetWorkout() {
   const weekSet = new Set();
   for (let i=0;i<7;i++){
     const d = new Date(); d.setDate(d.getDate()-i);
-    const k = d.toISOString().slice(0,10);
+    const k = localISO(d);
     const dayMin = all.filter(w=>w.date===k).reduce((s,w)=>s+(w.duration||0),0);
     if (dayMin>0) { weekSet.add(k); weekMin += dayMin; }
   }
@@ -3873,7 +3933,7 @@ function renderSheetWorkout() {
   let bars = '';
   for (let i=6;i>=0;i--){
     const d = new Date(); d.setDate(d.getDate()-i);
-    const k = d.toISOString().slice(0,10);
+    const k = localISO(d);
     const m = all.filter(w=>w.date===k).reduce((s,w)=>s+(w.duration||0),0);
     const h = Math.min(100, Math.round((m/60)*100));
     bars += `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
@@ -3951,7 +4011,7 @@ function workoutDone(id, name) {
   const min = parseInt(document.getElementById('wkMin').value,10) || 0;
   if (min <= 0) { alert('Süre gir'); return; }
   state.workouts = state.workouts || [];
-  state.workouts.push({ date: new Date().toISOString().slice(0,10), type: name, duration: min, ts: Date.now() });
+  state.workouts.push({ date: localISO(), type: name, duration: min, ts: Date.now() });
   LS.set('yasamai_workouts', state.workouts);
   alert('Harika! ' + min + ' dk hareket kaydedildi 💪');
   closeSheet();
@@ -3971,7 +4031,7 @@ function saveManualWorkout() {
   const min = parseInt(document.getElementById('mwMin').value,10) || 0;
   if (min <= 0) { alert('Süre gir'); return; }
   state.workouts = state.workouts || [];
-  state.workouts.push({ date: new Date().toISOString().slice(0,10), type, duration: min, ts: Date.now() });
+  state.workouts.push({ date: localISO(), type, duration: min, ts: Date.now() });
   LS.set('yasamai_workouts', state.workouts);
   alert('Kaydedildi.');
   closeSheet();
@@ -4024,11 +4084,11 @@ function sleepCalcHours(bed, wake) {
 function renderSheetSleep() {
   state.sleep = state.sleep || { logs: [] };
   const logs = state.sleep.logs || [];
-  const today = new Date().toISOString().slice(0,10);
+  const today = localISO();
   const last7 = [];
   for (let i=6;i>=0;i--) {
     const d = new Date(); d.setDate(d.getDate()-i);
-    const k = d.toISOString().slice(0,10);
+    const k = localISO(d);
     const l = logs.find(x=>x.date===k);
     last7.push({ key:k, day:['Pz','Pt','Sa','Ça','Pe','Cu','Ct'][d.getDay()], hours:l?l.hours:0, snore:l?l.snoreMin:0, quality:l?l.quality:0, today:k===today });
   }
@@ -4127,7 +4187,7 @@ function sleepSave() {
   if (!bed || !wake) { alert('Yatma ve kalkma saatini gir.'); return; }
   const snore = parseInt(document.getElementById('slSnore').value,10) || 0;
   const notes = document.getElementById('slNote').value.trim();
-  const today = new Date().toISOString().slice(0,10);
+  const today = localISO();
   const existing = state.sleep.logs.find(x=>x.date===today);
   const quality = _slQuality || existing?.quality || 3;
   const hours = sleepCalcHours(bed, wake);
@@ -4251,7 +4311,7 @@ function sleepMicStop() {
   try { if (_slWakeLock) _slWakeLock.release(); } catch(e){}
   _slMicStream = null; _slMicCtx = null; _slMicAnalyser = null; _slWakeLock = null;
   if (s.events.length) {
-    const today = new Date().toISOString().slice(0,10);
+    const today = localISO();
     const existing = state.sleep.logs.find(x => x.date === today);
     const snores = s.events.filter(e => e.type === 'snore').length;
     if (existing) { existing.snoreMin = Math.max(existing.snoreMin || 0, snores); LS.set('yasamai_sleep', state.sleep); }
@@ -4262,7 +4322,7 @@ function sleepMicStop() {
 /* ============ İLAÇ TAKİBİ + ALARM ============ */
 function renderSheetMeds() {
   state.meds = state.meds || [];
-  const todayKey = new Date().toISOString().slice(0,10);
+  const todayKey = localISO();
   const takenMap = LS.get('yasamai_medsTaken_' + todayKey, {});
   const now = new Date();
   const curMin = now.getHours()*60 + now.getMinutes();
@@ -4464,7 +4524,7 @@ function medSave(editId) {
 }
 function medTake(id, time) {
   const m = state.meds.find(x=>x.id===id); if (!m) return;
-  const todayKey = new Date().toISOString().slice(0,10);
+  const todayKey = localISO();
   const key = 'yasamai_medsTaken_' + todayKey;
   const taken = LS.get(key, {});
   taken[id + '_' + time] = Date.now();
@@ -4484,7 +4544,7 @@ function medTake(id, time) {
 }
 function medUndoTake(id, time) {
   const m = state.meds.find(x=>x.id===id); if (!m) return;
-  const todayKey = new Date().toISOString().slice(0,10);
+  const todayKey = localISO();
   const key = 'yasamai_medsTaken_' + todayKey;
   const taken = LS.get(key, {});
   delete taken[id + '_' + time];
@@ -4522,7 +4582,7 @@ function medTick() {
   try {
     if (!state.meds || !state.meds.length) return;
     const now = new Date();
-    const todayKey = now.toISOString().slice(0,10);
+    const todayKey = localISO(now);
     const taken = LS.get('yasamai_medsTaken_' + todayKey, {});
     const fired = LS.get('yasamai_medsFired_' + todayKey, {}); // { id_time: ts }
     const curMin = now.getHours()*60 + now.getMinutes();
@@ -4647,7 +4707,7 @@ function renderSheetBody() {
   const last30 = [];
   for (let i=29;i>=0;i--) {
     const d = new Date(); d.setDate(d.getDate()-i);
-    const k = d.toISOString().slice(0,10);
+    const k = localISO(d);
     const l = logs.find(x=>x.date===k);
     last30.push({ key:k, weight:l?l.weight:null });
   }
@@ -4677,7 +4737,7 @@ function renderSheetBody() {
       <div style="color:#ec4899;font-weight:800;font-size:15px">${l.weight} kg</div>
     </div>`).join('') : '<div style="text-align:center;color:#a0a3b8;font-size:12px;padding:12px">Henüz kayıt yok</div>';
   // Bugün sorulmuş mu? (sorulduysa tekrar sorma)
-  const todayKey = new Date().toISOString().slice(0,10);
+  const todayKey = localISO();
   const askedToday = (state.body.lastAskDate === todayKey);
   // Ay sonu önerisi (her ayın 28-31'inde tetikle)
   const advice = bodyMonthAdvice();
@@ -4739,7 +4799,7 @@ function bodySave() {
   if (w <= 0) { alert('Geçerli kilo gir.'); return; }
   state.body = state.body || { height:0, logs:[], goal:null };
   state.body.height = h;
-  const today = new Date().toISOString().slice(0,10);
+  const today = localISO();
   state.body.logs = state.body.logs.filter(x=>x.date!==today);
   state.body.logs.push({ date:today, weight:w, ts:Date.now() });
   state.body.lastAskDate = today;
@@ -4753,7 +4813,7 @@ function bodyAskYes() {
   const newW = prompt('Yeni kilon (kg)?', latest ? latest.weight : 70);
   if (!newW) return;
   const w = parseFloat(newW); if (!w || w < 20 || w > 300) { alert('Geçerli değer gir.'); return; }
-  const today = new Date().toISOString().slice(0,10);
+  const today = localISO();
   state.body.logs = state.body.logs.filter(x=>x.date!==today);
   state.body.logs.push({ date:today, weight:w, ts:Date.now() });
   state.body.lastAskDate = today;
@@ -4764,7 +4824,7 @@ function bodyAskYes() {
 function bodyAskNo() {
   const sorted = [...(state.body.logs||[])].sort((a,b)=>(a.ts||0)-(b.ts||0));
   const latest = sorted[sorted.length-1]; if (!latest) return;
-  const today = new Date().toISOString().slice(0,10);
+  const today = localISO();
   state.body.logs = state.body.logs.filter(x=>x.date!==today);
   state.body.logs.push({ date:today, weight:latest.weight, ts:Date.now(), inferred:true });
   state.body.lastAskDate = today;
@@ -4807,7 +4867,7 @@ function bodyMonthAdvice() {
 function bodyDailyTick() {
   if (!state.body?.logs?.length || !state.body.height) return;
   const now = new Date();
-  const today = now.toISOString().slice(0,10);
+  const today = localISO(now);
   if (state.body.lastAskDate === today) return;
   if (state.body.lastNotifiedDate === today) return;
   if (now.getHours() < 9) return;
@@ -4840,7 +4900,7 @@ function diaryJumpToday() {
   renderDiary();
   // Bugünün girdilerine kaydır
   setTimeout(() => {
-    const el = document.querySelector('[data-diary-date="'+n.toISOString().slice(0,10)+'"]');
+    const el = document.querySelector('[data-diary-date="'+localISO(n)+'"]');
     if (el) el.scrollIntoView({ behavior:'smooth', block:'center' });
   }, 100);
 }
@@ -4865,7 +4925,7 @@ const DIARY_MOODS = [
 
 function renderDiary() {
   const today = new Date();
-  const todayKey = today.toISOString().slice(0,10);
+  const todayKey = localISO(today);
   const diaryByDate = {};
   (state.diary || []).forEach(d => { (diaryByDate[d.date] ||= []).push(d); });
 
@@ -4899,7 +4959,7 @@ function renderDiary() {
   const t0 = new Date(today); t0.setHours(0,0,0,0);
   for (let i = 0; i < 365; i++) {
     const d = new Date(t0); d.setDate(t0.getDate() - i);
-    const k = d.toISOString().slice(0,10);
+    const k = localISO(d);
     if (days.has(k)) streak++; else if (i > 0) break;
   }
   if (streakEl) streakEl.textContent = streak;
@@ -4965,13 +5025,13 @@ function renderDiaryCalendar(diaryByDate, today) {
   const last = new Date(y, m + 1, 0);
   const jsDay = first.getDay();
   const firstDow = (jsDay === 0) ? 6 : (jsDay - 1); // Pzt=0..Paz=6
-  const todayKey = today.toISOString().slice(0,10);
+  const todayKey = localISO(today);
   let html = '';
   // Baştaki boşluklar
   for (let i = 0; i < firstDow; i++) html += `<div class="d-day empty"></div>`;
   for (let d = 1; d <= last.getDate(); d++) {
     const dt = new Date(y, m, d);
-    const key = dt.toISOString().slice(0,10);
+    const key = localISO(dt);
     const entries = diaryByDate[key] || [];
     const isToday = key === todayKey;
     const isFuture = dt > today;
@@ -5017,7 +5077,7 @@ function renderDiaryTimeline(diaryByDate) {
     const dObj = new Date(key);
     const dayName = dObj.toLocaleDateString('tr-TR', { weekday:'long' });
     const dayLabel = dObj.getDate() + ' ' + DIARY_MONTHS[dObj.getMonth()];
-    const isToday = key === new Date().toISOString().slice(0,10);
+    const isToday = key === localISO();
     const header = `<div class="d-tl-date" data-diary-date="${key}"><span>${isToday?'Bugün · ':''}${dayLabel} <span style="opacity:.6;font-weight:500">· ${dayName}</span></span><span class="d-tl-cnt">${entries.length} girdi</span></div>`;
     const items = entries.slice().sort((a,b) => (b.ts||0)-(a.ts||0)).map(e => {
       // Orijinal state.diary içindeki idx
@@ -5112,7 +5172,7 @@ function renderTopics() {
     const rs = document.getElementById('ltRoutineSub');
     if (rs) rs.textContent = (state.routine?.on ? 'Hatırlatıcılar açık · ' : '') + (state.routine?.items?.length||0) + ' adımlık plan';
     const wk = document.getElementById('ltWorkoutSub');
-    const today = new Date().toISOString().slice(0,10);
+    const today = localISO();
     const todayCount = (state.workouts||[]).filter(x=>x.date===today).length;
     if (wk) wk.textContent = todayCount > 0 ? ('Bugün ' + todayCount + ' antrenman ✓') : 'Kısa antrenmanlar, esneme';
   } catch(e){}
@@ -6436,7 +6496,7 @@ function renderSheetNewDiary() {
     {id:'ofke',n:'Sinirli',c:'#f87171'},
     {id:'mutluluk',n:'Mutlu',c:'#fde047'}
   ];
-  const todayISO = new Date().toISOString().slice(0,10);
+  const todayISO = localISO();
   document.getElementById('sheetContent').innerHTML = `
     <h3>Yeni günlük girdisi</h3>
     <div class="form-row"><label>Başlık</label><input type="text" id="dTitle" placeholder="Bugün ne yaşadın?" maxlength="60"></div>
@@ -6471,7 +6531,7 @@ function saveDiary() {
   const picked = document.querySelector('.mood-chip.selected');
   const moodColor = picked ? picked.dataset.mc : '#8b5cf6';
   const moodId = picked ? picked.dataset.mid : null;
-  const todayISO = new Date().toISOString().slice(0,10);
+  const todayISO = localISO();
   const dateInp = document.getElementById('dDate');
   let entryDate = (dateInp?.value || todayISO);
   if (entryDate > todayISO) entryDate = todayISO; // gelecek tarihi engelle
