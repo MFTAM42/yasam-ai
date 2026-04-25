@@ -299,6 +299,9 @@
 
   /* ===== GÜNLÜK PREMIUM ===== */
   .d-hero{margin:8px 18px 14px;padding:18px;border-radius:22px;background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 55%,#ec4899 110%);color:#fff;position:relative;overflow:hidden;box-shadow:0 12px 32px rgba(99,102,241,0.3)}
+  .d-hero::before{content:"";position:absolute;right:-50px;top:-50px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.18),transparent 70%);pointer-events:none}
+  .d-hero::after{content:"";position:absolute;left:-40px;bottom:-50px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.12),transparent 70%);pointer-events:none}
+  .d-hero > *{position:relative;z-index:1}
   .d-hero::before{content:"";position:absolute;right:-50px;top:-50px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.22),transparent 70%)}
   .d-hero-ttl{font-size:11px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;opacity:.9}
   .d-hero-main{font-size:24px;font-weight:800;letter-spacing:-0.5px;margin-top:6px;line-height:1.2}
@@ -407,6 +410,8 @@
 
   /* ===== DÖNGÜ (ADET) ===== */
   .cy-hero{margin:8px 18px 14px;padding:18px 16px;border-radius:22px;background:linear-gradient(135deg,#ec4899 0%,#a78bfa 60%,#6366f1 110%);color:#fff;display:flex;gap:14px;align-items:center;position:relative;overflow:hidden;box-shadow:0 12px 32px rgba(236,72,153,0.3);min-width:0}
+  .cy-hero::before{content:"";position:absolute;right:-60px;top:-50px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.18),transparent 70%);pointer-events:none}
+  .cy-hero::after{content:"";position:absolute;left:-40px;bottom:-60px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.1),transparent 70%);pointer-events:none}
   .cy-hero::before{content:"";position:absolute;right:-60px;top:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.22),transparent 70%);pointer-events:none}
   .cy-ring{position:relative;width:96px;height:96px;flex-shrink:0;z-index:1}
   .cy-ring svg{width:96px;height:96px}
@@ -484,6 +489,10 @@
 
   /* ===== KEŞFET ===== */
   .ex-hero{margin:8px 18px 14px;padding:18px;border-radius:22px;background:linear-gradient(135deg,#0d9488 0%,#14b8a6 45%,#8b5cf6 120%);color:#fff;position:relative;overflow:hidden;box-shadow:0 12px 32px rgba(20,184,166,0.28)}
+  .ex-hero::before{content:"";position:absolute;right:-50px;top:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.18),transparent 70%);pointer-events:none}
+  .ex-hero::after{content:"";position:absolute;left:-40px;bottom:-50px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.1),transparent 70%);pointer-events:none}
+  .lt-card{transition:transform .15s, box-shadow .15s}
+  .lt-card:active{transform:scale(0.97)}
   .ex-hero::before{content:"";position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.22),transparent 70%)}
   .ex-hero-ttl{font-size:20px;font-weight:800;letter-spacing:-0.4px;line-height:1.2;z-index:1;position:relative}
   .ex-hero-sub{font-size:12.5px;line-height:1.5;margin-top:6px;opacity:.92;z-index:1;position:relative}
@@ -1350,7 +1359,7 @@ try {
 } catch(e){}
 
 /* Sürüm — SW cache adıyla eşleşir, her deploy'da bump yapılır */
-const APP_VERSION = 'v51';
+const APP_VERSION = 'v52';
 const APP_VERSION_LABEL = 'Sürüm 1.0.0 · ' + APP_VERSION;
 try { console.log('%cYaşam.AI ' + APP_VERSION_LABEL, 'color:#a78bfa;font-weight:bold'); } catch(e){}
 
@@ -3733,9 +3742,17 @@ function renderSheetSleep() {
       <textarea id="slNote" rows="2" placeholder="Rüya, gece uyanma, kafein, stres, ağrı..." style="width:100%;padding:13px 14px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);color:inherit;font-size:14px;font-family:inherit;resize:vertical;line-height:1.5;box-sizing:border-box">${esc(todayLog?.notes||'')}</textarea>
       <button class="sheet-btn primary" style="margin-top:14px;padding:14px;font-size:15px;font-weight:800" onclick="sleepSave()">✓ Bu geceyi kaydet</button>
     </div>
+    <div style="padding:16px;background:linear-gradient(135deg,rgba(79,70,229,0.18),rgba(124,58,237,0.14));border:1px solid rgba(124,58,237,0.3);border-radius:16px;margin-bottom:14px">
+      <div style="font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#a5b4fc;font-weight:800;margin-bottom:6px">🎙️ Gece Modu (Mikrofon)</div>
+      <div style="font-size:12.5px;line-height:1.5;color:#cbd5e1;margin-bottom:10px">Telefonu yastığının yanına koy, uygulama açık kalsın. Uyurken horlama ve derin nefes anlarını kaydeder, sabah rapor verir. <b style="color:#fde68a">Önemli:</b> Telefon kilitliyken çalışmaz — uygulamayı açık bırak ve şarja tak.</div>
+      <button class="sheet-btn primary" id="slMicBtn" style="padding:13px;font-size:14px;font-weight:800;background:linear-gradient(135deg,#4f46e5,#7c3aed)" onclick="sleepMicToggle()">🎙️ Gece Dinlemesini Başlat</button>
+      <div id="slMicStatus" style="margin-top:8px;font-size:11.5px;color:#a0a3b8;text-align:center"></div>
+      <div id="slMicReport" style="margin-top:10px;font-size:12.5px;color:#cbd5e1;line-height:1.6;display:none;padding:10px;background:rgba(255,255,255,0.04);border-radius:10px"></div>
+    </div>
     <div style="margin:0 0 6px;font-size:12px;color:#a0a3b8;font-weight:700">Son kayıtlar</div>
     ${recentList}
   `;
+  setTimeout(sleepMicRefreshUI, 50);
 }
 let _slQuality = 0;
 function sleepSetQuality(n) {
@@ -3762,6 +3779,113 @@ function sleepSave() {
   LS.set('yasamai_sleep', state.sleep);
   _slQuality = 0;
   renderSheetSleep();
+}
+
+/* ============ GECE MODU - MİKROFON DİNLEME ============ */
+let _slMicCtx = null, _slMicStream = null, _slMicAnalyser = null, _slMicTimer = null, _slWakeLock = null;
+function sleepMicState() { return LS.get('yasamai_sleepMic', { active:false, startTs:null, events:[] }); }
+function sleepMicSave(s) { LS.set('yasamai_sleepMic', s); }
+function sleepMicRefreshUI() {
+  const s = sleepMicState();
+  const btn = document.getElementById('slMicBtn');
+  const st = document.getElementById('slMicStatus');
+  const rep = document.getElementById('slMicReport');
+  if (!btn) return;
+  if (s.active) {
+    btn.textContent = '⏹️ Gece Modunu Durdur';
+    btn.style.background = 'linear-gradient(135deg,#ef4444,#b91c1c)';
+    if (st) {
+      const mins = Math.floor((Date.now() - (s.startTs||Date.now())) / 60000);
+      st.textContent = '🎙️ Dinleniyor · ' + mins + ' dk · ' + (s.events||[]).length + ' olay';
+    }
+    if (rep) rep.style.display = 'none';
+  } else {
+    btn.textContent = '🎙️ Gece Dinlemesini Başlat';
+    btn.style.background = 'linear-gradient(135deg,#4f46e5,#7c3aed)';
+    if (st) st.textContent = '';
+    if (rep && (s.events||[]).length) {
+      const r = sleepMicBuildReport(s);
+      rep.innerHTML = r;
+      rep.style.display = 'block';
+    } else if (rep) rep.style.display = 'none';
+  }
+}
+function sleepMicBuildReport(s) {
+  const ev = s.events || [];
+  if (!ev.length) return '<i>Henüz rapor yok.</i>';
+  const snores = ev.filter(e => e.type === 'snore');
+  const breaths = ev.filter(e => e.type === 'breath');
+  const fmt = (ts) => { const d = new Date(ts); return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2); };
+  const startStr = s.startTs ? fmt(s.startTs) : '—';
+  const endStr = s.endTs ? fmt(s.endTs) : fmt(Date.now());
+  let out = '<b style="color:#a5b4fc">📊 Gece Raporu</b><br>';
+  out += 'Süre: <b>' + startStr + '</b> → <b>' + endStr + '</b><br>';
+  out += '😮‍💨 Horlama: <b>' + snores.length + '</b> kez';
+  if (snores.length) out += ' (ilk: ' + fmt(snores[0].ts) + ')';
+  out += '<br>🫁 Derin nefes: <b>' + breaths.length + '</b> kez';
+  if (breaths.length) {
+    const sample = breaths.slice(0, 3).map(b => fmt(b.ts)).join(', ');
+    out += '<br><span style="font-size:11px;color:#94a3b8">İlk anlar: ' + sample + '</span>';
+  }
+  return out;
+}
+async function sleepMicToggle() {
+  const s = sleepMicState();
+  if (s.active) { sleepMicStop(); return; }
+  try {
+    _slMicStream = await navigator.mediaDevices.getUserMedia({ audio:{ echoCancellation:false, noiseSuppression:false, autoGainControl:false } });
+    _slMicCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const src = _slMicCtx.createMediaStreamSource(_slMicStream);
+    _slMicAnalyser = _slMicCtx.createAnalyser();
+    _slMicAnalyser.fftSize = 1024;
+    src.connect(_slMicAnalyser);
+    if ('wakeLock' in navigator) { try { _slWakeLock = await navigator.wakeLock.request('screen'); } catch(e){} }
+    const ns = { active:true, startTs:Date.now(), endTs:null, events:[] };
+    sleepMicSave(ns);
+    sleepMicLoop();
+    if (_slMicTimer) clearInterval(_slMicTimer);
+    _slMicTimer = setInterval(() => { sleepMicLoop(); sleepMicRefreshUI(); }, 1500);
+    sleepMicRefreshUI();
+  } catch (err) {
+    alert('Mikrofon izni reddedildi veya hata: ' + (err.message || err));
+  }
+}
+let _slLastEvTs = 0, _slQuietStart = 0;
+function sleepMicLoop() {
+  if (!_slMicAnalyser) return;
+  const buf = new Uint8Array(_slMicAnalyser.fftSize);
+  _slMicAnalyser.getByteTimeDomainData(buf);
+  let sum = 0;
+  for (let i=0;i<buf.length;i++){ const v = (buf[i]-128)/128; sum += v*v; }
+  const rms = Math.sqrt(sum / buf.length);
+  const now = Date.now();
+  const s = sleepMicState();
+  if (!s.active) return;
+  if (rms > 0.08) {
+    if (now - _slLastEvTs > 8000) {
+      const type = rms > 0.18 ? 'snore' : 'breath';
+      s.events.push({ ts:now, type, level:Number(rms.toFixed(3)) });
+      sleepMicSave(s);
+      _slLastEvTs = now;
+    }
+  }
+}
+function sleepMicStop() {
+  const s = sleepMicState();
+  s.active = false; s.endTs = Date.now();
+  sleepMicSave(s);
+  try { if (_slMicTimer) { clearInterval(_slMicTimer); _slMicTimer = null; } } catch(e){}
+  try { if (_slMicStream) _slMicStream.getTracks().forEach(t => t.stop()); } catch(e){}
+  try { if (_slMicCtx) _slMicCtx.close(); } catch(e){}
+  try { if (_slWakeLock) _slWakeLock.release(); } catch(e){}
+  _slMicStream = null; _slMicCtx = null; _slMicAnalyser = null; _slWakeLock = null;
+  if (s.events.length) {
+    const today = new Date().toISOString().slice(0,10);
+    const existing = state.sleep.logs.find(x => x.date === today);
+    const snores = s.events.filter(e => e.type === 'snore').length;
+    if (existing) { existing.snoreMin = Math.max(existing.snoreMin || 0, snores); LS.set('yasamai_sleep', state.sleep); }
+  }
+  sleepMicRefreshUI();
 }
 
 /* ============ İLAÇ TAKİBİ + ALARM ============ */
