@@ -407,8 +407,10 @@
   .wk-card:active{transform:scale(0.97);box-shadow:0 6px 18px rgba(16,185,129,0.18)}
   body.light .wk-card{background:#fff;border-color:rgba(0,0,0,0.06)}
   .wk-emoji{font-size:24px}
-  .wk-illu{width:100%;aspect-ratio:1.5/1;background:rgba(255,255,255,0.04);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;overflow:hidden}
-  .wk-illu svg{width:100%;height:100%;max-height:62px}
+  .wk-illu{width:100%;aspect-ratio:1/1;min-height:120px;background:rgba(255,255,255,0.04);border-radius:12px;display:flex;align-items:stretch;justify-content:stretch;margin-bottom:8px;overflow:hidden}
+  .wk-illu svg{width:100%;height:100%}
+  .wk-illu .pro-fig{width:100%;height:100%}
+  .wk-illu .pro-fig .pf-svg{width:96%;height:96%}
   .wk-illu .wk-pro{width:100%;height:100%}
   .wk-n{font-size:13px;font-weight:800;margin-top:6px}
   .wk-d{font-size:10.5px;color:#a0a3b8;margin-top:2px;line-height:1.35}
@@ -1766,7 +1768,7 @@ try {
 } catch(e){}
 
 /* Sürüm — SW cache adıyla eşleşir, her deploy'da bump yapılır */
-const APP_VERSION = 'v63';
+const APP_VERSION = 'v64';
 const APP_VERSION_LABEL = 'Sürüm 1.0.0 · ' + APP_VERSION;
 /* YEREL tarih helper — toISOString() UTC verdiği için TR'de gece yarısı civarı 1 gün geri gidiyordu (takvim bug'ı). Her yerde bunu kullan. */
 function localISO(d) {
@@ -4679,7 +4681,7 @@ function renderSheetBreathe() {
   document.getElementById('sheetContent').innerHTML = `
     <h3>🫁 Nefes Egzersizi</h3>
     <p style="font-size:12px;color:#a0a3b8;margin-bottom:12px">4-7-8 tekniği: 4 saniye nefes al, 7 saniye tut, 8 saniye ver. 4 tekrar.</p>
-    <div id="brCircle" style="width:180px;height:180px;border-radius:50%;background:linear-gradient(135deg,#8b5cf6,#6d28d9);margin:16px auto;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:800;transition:transform 4s ease">Başla</div>
+    <div id="brCircle" onclick="breatheStart()" style="width:180px;height:180px;border-radius:50%;background:linear-gradient(135deg,#8b5cf6,#6d28d9);margin:16px auto;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:800;transition:transform 4s ease;cursor:pointer;user-select:none;box-shadow:0 8px 24px rgba(139,92,246,0.35)">Başla</div>
     <div id="brPhase" style="text-align:center;font-size:14px;color:#a0a3b8;margin-bottom:12px">Hazır</div>
     <button class="sheet-btn primary" id="brBtn" onclick="breatheStart()">Başlat (4 tekrar)</button>
   `;
