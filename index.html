@@ -414,6 +414,220 @@
   .wk-d{font-size:10.5px;color:#a0a3b8;margin-top:2px;line-height:1.35}
   body.light .wk-d{color:#6b7280}
 
+  /* ===== ANATOMİK FİGÜR SİSTEMİ (gerçekçi vücut, eklemli kol-bacak) ===== */
+  .pro-fig{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;border-radius:12px;background:radial-gradient(ellipse at 50% 30%,color-mix(in srgb,var(--c1) 22%,transparent),color-mix(in srgb,var(--c2) 10%,transparent) 65%,transparent);overflow:hidden}
+  .pro-fig .pf-glow{position:absolute;inset:-20%;background:radial-gradient(circle at 50% 50%,color-mix(in srgb,var(--c1) 40%,transparent),transparent 60%);filter:blur(12px);animation:pfGlow 3.4s ease-in-out infinite;pointer-events:none}
+  .pro-fig .pf-svg{position:relative;z-index:2;width:92%;height:92%;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.25))}
+  .pro-fig .pf-svg g, .pro-fig .pf-svg path, .pro-fig .pf-svg circle, .pro-fig .pf-svg rect, .pro-fig .pf-svg ellipse, .pro-fig .pf-svg line{transform-origin:50% 50%;transform-box:fill-box}
+  @keyframes pfGlow{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:.95;transform:scale(1.08)}}
+
+  /* === Ana antrenman pozları (WK_SVG) === */
+  .pf-stretch .pf-svg{animation:pfStretch 2.6s ease-in-out infinite}
+  @keyframes pfStretch{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-4px) rotate(2deg)}}
+  .pf-walk .pf-svg, .pf-walk2 .pf-svg{animation:pfWalkBody 0.7s ease-in-out infinite}
+  @keyframes pfWalkBody{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+  .pf-cardio .pf-svg{animation:pfCardio 0.5s ease-in-out infinite}
+  @keyframes pfCardio{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-3px) scale(1.03)}}
+  .pf-core .pf-svg, .pf-plank2 .pf-svg{animation:pfCore 2.2s ease-in-out infinite}
+  @keyframes pfCore{0%,100%{transform:translateX(0)}50%{transform:translateX(2px)}}
+  .pf-yoga .pf-svg{animation:pfYoga 4s ease-in-out infinite}
+  @keyframes pfYoga{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+  .pf-hiit .pf-svg{animation:pfHiit 0.45s ease-in-out infinite}
+  @keyframes pfHiit{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  .pf-upper .pf-svg{animation:pfUpper 1.4s ease-in-out infinite}
+  @keyframes pfUpper{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+  .pf-lower .pf-svg{animation:pfLower 1.6s ease-in-out infinite}
+  @keyframes pfLower{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(2px) scaleY(0.95)}}
+
+  /* === EX_MINI sub-class animasyonlar (kol/bacak/baş hareketleri) === */
+  .pf-head-tilt{transform-origin:50% 100%;transform-box:fill-box;animation:pfHeadTilt 2.4s ease-in-out infinite}
+  @keyframes pfHeadTilt{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
+  .pf-arm-circle{transform-origin:50% 0;transform-box:fill-box;animation:pfArmCircle 2.4s linear infinite}
+  .pf-arm-circle-r{transform-origin:50% 0;transform-box:fill-box;animation:pfArmCircle 2.4s linear infinite reverse}
+  @keyframes pfArmCircle{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+  .pf-stretch-up{transform-origin:50% 100%;transform-box:fill-box;animation:pfStretchUp 2.6s ease-in-out infinite}
+  @keyframes pfStretchUp{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-3px) scaleY(1.04)}}
+  .pf-twist{transform-origin:50% 100%;transform-box:fill-box;animation:pfTwist 2s ease-in-out infinite}
+  .pf-twist2 .pf-svg{animation:pfTwist 1.8s ease-in-out infinite}
+  @keyframes pfTwist{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(14deg)}}
+  .pf-leg-lift{transform-origin:0 0;transform-box:fill-box;animation:pfLegLift 1.6s ease-in-out infinite}
+  @keyframes pfLegLift{0%,100%{transform:rotate(0)}50%{transform:rotate(-25deg)}}
+  .pf-fold-fwd{transform-origin:50% 0;transform-box:fill-box;animation:pfFoldFwd 3s ease-in-out infinite}
+  @keyframes pfFoldFwd{0%,100%{transform:rotate(0)}50%{transform:rotate(18deg)}}
+  .pf-cat-arch{transform-origin:50% 100%;transform-box:fill-box;animation:pfCatArch 2.4s ease-in-out infinite}
+  @keyframes pfCatArch{0%,100%{transform:scaleY(1) translateY(0)}50%{transform:scaleY(0.92) translateY(-3px)}}
+  .pf-breathe-body{transform-origin:50% 50%;transform-box:fill-box;animation:pfBreathe 3.2s ease-in-out infinite}
+  @keyframes pfBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+
+  /* yürüyüş (sol/sağ kol-bacak) */
+  .pf-arm-walk-l, .pf-leg-walk-r{transform-origin:50% 0;transform-box:fill-box;animation:pfSwing 0.7s ease-in-out infinite}
+  .pf-arm-walk-r, .pf-leg-walk-l{transform-origin:50% 0;transform-box:fill-box;animation:pfSwing 0.7s ease-in-out infinite reverse}
+  @keyframes pfSwing{0%,100%{transform:rotate(-22deg)}50%{transform:rotate(22deg)}}
+
+  /* sıçrama, jumping jack */
+  .pf-jj-arm-l{transform-origin:50% 0;transform-box:fill-box;animation:pfJjArm 0.55s ease-in-out infinite}
+  .pf-jj-arm-r{transform-origin:50% 0;transform-box:fill-box;animation:pfJjArm 0.55s ease-in-out infinite reverse}
+  @keyframes pfJjArm{0%,100%{transform:rotate(-65deg)}50%{transform:rotate(0deg)}}
+  .pf-jj-leg-l{transform-origin:50% 0;transform-box:fill-box;animation:pfJjLeg 0.55s ease-in-out infinite}
+  .pf-jj-leg-r{transform-origin:50% 0;transform-box:fill-box;animation:pfJjLeg 0.55s ease-in-out infinite reverse}
+  @keyframes pfJjLeg{0%,100%{transform:rotate(-22deg)}50%{transform:rotate(0deg)}}
+
+  /* yüksek diz */
+  .pf-knee-l{transform-origin:50% 0;transform-box:fill-box;animation:pfKnee 0.45s ease-in-out infinite}
+  .pf-knee-r{transform-origin:50% 0;transform-box:fill-box;animation:pfKnee 0.45s ease-in-out infinite reverse}
+  @keyframes pfKnee{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px) rotate(20deg)}}
+
+  /* burpee, push, bridge */
+  .pf-burpee-body{transform-origin:50% 100%;transform-box:fill-box;animation:pfBurpee 1.1s ease-in-out infinite}
+  @keyframes pfBurpee{0%,100%{transform:scale(1) translateY(0)}50%{transform:scale(0.6) translateY(8px)}}
+
+  /* boks yumruk */
+  .pf-punch-l{transform-origin:0 50%;transform-box:fill-box;animation:pfPunch 0.6s ease-in-out infinite}
+  .pf-punch-r{transform-origin:0 50%;transform-box:fill-box;animation:pfPunch 0.6s ease-in-out infinite reverse}
+  @keyframes pfPunch{0%,100%{transform:translateX(0)}50%{transform:translateX(8px)}}
+
+  /* dinlenme */
+  .pf-rest-pulse{transform-origin:50% 50%;transform-box:fill-box;animation:pfBreathe 3.6s ease-in-out infinite}
+
+  /* plank salınımı */
+  .pf-plank-wob{transform-origin:50% 100%;transform-box:fill-box;animation:pfPlankWob 2.6s ease-in-out infinite}
+  @keyframes pfPlankWob{0%,100%{transform:translateY(0)}50%{transform:translateY(2px)}}
+
+  /* mekik */
+  .pf-crunch-up{transform-origin:50% 100%;transform-box:fill-box;animation:pfCrunchUp 1.8s ease-in-out infinite}
+  .pf-crunch2 .pf-svg{animation:pfCrunchUp 1.8s ease-in-out infinite}
+  @keyframes pfCrunchUp{0%,100%{transform:rotate(0)}50%{transform:rotate(-18deg) translateY(-2px)}}
+
+  /* bisiklet pedal */
+  .pf-pedal-l{transform-origin:0 0;transform-box:fill-box;animation:pfPedal 1.2s linear infinite}
+  .pf-pedal-r{transform-origin:0 0;transform-box:fill-box;animation:pfPedal 1.2s linear infinite reverse}
+  @keyframes pfPedal{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+
+  /* ölü böcek (deadbug) */
+  .pf-db-1{transform-origin:0 0;transform-box:fill-box;animation:pfDb 1.6s ease-in-out infinite}
+  .pf-db-2{transform-origin:0 0;transform-box:fill-box;animation:pfDb 1.6s ease-in-out infinite reverse}
+  @keyframes pfDb{0%,100%{transform:rotate(0)}50%{transform:rotate(-30deg)}}
+
+  /* leg raise */
+  .pf-lr-leg{transform-origin:50% 0;transform-box:fill-box;animation:pfLrLeg 2s ease-in-out infinite}
+  @keyframes pfLrLeg{0%,100%{transform:rotate(0)}50%{transform:rotate(-55deg)}}
+
+  /* mountain pose büyüme */
+  .pf-mountain-grow{transform-origin:50% 100%;transform-box:fill-box;animation:pfMountain 3.4s ease-in-out infinite}
+  @keyframes pfMountain{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.05)}}
+
+  /* sun salutation rotate */
+  .pf-sun-spin{transform-origin:50% 50%;transform-box:fill-box;animation:pfSun 5s linear infinite}
+  @keyframes pfSun{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+
+  /* warrior, triangle */
+  .pf-tri-tilt{transform-origin:50% 100%;transform-box:fill-box;animation:pfTriTilt 3s ease-in-out infinite}
+  @keyframes pfTriTilt{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+
+  /* child rest */
+  .pf-child-rest{transform-origin:50% 100%;transform-box:fill-box;animation:pfChildRest 4s ease-in-out infinite}
+  @keyframes pfChildRest{0%,100%{transform:scaleY(1)}50%{transform:scaleY(0.96)}}
+
+  /* downward dog */
+  .pf-dog-pose{transform-origin:50% 100%;transform-box:fill-box;animation:pfDog 3.2s ease-in-out infinite}
+  @keyframes pfDog{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+
+  /* squat jump */
+  .pf-sq-jump{transform-origin:50% 100%;transform-box:fill-box;animation:pfSqJump 0.9s ease-in-out infinite}
+  @keyframes pfSqJump{0%,100%{transform:translateY(0) scaleY(1)}30%{transform:translateY(2px) scaleY(0.85)}60%{transform:translateY(-9px) scaleY(1.05)}}
+
+  /* plank jack legs */
+  .pf-pj-leg-l{transform-origin:50% 0;transform-box:fill-box;animation:pfPjLeg 0.55s ease-in-out infinite}
+  .pf-pj-leg-r{transform-origin:50% 0;transform-box:fill-box;animation:pfPjLeg 0.55s ease-in-out infinite reverse}
+  @keyframes pfPjLeg{0%,100%{transform:rotate(-15deg)}50%{transform:rotate(15deg)}}
+
+  /* lunge */
+  .pf-lunge-front{transform-origin:50% 0;transform-box:fill-box;animation:pfLungeFront 1.8s ease-in-out infinite}
+  .pf-lunge-back{transform-origin:50% 0;transform-box:fill-box;animation:pfLungeBack 1.8s ease-in-out infinite}
+  @keyframes pfLungeFront{0%,100%{transform:rotate(0)}50%{transform:rotate(20deg)}}
+  @keyframes pfLungeBack{0%,100%{transform:rotate(0)}50%{transform:rotate(-15deg)}}
+
+  /* mountain climber */
+  .pf-cl-l{transform-origin:50% 0;transform-box:fill-box;animation:pfClimber 0.5s ease-in-out infinite}
+  .pf-cl-r{transform-origin:50% 0;transform-box:fill-box;animation:pfClimber 0.5s ease-in-out infinite reverse}
+  @keyframes pfClimber{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-8px) rotate(15deg)}}
+
+  /* sprint */
+  .pf-sprint-arm-l, .pf-sprint-leg-r{transform-origin:50% 0;transform-box:fill-box;animation:pfSprint 0.32s ease-in-out infinite}
+  .pf-sprint-arm-r, .pf-sprint-leg-l{transform-origin:50% 0;transform-box:fill-box;animation:pfSprint 0.32s ease-in-out infinite reverse}
+  @keyframes pfSprint{0%,100%{transform:rotate(-35deg)}50%{transform:rotate(35deg)}}
+
+  /* push up */
+  .pf-pushup-down{transform-origin:50% 100%;transform-box:fill-box;animation:pfPushup 1.6s ease-in-out infinite}
+  @keyframes pfPushup{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+  /* sit up */
+  .pf-situp-up{transform-origin:50% 100%;transform-box:fill-box;animation:pfSitupUp 1.6s ease-in-out infinite}
+  @keyframes pfSitupUp{0%,100%{transform:rotate(0)}50%{transform:rotate(-30deg)}}
+
+  /* bridge */
+  .pf-bridge-up{transform-origin:50% 100%;transform-box:fill-box;animation:pfBridgeUp 2s ease-in-out infinite}
+  @keyframes pfBridgeUp{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-4px) scaleY(1.06)}}
+
+  /* dip */
+  .pf-dip-down{transform-origin:50% 0;transform-box:fill-box;animation:pfDipDown 1.6s ease-in-out infinite}
+  @keyframes pfDipDown{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+  /* superman */
+  .pf-super-fly{transform-origin:50% 50%;transform-box:fill-box;animation:pfSuper 2.4s ease-in-out infinite}
+  @keyframes pfSuper{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-3px) rotate(2deg)}}
+
+  /* p2p (point to point reach) */
+  .pf-p2p{transform-origin:50% 100%;transform-box:fill-box;animation:pfP2P 1.8s ease-in-out infinite}
+  @keyframes pfP2P{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
+
+  /* squat */
+  .pf-squat2 .pf-svg, .pf-wallsit .pf-svg{animation:pfSquat 2s ease-in-out infinite}
+  @keyframes pfSquat{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(4px) scaleY(0.92)}}
+
+  /* glute kick */
+  .pf-glute-kick{transform-origin:50% 0;transform-box:fill-box;animation:pfGluteKick 0.9s ease-in-out infinite}
+  @keyframes pfGluteKick{0%,100%{transform:rotate(0)}50%{transform:rotate(45deg)}}
+
+  /* generic pose anims */
+  .pf-neck .pf-svg{animation:pfStretch 2.4s ease-in-out infinite}
+  .pf-shoulder .pf-svg{animation:pfStretch 2.6s ease-in-out infinite}
+  .pf-back .pf-svg{animation:pfStretchUp 2.8s ease-in-out infinite}
+  .pf-waist .pf-svg{animation:pfTwist 2.2s ease-in-out infinite}
+  .pf-hip .pf-svg{animation:pfStretch 2.4s ease-in-out infinite}
+  .pf-hamstring .pf-svg{animation:pfFoldFwd 2.8s ease-in-out infinite}
+  .pf-cat .pf-svg{animation:pfCatArch 2.4s ease-in-out infinite}
+  .pf-breathe .pf-svg{animation:pfBreathe 3.2s ease-in-out infinite}
+  .pf-jj .pf-svg{animation:pfHiit 0.55s ease-in-out infinite}
+  .pf-burpee .pf-svg{animation:pfBurpee 1.1s ease-in-out infinite}
+  .pf-box .pf-svg{animation:pfCardio 0.6s ease-in-out infinite}
+  .pf-rest .pf-svg{animation:pfBreathe 3.6s ease-in-out infinite}
+  .pf-bicycle .pf-svg{animation:pfWalkBody 1s ease-in-out infinite}
+  .pf-deadbug .pf-svg{animation:pfBreathe 2.4s ease-in-out infinite}
+  .pf-legraise .pf-svg{animation:pfBreathe 2.6s ease-in-out infinite}
+  .pf-mountain .pf-svg{animation:pfMountain 3.4s ease-in-out infinite}
+  .pf-sun .pf-svg{animation:pfYoga 4s ease-in-out infinite}
+  .pf-warrior .pf-svg{animation:pfStretchUp 3s ease-in-out infinite}
+  .pf-triangle .pf-svg{animation:pfTriTilt 3s ease-in-out infinite}
+  .pf-child .pf-svg{animation:pfChildRest 4s ease-in-out infinite}
+  .pf-dog .pf-svg{animation:pfDog 3.2s ease-in-out infinite}
+  .pf-sqjump .pf-svg{animation:pfSqJump 0.9s ease-in-out infinite}
+  .pf-pjack .pf-svg{animation:pfHiit 0.55s ease-in-out infinite}
+  .pf-lunge2 .pf-svg{animation:pfWalkBody 1.6s ease-in-out infinite}
+  .pf-climber .pf-svg{animation:pfHiit 0.5s ease-in-out infinite}
+  .pf-sprint .pf-svg{animation:pfHiit 0.32s ease-in-out infinite}
+  .pf-pushup2 .pf-svg{animation:pfPushup 1.6s ease-in-out infinite}
+  .pf-situp .pf-svg{animation:pfSitupUp 1.6s ease-in-out infinite}
+  .pf-bridge2 .pf-svg{animation:pfBridgeUp 2s ease-in-out infinite}
+  .pf-dip .pf-svg{animation:pfDipDown 1.6s ease-in-out infinite}
+  .pf-super .pf-svg{animation:pfSuper 2.4s ease-in-out infinite}
+  .pf-p2p .pf-svg{animation:pfP2P 1.8s ease-in-out infinite}
+  .pf-glute .pf-svg{animation:pfGluteKick 0.9s ease-in-out infinite}
+
+  @media (prefers-reduced-motion: reduce){
+    .pro-fig *, .pro-fig{animation:none !important}
+  }
+
   /* ===== PROFESYONEL EGZERSİZ KARTLARI (büyük emoji + halka + parıltı) ===== */
   .wk-pro{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;border-radius:12px;background:radial-gradient(circle at 30% 30%,color-mix(in srgb,var(--c1) 35%,transparent),color-mix(in srgb,var(--c2) 18%,transparent));overflow:hidden}
   .wk-pro-glow{position:absolute;inset:-30%;background:radial-gradient(circle,color-mix(in srgb,var(--c1) 55%,transparent),transparent 60%);filter:blur(14px);animation:wkProGlow 3.5s ease-in-out infinite}
@@ -1552,7 +1766,7 @@ try {
 } catch(e){}
 
 /* Sürüm — SW cache adıyla eşleşir, her deploy'da bump yapılır */
-const APP_VERSION = 'v61';
+const APP_VERSION = 'v62';
 const APP_VERSION_LABEL = 'Sürüm 1.0.0 · ' + APP_VERSION;
 /* YEREL tarih helper — toISOString() UTC verdiği için TR'de gece yarısı civarı 1 gün geri gidiyordu (takvim bug'ı). Her yerde bunu kullan. */
 function localISO(d) {
@@ -3770,19 +3984,127 @@ function scheduleRoutineReminders() {
 /* ============ SPOR & EGZERSİZ ============ */
 /* Animasyonlu SVG figürleri — gerçek hareket gösterir (CSS keyframes ile)
    Her egzersiz için emoji + büyük animasyonlu vücut figürü */
-/* Profesyonel kart görselleri: büyük emoji + animasyonlu halka + parıltı */
-function _wkCard(emoji, c1, c2, animClass) {
-  return `<div class="wk-pro ${animClass||''}" style="--c1:${c1};--c2:${c2}"><span class="wk-pro-glow"></span><span class="wk-pro-ring"></span><span class="wk-pro-emoji">${emoji}</span></div>`;
+/* Profesyonel anatomik figür sistemi — gradient dolu vücut, eklemli, her egzersize özel poz + animasyon */
+let _figId = 0;
+function _proFig(c1, c2, animCls, bodyHTML) {
+  const id = 'pf' + (++_figId);
+  const id2 = id + 'b';
+  return `<div class="pro-fig ${animCls||''}" style="--c1:${c1};--c2:${c2}">
+    <span class="pf-glow"></span>
+    <svg viewBox="0 0 100 130" class="pf-svg" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient>
+        <linearGradient id="${id2}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c1}" stop-opacity=".95"/><stop offset="1" stop-color="${c2}" stop-opacity=".75"/></linearGradient>
+        <radialGradient id="${id}h" cx="0.35" cy="0.3" r="0.7"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset="0.5" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></radialGradient>
+      </defs>
+      <ellipse cx="50" cy="123" rx="22" ry="3.5" fill="${c2}" opacity=".25"/>
+      ${bodyHTML.replace(/__G__/g, 'url(#'+id+')').replace(/__B__/g, 'url(#'+id2+')').replace(/__H__/g, 'url(#'+id+'h)')}
+    </svg>
+  </div>`;
 }
+
+/* Vücut parçası şablonları — yeniden kullanılabilir */
+const PF = {
+  // baş + saç gölgesi + boyun
+  head: (cx,cy,r) => `<circle cx="${cx}" cy="${cy-r-1}" r="${r}" fill="__H__" stroke="rgba(0,0,0,0.18)" stroke-width="0.6"/><rect x="${cx-2.5}" y="${cy-1}" width="5" height="4" fill="__G__"/>`,
+  // gövde (omuzdan kalçaya kapsül)
+  torso: (x1,y1,x2,y2,w) => `<path d="M ${x1-w/2} ${y1} Q ${x1} ${y1-2} ${x1+w/2} ${y1} L ${x2+w/2-1} ${y2} Q ${x2} ${y2+1} ${x2-w/2+1} ${y2} Z" fill="__B__" stroke="rgba(0,0,0,0.12)" stroke-width="0.5"/>`,
+  // eklemli kol/bacak: omuz/kalça → dirsek/diz → bilek/ayak
+  limb: (cls,x1,y1,x2,y2,x3,y3,w) => `<g class="${cls||''}"><path d="M ${x1} ${y1} L ${x2} ${y2} L ${x3} ${y3}" stroke="__G__" stroke-width="${w||6}" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="${x2}" cy="${y2}" r="${(w||6)*0.45}" fill="${'__G__'}"/></g>`,
+  // basit segment (omuz-el direkt)
+  seg: (cls,x1,y1,x2,y2,w) => `<line class="${cls||''}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="__G__" stroke-width="${w||6}" stroke-linecap="round"/>`,
+  // ayak/el yuvarlak nokta
+  dot: (x,y,r) => `<circle cx="${x}" cy="${y}" r="${r||3}" fill="__G__"/>`,
+  // zemin çizgisi
+  ground: (y) => `<line x1="8" y1="${y}" x2="92" y2="${y}" stroke="__G__" stroke-width="0.8" stroke-dasharray="2 3" opacity=".35"/>`
+};
+
+/* WK_SVG — ana antrenman kartları (büyük figürler) */
 const WK_SVG = {
-  stretch: _wkCard('🧘‍♂️','#34d399','#059669','wkp-pulse'),
-  walk:    _wkCard('🚶','#fbbf24','#d97706','wkp-bob'),
-  cardio:  _wkCard('🏃','#f87171','#dc2626','wkp-bob-fast'),
-  core:    _wkCard('🤸','#a78bfa','#7c3aed','wkp-pulse'),
-  yoga:    _wkCard('🧘‍♀️','#c4b5fd','#8b5cf6','wkp-breathe'),
-  hiit:    _wkCard('🔥','#fb923c','#ea580c','wkp-bob-fast'),
-  upper:   _wkCard('🏋️','#60a5fa','#2563eb','wkp-pulse'),
-  lower:   _wkCard('🦵','#f472b6','#be185d','wkp-pulse')
+  stretch: _proFig('#34d399','#059669','pf-stretch',
+    PF.head(50,18,7) +
+    PF.torso(50,30,50,68,16) +
+    PF.limb('pf-arm-l',43,32,28,18,32,6,5.5) +
+    PF.limb('pf-arm-r',57,32,72,18,68,6,5.5) +
+    PF.limb('',46,68,42,92,38,116,6) +
+    PF.limb('',54,68,58,92,62,116,6) +
+    PF.dot(38,116,3) + PF.dot(62,116,3) +
+    PF.ground(120)
+  ),
+  walk: _proFig('#fbbf24','#d97706','pf-walk',
+    PF.head(50,18,7) +
+    PF.torso(50,30,50,65,15) +
+    PF.limb('pf-arm-walk-l',43,33,32,50,30,68,5) +
+    PF.limb('pf-arm-walk-r',57,33,68,50,70,68,5) +
+    PF.limb('pf-leg-walk-l',46,65,38,90,34,116,6) +
+    PF.limb('pf-leg-walk-r',54,65,62,90,66,116,6) +
+    PF.dot(34,116,3) + PF.dot(66,116,3) +
+    PF.ground(120)
+  ),
+  cardio: _proFig('#f87171','#dc2626','pf-cardio',
+    PF.head(50,18,7) +
+    PF.torso(50,30,50,62,15) +
+    PF.limb('pf-arm-walk-l',43,33,30,42,28,58,5) +
+    PF.limb('pf-arm-walk-r',57,33,68,28,72,12,5) +
+    PF.limb('pf-leg-run-l',46,62,52,78,40,108,6) +
+    PF.limb('pf-leg-run-r',54,62,60,82,72,98,6) +
+    PF.dot(40,108,3) + PF.dot(72,98,3) +
+    PF.ground(120)
+  ),
+  core: _proFig('#a78bfa','#7c3aed','pf-core',
+    // Plank pozisyonu: yatay vücut
+    `<g class="pf-plank">
+      ${PF.head(22,55,6.5)}
+      <path d="M 28 53 L 78 60 L 78 66 L 28 60 Z" fill="__B__" stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>
+      ${PF.limb('',32,60,30,80,28,100,5)}
+      ${PF.limb('',74,62,76,82,76,100,5)}
+      ${PF.dot(28,100,3)}${PF.dot(76,100,3)}
+    </g>` +
+    PF.ground(108)
+  ),
+  yoga: _proFig('#c4b5fd','#8b5cf6','pf-yoga',
+    // Lotus / oturmuş poz
+    PF.head(50,20,7) +
+    PF.torso(50,32,50,60,14) +
+    `<path d="M 30 70 Q 50 58 70 70 Q 70 80 50 78 Q 30 80 30 70 Z" fill="__B__" opacity=".7" stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>` +
+    PF.limb('pf-arm-yoga-l',44,38,28,52,24,70,5) +
+    PF.limb('pf-arm-yoga-r',56,38,72,52,76,70,5) +
+    PF.ground(120)
+  ),
+  hiit: _proFig('#fb923c','#ea580c','pf-hiit',
+    // Zıplama: kollar yukarı, bacaklar açık
+    PF.head(50,20,7) +
+    PF.torso(50,32,50,62,15) +
+    PF.limb('pf-arm-jump-l',43,34,30,18,28,4,5.5) +
+    PF.limb('pf-arm-jump-r',57,34,70,18,72,4,5.5) +
+    PF.limb('pf-leg-jump-l',46,62,36,84,28,108,6) +
+    PF.limb('pf-leg-jump-r',54,62,64,84,72,108,6) +
+    PF.dot(28,108,3) + PF.dot(72,108,3) +
+    PF.ground(120)
+  ),
+  upper: _proFig('#60a5fa','#2563eb','pf-upper',
+    // Halter kaldıran figür
+    PF.head(50,22,7) +
+    PF.torso(50,34,50,68,16) +
+    PF.limb('pf-arm-press-l',42,36,28,28,28,12,6) +
+    PF.limb('pf-arm-press-r',58,36,72,28,72,12,6) +
+    `<rect class="pf-bar" x="20" y="9" width="60" height="3.5" rx="1.5" fill="__G__"/><rect x="14" y="5" width="8" height="11" rx="2" fill="__G__"/><rect x="78" y="5" width="8" height="11" rx="2" fill="__G__"/>` +
+    PF.limb('',46,68,42,92,40,116,6) +
+    PF.limb('',54,68,58,92,60,116,6) +
+    PF.dot(40,116,3)+PF.dot(60,116,3) +
+    PF.ground(120)
+  ),
+  lower: _proFig('#f472b6','#be185d','pf-lower',
+    // Squat pozisyonu
+    PF.head(50,22,7) +
+    PF.torso(50,34,50,62,16) +
+    PF.limb('',43,36,28,40,30,52,5) +
+    PF.limb('',57,36,72,40,70,52,5) +
+    PF.limb('pf-leg-squat-l',46,62,28,82,32,108,7) +
+    PF.limb('pf-leg-squat-r',54,62,72,82,68,108,7) +
+    PF.dot(32,108,3.5) + PF.dot(68,108,3.5) +
+    PF.ground(120)
+  )
 };
 
 /* Egzersiz adım kütüphanesi — her adım için animasyonlu görsel + nasıl yapılır */
@@ -3851,40 +4173,368 @@ function exLookup(stepText) {
   }
   return null;
 }
-/* Profesyonel mini görseller: büyük emoji + animasyonlu halka + parıltı + harekete özel animasyon */
-function _exMini(emoji, c1, c2, anim) {
-  return `<div class="ex-pro ${anim||'exp-pulse'}" style="--c1:${c1};--c2:${c2}"><span class="exp-glow"></span><span class="exp-ring"></span><span class="exp-emoji">${emoji}</span></div>`;
-}
+/* Mini anatomik figürler — adım kartlarında her egzersize özel poz */
 const EX_MINI = {
-  neck:       _exMini('🙆','#34d399','#059669','exp-tilt'),
-  shoulder:   _exMini('💪','#fbbf24','#d97706','exp-spin'),
-  back:       _exMini('🧘','#a78bfa','#7c3aed','exp-stretch'),
-  waist:      _exMini('🤸','#f472b6','#be185d','exp-twist'),
-  hip:        _exMini('🦵','#34d399','#059669','exp-tilt'),
-  hamstring:  _exMini('🦵','#fbbf24','#d97706','exp-fold'),
-  cat:        _exMini('🐈','#a78bfa','#7c3aed','exp-bob'),
-  breathe:    _exMini('🫁','#c4b5fd','#8b5cf6','exp-breathe'),
-  walk:       _exMini('🚶','#fbbf24','#d97706','exp-bob'),
-  'walk-fast':_exMini('🏃','#f87171','#dc2626','exp-bob-fast'),
-  jumpjack:   _exMini('⭐','#f87171','#dc2626','exp-jump'),
-  highknee:   _exMini('🏃‍♂️','#fb923c','#ea580c','exp-jump'),
-  burpee:     _exMini('🔥','#f87171','#dc2626','exp-jump'),
-  box:        _exMini('🥊','#fbbf24','#d97706','exp-punch'),
-  rest:       _exMini('⏸️','#94a3b8','#475569','exp-pulse'),
-  plank:      _exMini('🧱','#a78bfa','#7c3aed','exp-pulse'),
-  crunch:     _exMini('🔄','#a78bfa','#7c3aed','exp-bob'),
-  twist:      _exMini('↔️','#a78bfa','#7c3aed','exp-twist'),
-  bicycle:    _exMini('🚴','#a78bfa','#7c3aed','exp-spin'),
-  deadbug:    _exMini('🐞','#a78bfa','#7c3aed','exp-stretch'),
-  legraise:   _exMini('⬆️','#a78bfa','#7c3aed','exp-fold'),
-  mountain:   _exMini('⛰️','#c4b5fd','#8b5cf6','exp-breathe'),
-  sunsalute:  _exMini('☀️','#fbbf24','#d97706','exp-spin'),
-  warrior:    _exMini('⚔️','#c4b5fd','#8b5cf6','exp-pulse'),
-  triangle:   _exMini('📐','#c4b5fd','#8b5cf6','exp-tilt'),
-  child:      _exMini('🧎','#c4b5fd','#8b5cf6','exp-breathe'),
-  dog:        _exMini('🐕','#c4b5fd','#8b5cf6','exp-bob'),
-  squatjump:  _exMini('🦵','#fb923c','#ea580c','exp-jump'),
-  plankjack:  _exMini('🧱','#fb923c','#ea580c','exp-jump'),
+  neck: _proFig('#34d399','#059669','pf-neck',
+    `<g class="pf-head-tilt">${PF.head(50,28,8)}</g>` +
+    PF.torso(50,40,50,80,18) +
+    PF.limb('',42,42,30,55,28,75,5.5) +
+    PF.limb('',58,42,70,55,72,75,5.5) +
+    PF.ground(120)
+  ),
+  shoulder: _proFig('#fbbf24','#d97706','pf-shoulder',
+    PF.head(50,18,7) +
+    PF.torso(50,30,50,75,17) +
+    `<g class="pf-arm-circle"><path d="M 42 33 L 22 50 L 26 72" stroke="__G__" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="22" cy="50" r="2.7" fill="__G__"/></g>` +
+    `<g class="pf-arm-circle-r"><path d="M 58 33 L 78 50 L 74 72" stroke="__G__" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="78" cy="50" r="2.7" fill="__G__"/></g>` +
+    PF.ground(120)
+  ),
+  back: _proFig('#a78bfa','#7c3aed','pf-back',
+    `<g class="pf-stretch-up">${PF.head(50,22,7)}${PF.torso(50,34,50,72,16)}` +
+    PF.limb('',43,36,40,18,42,4,5.5) +
+    PF.limb('',57,36,60,18,58,4,5.5) +
+    `</g>` +
+    PF.limb('',46,72,44,96,42,118,6) +
+    PF.limb('',54,72,56,96,58,118,6) +
+    PF.dot(42,118,3) + PF.dot(58,118,3) +
+    PF.ground(122)
+  ),
+  waist: _proFig('#f472b6','#be185d','pf-waist',
+    PF.head(50,18,7) +
+    `<g class="pf-twist">${PF.torso(50,30,50,70,16)}` +
+    PF.limb('',42,32,28,46,32,62,5.5) +
+    PF.limb('',58,32,72,46,68,62,5.5) +
+    `</g>` +
+    PF.limb('',46,70,42,94,40,118,6) +
+    PF.limb('',54,70,58,94,60,118,6) +
+    PF.dot(40,118,3)+PF.dot(60,118,3) +
+    PF.ground(122)
+  ),
+  hip: _proFig('#34d399','#059669','pf-hip',
+    PF.head(50,18,7) +
+    PF.torso(50,30,50,68,16) +
+    PF.limb('',43,32,30,46,32,60,5.5) +
+    PF.limb('',57,32,70,46,68,60,5.5) +
+    `<g class="pf-leg-lift">${PF.limb('',46,68,38,86,42,108,6)}</g>` +
+    PF.limb('',54,68,62,86,60,108,6) +
+    PF.ground(118)
+  ),
+  hamstring: _proFig('#fbbf24','#d97706','pf-hamstring',
+    `<g class="pf-fold-fwd">${PF.head(50,18,7)}${PF.torso(50,30,50,55,15)}` +
+    PF.limb('',43,32,38,48,40,68,5.5) +
+    PF.limb('',57,32,62,48,60,68,5.5) +
+    `</g>` +
+    PF.limb('',46,55,44,82,42,110,6) +
+    PF.limb('',54,55,56,82,58,110,6) +
+    PF.dot(42,110,3)+PF.dot(58,110,3) +
+    PF.ground(118)
+  ),
+  cat: _proFig('#a78bfa','#7c3aed','pf-cat',
+    // 4 ayak üstü poz
+    PF.head(20,40,6) +
+    `<g class="pf-cat-arch"><path d="M 26 42 Q 50 30 78 48 L 78 60 Q 50 50 26 54 Z" fill="__B__" stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/></g>` +
+    PF.limb('',30,55,28,75,28,95,5.5) +
+    PF.limb('',74,58,76,78,76,95,5.5) +
+    PF.dot(28,95,3)+PF.dot(76,95,3) +
+    PF.ground(102)
+  ),
+  breathe: _proFig('#c4b5fd','#8b5cf6','pf-breathe',
+    `<g class="pf-breathe-body">${PF.head(50,22,7)}${PF.torso(50,34,50,72,18)}</g>` +
+    PF.limb('',42,36,30,50,28,68,5.5) +
+    PF.limb('',58,36,70,50,72,68,5.5) +
+    PF.limb('',46,72,44,96,42,118,6) +
+    PF.limb('',54,72,56,96,58,118,6) +
+    PF.ground(122)
+  ),
+  walk: _proFig('#fbbf24','#d97706','pf-walk2',
+    PF.head(50,18,7) +
+    PF.torso(50,30,50,65,15) +
+    PF.limb('pf-arm-walk-l',43,33,32,50,30,68,5) +
+    PF.limb('pf-arm-walk-r',57,33,68,50,70,68,5) +
+    PF.limb('pf-leg-walk-l',46,65,38,90,34,116,6) +
+    PF.limb('pf-leg-walk-r',54,65,62,90,66,116,6) +
+    PF.dot(34,116,3)+PF.dot(66,116,3) +
+    PF.ground(120)
+  ),
+  'walk-fast': _proFig('#f87171','#dc2626','pf-walk2',
+    PF.head(50,18,7) +
+    PF.torso(50,30,50,62,15) +
+    PF.limb('pf-arm-walk-l',43,33,28,46,30,64,5) +
+    PF.limb('pf-arm-walk-r',57,33,72,46,70,64,5) +
+    PF.limb('pf-leg-run-l',46,62,52,78,40,108,6) +
+    PF.limb('pf-leg-run-r',54,62,60,82,72,98,6) +
+    PF.dot(40,108,3)+PF.dot(72,98,3) +
+    PF.ground(120)
+  ),
+  jumpjack: _proFig('#f87171','#dc2626','pf-jj',
+    PF.head(50,18,7) +
+    PF.torso(50,30,50,60,15) +
+    PF.limb('pf-jj-arm-l',43,32,30,18,26,4,5.5) +
+    PF.limb('pf-jj-arm-r',57,32,70,18,74,4,5.5) +
+    PF.limb('pf-jj-leg-l',46,60,34,82,26,106,6) +
+    PF.limb('pf-jj-leg-r',54,60,66,82,74,106,6) +
+    PF.dot(26,106,3)+PF.dot(74,106,3) +
+    PF.ground(118)
+  ),
+  highknee: _proFig('#fb923c','#ea580c','pf-knee',
+    PF.head(50,18,7) +
+    PF.torso(50,30,50,62,15) +
+    PF.limb('pf-arm-walk-l',43,33,32,50,28,68,5) +
+    PF.limb('pf-arm-walk-r',57,33,68,50,72,68,5) +
+    `<g class="pf-knee-l">${PF.limb('',46,62,38,72,42,84,6)}</g>` +
+    `<g class="pf-knee-r">${PF.limb('',54,62,62,72,58,84,6)}</g>` +
+    PF.ground(118)
+  ),
+  burpee: _proFig('#f87171','#dc2626','pf-burpee',
+    `<g class="pf-burpee-body">${PF.head(50,22,7)}${PF.torso(50,34,50,68,15)}` +
+    PF.limb('',43,36,30,52,28,72,5.5) +
+    PF.limb('',57,36,70,52,72,72,5.5) +
+    PF.limb('',46,68,38,90,34,114,6) +
+    PF.limb('',54,68,62,90,66,114,6) +
+    `</g>` + PF.dot(34,114,3)+PF.dot(66,114,3) +
+    PF.ground(118)
+  ),
+  box: _proFig('#fbbf24','#d97706','pf-box',
+    PF.head(50,18,7) +
+    PF.torso(50,30,50,68,15) +
+    `<g class="pf-punch-l">${PF.limb('',43,32,32,38,18,42,5.5)}<circle cx="14" cy="42" r="4" fill="__G__"/></g>` +
+    `<g class="pf-punch-r">${PF.limb('',57,32,68,38,82,42,5.5)}<circle cx="86" cy="42" r="4" fill="__G__"/></g>` +
+    PF.limb('',46,68,40,90,38,114,6) +
+    PF.limb('',54,68,60,90,62,114,6) +
+    PF.dot(38,114,3)+PF.dot(62,114,3) +
+    PF.ground(118)
+  ),
+  rest: _proFig('#94a3b8','#475569','pf-rest',
+    `<g class="pf-rest-pulse">${PF.head(50,28,9)}${PF.torso(50,40,50,80,18)}</g>` +
+    PF.limb('',42,42,30,58,28,76,5.5) +
+    PF.limb('',58,42,70,58,72,76,5.5) +
+    `<text x="50" y="105" text-anchor="middle" font-size="13" fill="__G__" font-weight="800">⏸ MOLA</text>` +
+    PF.ground(118)
+  ),
+  plank: _proFig('#a78bfa','#7c3aed','pf-plank2',
+    `<g class="pf-plank-wob">${PF.head(22,55,6.5)}` +
+    `<path d="M 28 53 L 78 60 L 78 66 L 28 60 Z" fill="__B__" stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>` +
+    PF.limb('',32,60,30,80,28,98,5) +
+    PF.limb('',74,62,76,82,76,98,5) +
+    `</g>` + PF.dot(28,98,3)+PF.dot(76,98,3) +
+    PF.ground(106)
+  ),
+  crunch: _proFig('#a78bfa','#7c3aed','pf-crunch2',
+    `<g class="pf-crunch-up">${PF.head(28,68,7)}${PF.torso(35,72,55,72,15)}` +
+    `</g>` +
+    PF.limb('',55,72,72,68,68,90,6) +
+    PF.limb('',55,72,68,82,80,98,6) +
+    PF.ground(108)
+  ),
+  twist: _proFig('#a78bfa','#7c3aed','pf-twist2',
+    PF.head(50,22,7) +
+    `<g class="pf-twist">${PF.torso(50,34,50,68,16)}` +
+    PF.limb('',42,38,28,52,38,62,5.5) +
+    PF.limb('',58,38,72,52,62,62,5.5) +
+    `</g>` +
+    PF.limb('',46,68,38,88,42,108,6) +
+    PF.limb('',54,68,62,88,58,108,6) +
+    PF.ground(118)
+  ),
+  bicycle: _proFig('#a78bfa','#7c3aed','pf-bicycle',
+    PF.head(20,55,6) +
+    PF.torso(26,55,55,55,12) +
+    `<g class="pf-pedal-l" style="transform-origin: 60px 65px;">${PF.limb('',55,60,75,55,85,72,6)}</g>` +
+    `<g class="pf-pedal-r" style="transform-origin: 60px 65px;">${PF.limb('',55,60,75,80,85,62,6)}</g>` +
+    PF.ground(108)
+  ),
+  deadbug: _proFig('#a78bfa','#7c3aed','pf-deadbug',
+    PF.head(50,30,7) +
+    PF.torso(50,42,50,72,17) +
+    `<g class="pf-db-1">${PF.limb('',42,44,28,32,18,22,5.5)}</g>` +
+    `<g class="pf-db-2">${PF.limb('',58,44,72,32,82,22,5.5)}</g>` +
+    `<g class="pf-db-2">${PF.limb('',46,72,32,84,20,98,6)}</g>` +
+    `<g class="pf-db-1">${PF.limb('',54,72,68,84,80,98,6)}</g>` +
+    PF.ground(108)
+  ),
+  legraise: _proFig('#a78bfa','#7c3aed','pf-legraise',
+    PF.head(20,68,7) +
+    PF.torso(26,68,55,72,15) +
+    `<g class="pf-lr-leg" style="transform-origin: 55px 72px;">${PF.limb('',55,72,70,60,86,40,6.5)}</g>` +
+    PF.dot(86,40,3) +
+    PF.ground(112)
+  ),
+  mountain: _proFig('#c4b5fd','#8b5cf6','pf-mountain',
+    `<g class="pf-mountain-grow">${PF.head(50,18,7)}${PF.torso(50,30,50,72,15)}` +
+    PF.limb('',45,34,40,55,42,72,5.5) +
+    PF.limb('',55,34,60,55,58,72,5.5) +
+    PF.limb('',47,72,46,96,44,118,6) +
+    PF.limb('',53,72,54,96,56,118,6) +
+    `</g>` +
+    PF.dot(44,118,3)+PF.dot(56,118,3) +
+    PF.ground(122)
+  ),
+  sunsalute: _proFig('#fbbf24','#d97706','pf-sun',
+    `<g class="pf-sun-spin">${PF.head(50,22,7)}${PF.torso(50,34,50,68,15)}` +
+    PF.limb('',43,36,32,18,28,4,5.5) +
+    PF.limb('',57,36,68,18,72,4,5.5) +
+    PF.limb('',46,68,42,92,40,116,6) +
+    PF.limb('',54,68,58,92,60,116,6) +
+    `</g>` +
+    PF.ground(120)
+  ),
+  warrior: _proFig('#c4b5fd','#8b5cf6','pf-warrior',
+    PF.head(45,18,7) +
+    PF.torso(45,30,48,62,15) +
+    PF.limb('',38,32,22,38,8,40,5.5) +
+    PF.limb('',52,32,68,38,82,40,5.5) +
+    PF.limb('',46,62,30,82,26,108,6) +
+    PF.limb('',50,62,68,82,80,108,6) +
+    PF.ground(118)
+  ),
+  triangle: _proFig('#c4b5fd','#8b5cf6','pf-triangle',
+    `<g class="pf-tri-tilt">${PF.head(60,28,7)}${PF.torso(58,38,40,68,15)}` +
+    PF.limb('',55,40,72,30,78,16,5.5) +
+    PF.limb('',45,68,32,78,22,72,5.5) +
+    `</g>` +
+    PF.limb('',38,68,28,88,20,108,6) +
+    PF.limb('',45,68,52,88,60,108,6) +
+    PF.ground(118)
+  ),
+  child: _proFig('#c4b5fd','#8b5cf6','pf-child',
+    `<g class="pf-child-rest"><ellipse cx="50" cy="78" rx="32" ry="14" fill="__B__" stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>${PF.head(22,72,7)}` +
+    PF.limb('',28,75,38,68,55,62,5) +
+    PF.limb('',28,82,40,86,52,82,5) +
+    `</g>` +
+    PF.ground(98)
+  ),
+  dog: _proFig('#c4b5fd','#8b5cf6','pf-dog',
+    `<g class="pf-dog-pose">` +
+    `<path d="M 22 92 L 50 32 L 78 92 L 70 92 L 50 44 L 30 92 Z" fill="__B__" stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>` +
+    PF.head(22,88,5.5) +
+    `</g>` +
+    PF.ground(100)
+  ),
+  squatjump: _proFig('#fb923c','#ea580c','pf-sqjump',
+    `<g class="pf-sq-jump">${PF.head(50,20,7)}${PF.torso(50,32,50,60,15)}` +
+    PF.limb('',43,34,32,18,28,6,5.5) +
+    PF.limb('',57,34,68,18,72,6,5.5) +
+    PF.limb('pf-leg-squat-l',46,60,28,78,32,102,6.5) +
+    PF.limb('pf-leg-squat-r',54,60,72,78,68,102,6.5) +
+    `</g>` + PF.dot(32,102,3)+PF.dot(68,102,3) +
+    PF.ground(110)
+  ),
+  plankjack: _proFig('#fb923c','#ea580c','pf-pjack',
+    PF.head(22,55,6.5) +
+    `<path d="M 28 53 L 78 60 L 78 66 L 28 60 Z" fill="__B__" stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>` +
+    PF.limb('',32,60,30,80,28,98,5) +
+    `<g class="pf-pj-leg-l">${PF.limb('',74,62,68,82,60,100,5)}</g>` +
+    `<g class="pf-pj-leg-r">${PF.limb('',74,64,82,82,90,100,5)}</g>` +
+    PF.ground(106)
+  ),
+  lunge: _proFig('#f472b6','#be185d','pf-lunge2',
+    PF.head(50,18,7) +
+    PF.torso(50,30,50,62,15) +
+    PF.limb('',43,33,30,46,28,64,5.5) +
+    PF.limb('',57,33,70,46,72,64,5.5) +
+    PF.limb('pf-lunge-front',46,62,32,82,28,108,6.5) +
+    PF.limb('pf-lunge-back',54,62,68,86,80,108,6.5) +
+    PF.dot(28,108,3.5)+PF.dot(80,108,3.5) +
+    PF.ground(118)
+  ),
+  climber: _proFig('#fb923c','#ea580c','pf-climber',
+    PF.head(22,55,6.5) +
+    `<path d="M 28 53 L 78 60 L 78 66 L 28 60 Z" fill="__B__" stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>` +
+    PF.limb('',32,60,30,80,28,98,5) +
+    `<g class="pf-cl-l">${PF.limb('',60,62,55,72,52,82,5)}</g>` +
+    `<g class="pf-cl-r">${PF.limb('',74,62,82,82,86,98,5)}</g>` +
+    PF.ground(104)
+  ),
+  sprint: _proFig('#dc2626','#991b1b','pf-sprint',
+    PF.head(50,16,7) +
+    PF.torso(50,28,50,58,15) +
+    PF.limb('pf-sprint-arm-l',43,30,26,42,30,62,5) +
+    PF.limb('pf-sprint-arm-r',57,30,74,18,72,2,5) +
+    PF.limb('pf-sprint-leg-l',46,58,52,76,38,108,6) +
+    PF.limb('pf-sprint-leg-r',54,58,62,82,76,98,6) +
+    PF.dot(38,108,3)+PF.dot(76,98,3) +
+    PF.ground(118)
+  ),
+  pushup: _proFig('#60a5fa','#2563eb','pf-pushup2',
+    `<g class="pf-pushup-down">${PF.head(22,55,6.5)}` +
+    `<path d="M 28 53 L 78 60 L 78 66 L 28 60 Z" fill="__B__" stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>` +
+    PF.limb('',32,60,30,76,28,90,5) +
+    PF.limb('',74,62,76,80,76,92,5) +
+    `</g>` + PF.dot(28,90,3)+PF.dot(76,92,3) +
+    PF.ground(100)
+  ),
+  situp: _proFig('#a78bfa','#7c3aed','pf-situp',
+    `<g class="pf-situp-up">${PF.head(28,68,7)}` +
+    `<path d="M 34 70 L 56 56 L 60 64 L 38 78 Z" fill="__B__" stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/></g>` +
+    PF.limb('',56,72,68,82,68,98,6) +
+    PF.limb('',56,72,72,72,86,82,6) +
+    PF.ground(108)
+  ),
+  bridge: _proFig('#f472b6','#be185d','pf-bridge2',
+    `<g class="pf-bridge-up"><path d="M 18 92 Q 50 38 82 92 L 76 92 Q 50 58 24 92 Z" fill="__B__" stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>${PF.head(18,90,5.5)}</g>` +
+    PF.dot(82,92,3) +
+    PF.ground(98)
+  ),
+  dip: _proFig('#60a5fa','#2563eb','pf-dip',
+    `<rect x="14" y="55" width="72" height="5" rx="2" fill="__G__"/>` +
+    `<g class="pf-dip-down">${PF.head(50,30,7)}${PF.torso(50,42,50,58,14)}` +
+    PF.limb('',44,44,38,55,38,55,5.5) +
+    PF.limb('',56,44,62,55,62,55,5.5) +
+    PF.limb('',46,58,40,82,40,108,6) +
+    PF.limb('',54,58,60,82,60,108,6) +
+    `</g>` + PF.dot(40,108,3)+PF.dot(60,108,3) +
+    PF.ground(118)
+  ),
+  diamond: _proFig('#60a5fa','#2563eb','pf-pushup2',
+    `<g class="pf-pushup-down">${PF.head(22,55,6.5)}` +
+    `<path d="M 28 53 L 78 60 L 78 66 L 28 60 Z" fill="__B__" stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>` +
+    `<polygon points="46,58 54,58 50,66" fill="__G__"/>` +
+    PF.limb('',46,58,42,76,40,90,5) +
+    PF.limb('',54,58,58,76,60,90,5) +
+    `</g>` + PF.ground(100)
+  ),
+  superman: _proFig('#60a5fa','#2563eb','pf-super',
+    `<g class="pf-super-fly"><path d="M 14 60 L 86 60 L 86 70 L 14 70 Z" fill="__B__" stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>${PF.head(16,60,5.5)}` +
+    PF.limb('',16,58,4,48,2,38,5) +
+    PF.limb('',86,68,94,76,98,84,5) +
+    `</g>` + PF.ground(95)
+  ),
+  p2p: _proFig('#60a5fa','#2563eb','pf-p2p',
+    `<g class="pf-pushup-down">${PF.head(22,52,6.5)}` +
+    `<path d="M 28 50 L 78 58 L 78 64 L 28 58 Z" fill="__B__" stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>` +
+    PF.limb('',32,58,30,80,28,98,5) +
+    PF.limb('',74,60,76,82,76,98,5) +
+    `</g>` + PF.ground(106)
+  ),
+  squat: _proFig('#f472b6','#be185d','pf-squat2',
+    `<g class="pf-sq-down">${PF.head(50,22,7)}${PF.torso(50,34,50,62,16)}` +
+    PF.limb('',43,36,28,40,30,52,5.5) +
+    PF.limb('',57,36,72,40,70,52,5.5) +
+    PF.limb('',46,62,28,80,32,104,6.5) +
+    PF.limb('',54,62,72,80,68,104,6.5) +
+    `</g>` + PF.dot(32,104,3.5)+PF.dot(68,104,3.5) +
+    PF.ground(112)
+  ),
+  wallsit: _proFig('#f472b6','#be185d','pf-wallsit',
+    `<line x1="14" y1="10" x2="14" y2="110" stroke="__G__" stroke-width="3" opacity=".5"/>` +
+    PF.head(28,32,7) +
+    PF.torso(28,44,28,68,15) +
+    PF.limb('',24,46,16,58,12,68,5.5) +
+    PF.limb('',32,46,40,58,42,70,5.5) +
+    PF.seg('',28,68,72,68,7) +
+    PF.seg('',72,68,72,108,7) +
+    PF.dot(72,108,3.5) +
+    PF.ground(115)
+  ),
+  glutekick: _proFig('#f472b6','#be185d','pf-glute',
+    PF.head(20,52,6) +
+    `<path d="M 26 50 L 60 56 L 60 62 L 26 56 Z" fill="__B__" stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>` +
+    PF.limb('',30,57,32,75,30,90,5.5) +
+    PF.limb('',54,58,52,75,50,90,5.5) +
+    `<g class="pf-glute-kick" style="transform-origin: 60px 60px;">${PF.limb('',60,60,76,52,90,42,6)}</g>` +
+    PF.dot(90,42,3) +
+    PF.ground(96)
+  ),
   lunge:      _exMini('🚶','#f472b6','#be185d','exp-bob'),
   climber:    _exMini('🧗','#fb923c','#ea580c','exp-jump'),
   sprint:     _exMini('💨','#dc2626','#991b1b','exp-bob-fast'),
