@@ -1369,7 +1369,7 @@ try {
 } catch(e){}
 
 /* Sürüm — SW cache adıyla eşleşir, her deploy'da bump yapılır */
-const APP_VERSION = 'v55';
+const APP_VERSION = 'v56';
 const APP_VERSION_LABEL = 'Sürüm 1.0.0 · ' + APP_VERSION;
 try { console.log('%cYaşam.AI ' + APP_VERSION_LABEL, 'color:#a78bfa;font-weight:bold'); } catch(e){}
 
@@ -1622,10 +1622,10 @@ function refreshProfile() {
   if (avr) avr.textContent = APP_VERSION;
 
   // Yıldız puanı
-  const rv = document.getElementById('rateVal');
-  if (rv) {
+  const rateValEl = document.getElementById('rateVal');
+  if (rateValEl) {
     const r = LS.get('yasamai_rating', null);
-    rv.textContent = r?.stars ? '★'.repeat(r.stars) : '⭐';
+    rateValEl.textContent = r?.stars ? '★'.repeat(r.stars) : '⭐';
   }
 
   // Rozetler
