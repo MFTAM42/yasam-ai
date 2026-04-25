@@ -2,6 +2,9 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, interactive-widget=resizes-content">
 <title>Yaşam.AI</title>
 <link rel="manifest" href="manifest.json">
@@ -1366,7 +1369,7 @@ try {
 } catch(e){}
 
 /* Sürüm — SW cache adıyla eşleşir, her deploy'da bump yapılır */
-const APP_VERSION = 'v53';
+const APP_VERSION = 'v54';
 const APP_VERSION_LABEL = 'Sürüm 1.0.0 · ' + APP_VERSION;
 try { console.log('%cYaşam.AI ' + APP_VERSION_LABEL, 'color:#a78bfa;font-weight:bold'); } catch(e){}
 
@@ -1441,7 +1444,6 @@ window.addEventListener('load', () => {
   }, splashDelay);
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').then((reg) => {
-      // Yeni SW bulundu mu? Hazır olunca devreye al ve sayfayı bir kerelik yenile.
       if (reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
       reg.addEventListener('updatefound', () => {
         const nw = reg.installing;
@@ -1449,15 +1451,33 @@ window.addEventListener('load', () => {
         nw.addEventListener('statechange', () => {
           if (nw.state === 'installed' && navigator.serviceWorker.controller) {
             nw.postMessage('SKIP_WAITING');
+            // Yeni sürüm hazır → kullanıcıya bildir
+            try { showUpdateBanner(); } catch(e){}
           }
         });
       });
-      // Her uygulama açılışında güncelleme var mı diye kontrol et
+      // Her açılışta güncelleme kontrolü
       setTimeout(() => reg.update().catch(()=>{}), 1500);
     }).catch(()=>{});
-    // controllerchange'te otomatik reload YAPMIYORUZ — telefon uyandığında UI bozuluyordu.
-    // Yeni sürüm bir sonraki manuel açılışta gelecek (zaten 2. açılışta devrede).
+    // controllerchange: yeni SW devreye girdi — kullanıcıya banner göster, manuel reload tetikle
+    let _swReloaded = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (_swReloaded) return;
+      _swReloaded = true;
+      try { showUpdateBanner(); } catch(e){}
+    });
   }
+  // Yeni sürüm banner'ı: tıklayınca reload, otomatik 8sn sonra kapanır
+  window.showUpdateBanner = function() {
+    if (document.getElementById('upd-banner')) return;
+    const b = document.createElement('div');
+    b.id = 'upd-banner';
+    b.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:99999;background:linear-gradient(135deg,#10b981,#059669);color:#fff;padding:12px 18px;border-radius:14px;box-shadow:0 12px 32px rgba(16,185,129,0.4);font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:10px;cursor:pointer;animation:fadeInUp .3s';
+    b.innerHTML = '🎉 Yeni sürüm hazır <span style="opacity:.85;font-weight:600;font-size:12px">· Dokun ve yenile</span>';
+    b.onclick = () => location.reload();
+    document.body.appendChild(b);
+    setTimeout(() => { try { b.remove(); } catch(e){} }, 12000);
+  };
   // Sayfa arka planda kaldıktan sonra (telefon kilitlendi/açıldı) geri dönünce UI'yi sıfırla
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') {
