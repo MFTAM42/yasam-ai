@@ -407,11 +407,8 @@
   .wk-card:active{transform:scale(0.97);box-shadow:0 6px 18px rgba(16,185,129,0.18)}
   body.light .wk-card{background:#fff;border-color:rgba(0,0,0,0.06)}
   .wk-emoji{font-size:24px}
-  .wk-illu{width:100%;aspect-ratio:1/1;min-height:120px;background:rgba(255,255,255,0.04);border-radius:12px;display:flex;align-items:stretch;justify-content:stretch;margin-bottom:8px;overflow:hidden}
-  .wk-illu svg{width:100%;height:100%}
-  .wk-illu .pro-fig{width:100%;height:100%}
-  .wk-illu .pro-fig .pf-svg{width:96%;height:96%}
-  .wk-illu .wk-pro{width:100%;height:100%}
+  .wk-illu{width:100%;aspect-ratio:1.6/1;background:rgba(255,255,255,0.04);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;overflow:hidden}
+  .wk-emoji-big{font-size:46px;line-height:1;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.3))}
   .wk-n{font-size:13px;font-weight:800;margin-top:6px}
   .wk-d{font-size:10.5px;color:#a0a3b8;margin-top:2px;line-height:1.35}
   body.light .wk-d{color:#6b7280}
@@ -1768,7 +1765,7 @@ try {
 } catch(e){}
 
 /* Sürüm — SW cache adıyla eşleşir, her deploy'da bump yapılır */
-const APP_VERSION = 'v64';
+const APP_VERSION = 'v65';
 const APP_VERSION_LABEL = 'Sürüm 1.0.0 · ' + APP_VERSION;
 /* YEREL tarih helper — toISOString() UTC verdiği için TR'de gece yarısı civarı 1 gün geri gidiyordu (takvim bug'ı). Her yerde bunu kullan. */
 function localISO(d) {
@@ -4585,7 +4582,7 @@ function renderSheetWorkout() {
   }
   const grid = WORKOUTS.map(w => `
     <button class="wk-card" onclick="openWorkoutDetail('${w.id}')">
-      <div class="wk-illu">${WK_SVG[w.id] || ('<div class="wk-emoji">'+w.emoji+'</div>')}</div>
+      <div class="wk-illu"><div class="wk-emoji-big">${w.emoji}</div></div>
       <div class="wk-n">${w.name}</div>
       <div class="wk-d">${w.dur} · ${w.desc}</div>
     </button>`).join('');
@@ -4619,9 +4616,7 @@ function openWorkoutDetail(id) {
   const stepsHtml = w.steps.map((s,i) => {
     const ex = exLookup(s);
     const desc = ex ? ex.desc : 'Hareketi rahat bir tempoda yap, nefes alıp vermeyi unutma.';
-    const vis = exVisual(s);
     return `<div class="ex-row">
-      <div class="ex-vis">${vis}</div>
       <div class="ex-info">
         <div class="ex-num">Adım ${i+1}</div>
         <div class="ex-name">${esc(s)}</div>
@@ -4632,7 +4627,7 @@ function openWorkoutDetail(id) {
   document.getElementById('sheetContent').innerHTML = `
     <h3>${w.emoji} ${w.name}</h3>
     <div style="margin:8px 0 14px;padding:18px;border-radius:18px;background:linear-gradient(135deg,rgba(16,185,129,0.14),rgba(5,150,105,0.08));border:1px solid rgba(16,185,129,0.25);display:flex;align-items:center;gap:14px">
-      <div style="width:88px;height:88px;flex-shrink:0;background:rgba(255,255,255,0.04);border-radius:16px;padding:8px;display:flex;align-items:center;justify-content:center">${WK_SVG[w.id] || ('<div style="font-size:42px">'+w.emoji+'</div>')}</div>
+      <div style="width:88px;height:88px;flex-shrink:0;background:rgba(255,255,255,0.04);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:48px">${w.emoji}</div>
       <div style="flex:1;min-width:0">
         <div style="font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#10b981;font-weight:800;margin-bottom:4px">⏱️ ${w.dur}</div>
         <div style="font-size:13px;line-height:1.5;color:#cbd5e1">${w.desc}</div>
