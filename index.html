@@ -1312,7 +1312,7 @@
             </div>
           </div>
           <input type="text" id="chatInput" placeholder="Ne yapacağımı bilmiyorum..." onkeypress="if(event.key==='Enter')sendMsg()">
-          <button class="send-btn" id="sendBtn" onclick="sendMsg()"><svg viewBox="0 0 24 24"><path d="M3 20l18-8L3 4v6l12 2-12 2z"/></svg></button>
+          <button class="send-btn" id="sendBtn" type="button" onpointerdown="event.preventDefault();sendMsg();" onclick="event.preventDefault()"><svg viewBox="0 0 24 24"><path d="M3 20l18-8L3 4v6l12 2-12 2z"/></svg></button>
         </div>
         <!-- Gizli input'lar: sohbet eklentileri -->
         <input type="file" id="chatImgInput" accept="image/*" style="display:none" onchange="onChatFilePicked(event,'image')">
@@ -1765,7 +1765,7 @@ try {
 } catch(e){}
 
 /* Sürüm — SW cache adıyla eşleşir, her deploy'da bump yapılır */
-const APP_VERSION = 'v66';
+const APP_VERSION = 'v67';
 const APP_VERSION_LABEL = 'Sürüm 1.0.0 · ' + APP_VERSION;
 /* YEREL tarih helper — toISOString() UTC verdiği için TR'de gece yarısı civarı 1 gün geri gidiyordu (takvim bug'ı). Her yerde bunu kullan. */
 function localISO(d) {
@@ -2718,33 +2718,46 @@ function addBubble(text, who) {
   b.className = 'bubble ' + who;
   b.textContent = text;
   box.appendChild(b);
-  box.scrollTop = 99999;
+  // Birden fazla scroll dene — DOM render + image/font yükleme gecikmelerini yakala
+  box.scrollTop = box.scrollHeight;
+  requestAnimationFrame(()=>{ box.scrollTop = box.scrollHeight; });
+  setTimeout(()=>{ box.scrollTop = box.scrollHeight; }, 60);
   return b;
 }
 
+let _sendBusy = false;
 async function sendMsg() {
+  if (_sendBusy) return;
   const input = document.getElementById('chatInput');
   const txt = input.value.trim();
   if (!txt) { input.focus(); return; }
+  // Klavye kapanmasın — input focus'u koru
+  try { input.focus({ preventScroll: true }); } catch(e) { input.focus(); }
   // Olası zombi UI temizliği — gönderirken başka overlay açık kalmasın
   document.getElementById('attachMenu')?.classList.remove('open');
   document.getElementById('permOverlay')?.classList.remove('show');
   if (!state.currentMood) { alert('Önce yukarıdan bir ruh hali seç.'); return; }
   if (!state.isPro && state.msgCount >= state.maxFree) { openSheet('premium'); return; }
+  _sendBusy = true;
   addBubble(txt, 'me');
   input.value = '';
   state.msgCount++;
   LS.set('yasamai_msgCount', state.msgCount);
   updateCounter();
+  const cm = document.getElementById('chatMsgs');
+  cm.scrollTop = cm.scrollHeight;
   const typing = addBubble('yazıyor…', 'ai');
   typing.classList.add('typing');
+  cm.scrollTop = cm.scrollHeight;
   try {
     const reply = await getAiReply(txt, state.currentMood);
     typing.remove();
     addBubble(reply, 'ai');
   } catch(e) { typing.remove(); addBubble('Bir sorun oldu, tekrar dener misin?', 'ai'); }
-  // Gönderimden sonra input görünür kalsın
-  setTimeout(()=>{ document.getElementById('chatMsgs').scrollTop = 99999; }, 100);
+  // Yanıttan sonra otomatik en alta in + klavye açık kalsın
+  requestAnimationFrame(()=>{ cm.scrollTop = cm.scrollHeight; });
+  setTimeout(()=>{ cm.scrollTop = cm.scrollHeight; try{ input.focus({preventScroll:true}); }catch(e){ input.focus(); } }, 120);
+  _sendBusy = false;
 }
 
 /* ============ + MENÜ / İZİN ============ */
