@@ -1765,7 +1765,7 @@ try {
 } catch(e){}
 
 /* Sürüm — SW cache adıyla eşleşir, her deploy'da bump yapılır */
-const APP_VERSION = 'v69';
+const APP_VERSION = 'v70';
 const APP_VERSION_LABEL = 'Sürüm 1.0.0 · ' + APP_VERSION;
 /* YEREL tarih helper — toISOString() UTC verdiği için TR'de gece yarısı civarı 1 gün geri gidiyordu (takvim bug'ı). Her yerde bunu kullan. */
 function localISO(d) {
@@ -3467,17 +3467,39 @@ function cycleDeleteLog(idx) {
 function renderSheetCycleLog() {
   const def = _cyclePreDate || localISO();
   _cyclePreDate = null;
-  document.getElementById('sheetContent').innerHTML =
-    '<h3 class="sheet-ttl">Regl kaydı</h3>' +
-    '<label class="lbl">Tarih</label><input type="date" id="cyLogDate" class="inp" value="' + def + '">' +
-    '<label class="lbl" style="margin-top:10px">Tip</label>' +
-    '<select id="cyLogType" class="inp"><option value="period_start">Regl başlangıcı</option><option value="period_end">Regl bitişi</option></select>' +
-    '<label class="lbl" style="margin-top:10px">Not (ops.)</label><textarea id="cyLogNote" class="inp" rows="2" placeholder="Akış, ruh hali..."></textarea>' +
-    '<button class="sheet-btn primary" onclick="saveCycleLog()">Kaydet</button>';
+  const todayISO = localISO();
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>Regl kaydı</h3>
+    <p style="font-size:12px;color:#a0a3b8;margin-bottom:14px">Reglinin başladığı veya bittiği günü kaydet — döngü tahminleri buna göre güncellenir.</p>
+    <div class="form-row" style="margin-bottom:10px">
+      <label style="display:flex;justify-content:space-between;align-items:center">
+        <span>📅 Tarih</span>
+        <span style="font-size:10.5px;color:#94a3b8;font-weight:500">Geçmiş bir güne de yazabilirsin</span>
+      </label>
+      <input type="date" id="cyLogDate" max="${todayISO}" value="${def}" style="font-size:14px;font-weight:700;padding:12px;text-align:center">
+    </div>
+    <label style="display:block;font-size:11px;color:#a0a3b8;margin-bottom:6px;font-weight:600">Kayıt tipi</label>
+    <div class="row" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+      <button class="mood-chip selected" data-type="period_start" onclick="pickCycleType(this)" style="--c:#ec4899;background:#ec4899;border-color:#ec4899">🩸 Regl başladı</button>
+      <button class="mood-chip" data-type="period_end" onclick="pickCycleType(this)" style="--c:#a78bfa">✓ Regl bitti</button>
+    </div>
+    <label style="display:block;font-size:11px;color:#a0a3b8;margin-bottom:6px;font-weight:600">Not (opsiyonel)</label>
+    <div class="composer" style="padding:0"><textarea id="cyLogNote" placeholder="Akış yoğunluğu, ruh halin, ağrı seviyen..."></textarea></div>
+    <button class="sheet-btn" onclick="saveCycleLog()">Kaydet</button>
+    <a class="sheet-link" onclick="closeSheet()">İptal</a>
+  `;
+}
+function pickCycleType(el) {
+  document.querySelectorAll('.mood-chip[data-type]').forEach(c => { c.classList.remove('selected'); c.style.background=''; c.style.borderColor=''; });
+  el.classList.add('selected');
+  const c = el.dataset.type === 'period_start' ? '#ec4899' : '#a78bfa';
+  el.style.background = c;
+  el.style.borderColor = c;
 }
 function saveCycleLog() {
   const date = document.getElementById('cyLogDate').value;
-  const type = document.getElementById('cyLogType').value;
+  const picked = document.querySelector('.mood-chip[data-type].selected');
+  const type = picked ? picked.dataset.type : 'period_start';
   const note = document.getElementById('cyLogNote').value.trim();
   if (!date) { alert('Tarih seç'); return; }
   state.cycleLogs = state.cycleLogs || [];
@@ -3489,18 +3511,45 @@ function saveCycleLog() {
 function renderSheetCycleSymptom() {
   const def = _cyclePreDate || localISO();
   _cyclePreDate = null;
-  const syms = ['Kramp','Baş ağrısı','Yorgunluk','Şişkinlik','Hassasiyet','Sivilce','Huysuzluk','İstek'];
-  document.getElementById('sheetContent').innerHTML =
-    '<h3 class="sheet-ttl">Belirti ekle</h3>' +
-    '<label class="lbl">Tarih</label><input type="date" id="cySymDate" class="inp" value="' + def + '">' +
-    '<label class="lbl" style="margin-top:10px">Belirtiler</label>' +
-    '<div class="chips-w" id="cySymChips">' + syms.map(s => '<button type="button" class="chip" onclick="this.classList.toggle(\'on\')">' + s + '</button>').join('') + '</div>' +
-    '<label class="lbl" style="margin-top:10px">Not (ops.)</label><textarea id="cySymNote" class="inp" rows="2"></textarea>' +
-    '<button class="sheet-btn primary" onclick="saveCycleSymptom()">Kaydet</button>';
+  const todayISO = localISO();
+  const syms = [
+    {n:'Kramp',c:'#f87171'},
+    {n:'Baş ağrısı',c:'#fb923c'},
+    {n:'Yorgunluk',c:'#a78bfa'},
+    {n:'Şişkinlik',c:'#60a5fa'},
+    {n:'Hassasiyet',c:'#f472b6'},
+    {n:'Sivilce',c:'#fbbf24'},
+    {n:'Huysuzluk',c:'#ef4444'},
+    {n:'İstek',c:'#34d399'}
+  ];
+  document.getElementById('sheetContent').innerHTML = `
+    <h3>Belirti ekle</h3>
+    <p style="font-size:12px;color:#a0a3b8;margin-bottom:14px">Bugün ne hissediyorsun? Belirtileri seç ve istersen not ekle.</p>
+    <div class="form-row" style="margin-bottom:10px">
+      <label style="display:flex;justify-content:space-between;align-items:center">
+        <span>📅 Tarih</span>
+        <span style="font-size:10.5px;color:#94a3b8;font-weight:500">Geçmiş bir güne de yazabilirsin</span>
+      </label>
+      <input type="date" id="cySymDate" max="${todayISO}" value="${def}" style="font-size:14px;font-weight:700;padding:12px;text-align:center">
+    </div>
+    <label style="display:block;font-size:11px;color:#a0a3b8;margin-bottom:6px;font-weight:600">Belirtilerin</label>
+    <div class="row" id="cySymChips" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+      ${syms.map(s => `<button type="button" class="mood-chip" data-c="${s.c}" onclick="pickSymChip(this)" style="--c:${s.c}">${s.n}</button>`).join('')}
+    </div>
+    <label style="display:block;font-size:11px;color:#a0a3b8;margin-bottom:6px;font-weight:600">Not (opsiyonel)</label>
+    <div class="composer" style="padding:0"><textarea id="cySymNote" placeholder="Detay yazmak istersen..."></textarea></div>
+    <button class="sheet-btn" onclick="saveCycleSymptom()">Kaydet</button>
+    <a class="sheet-link" onclick="closeSheet()">İptal</a>
+  `;
+}
+function pickSymChip(el) {
+  const on = el.classList.toggle('selected');
+  if (on) { el.style.background = el.dataset.c; el.style.borderColor = el.dataset.c; }
+  else { el.style.background = ''; el.style.borderColor = ''; }
 }
 function saveCycleSymptom() {
   const date = document.getElementById('cySymDate').value;
-  const picked = Array.from(document.querySelectorAll('#cySymChips .chip.on')).map(b => b.textContent);
+  const picked = Array.from(document.querySelectorAll('#cySymChips .mood-chip.selected')).map(b => b.textContent.trim());
   const note = document.getElementById('cySymNote').value.trim();
   if (!date) { alert('Tarih seç'); return; }
   if (!picked.length && !note) { alert('En az bir belirti veya not ekle'); return; }
