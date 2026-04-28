@@ -1312,7 +1312,7 @@
             </div>
           </div>
           <input type="text" id="chatInput" placeholder="Ne yapacağımı bilmiyorum..." onkeypress="if(event.key==='Enter')sendMsg()">
-          <button class="send-btn" id="sendBtn" type="button" onpointerdown="event.preventDefault();sendMsg();" onclick="event.preventDefault()"><svg viewBox="0 0 24 24"><path d="M3 20l18-8L3 4v6l12 2-12 2z"/></svg></button>
+          <button class="send-btn" id="sendBtn" type="button" onmousedown="event.preventDefault()" ontouchend="event.preventDefault();sendMsg();" onclick="sendMsg()"><svg viewBox="0 0 24 24"><path d="M3 20l18-8L3 4v6l12 2-12 2z"/></svg></button>
         </div>
         <!-- Gizli input'lar: sohbet eklentileri -->
         <input type="file" id="chatImgInput" accept="image/*" style="display:none" onchange="onChatFilePicked(event,'image')">
@@ -1765,7 +1765,7 @@ try {
 } catch(e){}
 
 /* Sürüm — SW cache adıyla eşleşir, her deploy'da bump yapılır */
-const APP_VERSION = 'v67';
+const APP_VERSION = 'v68';
 const APP_VERSION_LABEL = 'Sürüm 1.0.0 · ' + APP_VERSION;
 /* YEREL tarih helper — toISOString() UTC verdiği için TR'de gece yarısı civarı 1 gün geri gidiyordu (takvim bug'ı). Her yerde bunu kullan. */
 function localISO(d) {
@@ -1940,6 +1940,15 @@ function enterApp() {
       document.getElementById('attachMenu')?.classList.remove('open');
       document.getElementById('permOverlay')?.classList.remove('show');
     });
+  }
+  // Chat mesaj kutusuna her yeni içerik eklendiğinde otomatik en alta in
+  const cmEl = document.getElementById('chatMsgs');
+  if (cmEl) {
+    const mo = new MutationObserver(() => {
+      cmEl.scrollTop = cmEl.scrollHeight;
+      requestAnimationFrame(()=>{ cmEl.scrollTop = cmEl.scrollHeight; });
+    });
+    mo.observe(cmEl, { childList: true, subtree: true, characterData: true });
   }
   if (window.visualViewport) {
     // baseH'i dinamik yap — yönlendirme/resize sonrası stale kalmasın
